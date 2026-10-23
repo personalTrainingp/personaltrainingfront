@@ -16,12 +16,12 @@ export const DataTableCuentasBalances = ({tipo, idEmpresa, onOpenModalCustomCuen
     const { dataView } = useSelector(e=>e.CUENTASBALANCES)
     // Coincidencias con gastos (n_operacion + monto + moneda), solo en cuentas por cobrar
     const esPorCobrar = tipo === 'PorCobrar'
-    // coincidencias calculadas una sola vez en el hook; cada fila trae cantidadCoincidencias y ultimoGastoEnlazado
+    // coincidencias calculadas una sola vez en el hook; cada fila trae cantidadEnlazadosPorId, cantidadSinEnlazar y ultimoGastoEnlazado
     const { cuentas, gastos } = useCoincidenciasGastos(dataView, esPorCobrar)
     const [cuentaCoincidencias, setcuentaCoincidencias] = useState(null)
-        // accessor numerico para que el orden asc/desc sea por cantidad de coincidencias
-        const columnaCoincidencias = { id: 'coincidencias_gastos', sortable: true, accessor: 'cantidadCoincidencias', header: 'Coincidencias gastos', render: (row)=>{
-                const cantidad = row.cantidadCoincidencias
+        // accessor numerico para que el orden asc/desc sea por cantidad; ambos botones abren el modal de coincidencias
+        const columnaCantidad = (id, accessor, header) => ({ id, sortable: true, accessor, header, render: (row)=>{
+                const cantidad = row[accessor]
                 return (
                     <Button
                         label={`${cantidad}`}
@@ -31,7 +31,9 @@ export const DataTableCuentasBalances = ({tipo, idEmpresa, onOpenModalCustomCuen
                         onClick={()=>setcuentaCoincidencias(row)}
                     />
                 )
-            }}
+            }})
+        const columnaEnlazadosPorId = columnaCantidad('gastos_enlazados_id', 'cantidadEnlazadosPorId', 'Gastos enlazados por ID')
+        const columnaSinEnlazar = columnaCantidad('coincidencias_sin_enlazar', 'cantidadSinEnlazar', 'Coincidencias sin enlazar')
         const columnaUltimoCheck = { id: 'descripcion_ultimo_check', header: 'Descripcion ultimo check', render: (row)=>{
                 const gasto = row.ultimoGastoEnlazado
                 return (
@@ -78,7 +80,7 @@ export const DataTableCuentasBalances = ({tipo, idEmpresa, onOpenModalCustomCuen
             }  },
             { id: 'descripcion', header: 'descripcion', accessor: 'descripcion', sortable: true, width: 20, headerAlign: 'right', cellAlign: 'left' },
             { id: 'n operacion', header: 'n operacion', accessor: 'n_operacion', sortable: true, width: 20, headerAlign: 'right', cellAlign: 'left' },
-            ...(esPorCobrar ? [columnaCoincidencias, columnaUltimoCheck] : []),
+            ...(esPorCobrar ? [columnaEnlazadosPorId, columnaSinEnlazar, columnaUltimoCheck] : []),
             { id: 'accion', header: '',  sortable: true, render:(row)=>{
                 return (
                     <>

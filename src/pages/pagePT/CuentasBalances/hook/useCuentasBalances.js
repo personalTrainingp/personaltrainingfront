@@ -22,6 +22,8 @@ export const useCoincidenciasGastos = (cuentas, activo = true) => {
 		if (!activo) return cuentas;
 		const gastosPorClave = new Map();
 		const ultimoPorCuenta = new Map();
+		// cantidad de gastos enlazados por id_porCuenta
+		const enlazadosPorCuenta = new Map();
 		gastos.forEach((g) => {
 			if (normalizarOperacion(g.n_operacion) !== '') {
 				const clave = claveCoincidencia(g.n_operacion, g.monto, g.moneda);
@@ -30,6 +32,7 @@ export const useCoincidenciasGastos = (cuentas, activo = true) => {
 			}
 			const idPorCuenta = Number(g.id_porCuenta) || 0;
 			if (idPorCuenta > 0) {
+				enlazadosPorCuenta.set(idPorCuenta, (enlazadosPorCuenta.get(idPorCuenta) || 0) + 1);
 				const ultimo = ultimoPorCuenta.get(idPorCuenta);
 				if (!ultimo || new Date(g.updatedAt) > new Date(ultimo.updatedAt))
 					ultimoPorCuenta.set(idPorCuenta, g);
@@ -48,6 +51,9 @@ export const useCoincidenciasGastos = (cuentas, activo = true) => {
 				...cuenta,
 				coincidenciasGastos,
 				cantidadCoincidencias: coincidenciasGastos.length,
+				// mismas secciones que ModalCoincidenciasGastos
+				cantidadEnlazadosPorId: enlazadosPorCuenta.get(Number(cuenta.id)) || 0,
+				cantidadSinEnlazar: coincidenciasGastos.filter((g) => Number(g.id_porCuenta) !== Number(cuenta.id)).length,
 				ultimoGastoEnlazado: ultimoPorCuenta.get(Number(cuenta.id)) || null,
 			};
 		});

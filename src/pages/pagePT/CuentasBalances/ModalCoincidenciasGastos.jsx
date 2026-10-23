@@ -173,10 +173,18 @@ const Monto = ({ moneda, monto }) => (
     </div>
 )
 
+// Gastos enlazados a la cuenta por id (id_porCuenta = id de la cuenta), coincidan o no en operacion/monto/moneda
+export const obtenerGastosEnlazados = (cuenta, gastos) =>
+    gastos.filter((g) => Number(g.id_porCuenta) === Number(cuenta?.id))
+
 export const ModalCoincidenciasGastos = ({ cuenta, gastos, onHide }) => {
     // Gasto que se esta editando; mientras tanto se oculta este modal
     const [gastoEditar, setgastoEditar] = useState(null)
-    const coincidencias = cuenta ? obtenerCoincidenciasGastos(cuenta, gastos) : []
+    const enlazados = cuenta ? obtenerGastosEnlazados(cuenta, gastos) : []
+    // los ya enlazados se muestran en su propia tabla
+    const coincidencias = cuenta
+        ? obtenerCoincidenciasGastos(cuenta, gastos).filter((g) => Number(g.id_porCuenta) !== Number(cuenta.id))
+        : []
 
     const onCerrarEditar = async () => {
         setgastoEditar(null)
@@ -221,6 +229,63 @@ export const ModalCoincidenciasGastos = ({ cuenta, gastos, onHide }) => {
         })
     }
 
+    const renderTabla = (filas, mensajeVacio) =>
+        filas.length === 0 ? (
+            <div className="fs-4 p-3 text-center">{mensajeVacio}</div>
+        ) : (
+            <div className="table-responsive">
+                <table className="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>CHECK_GASTO_CUENTAS</th>
+                            <th>ID_CUENTABALANCE</th>
+                            <th>ID GASTO</th>
+                            <th>EMPRESA</th>
+                            <th>FECHA COMPROBANTE</th>
+                            <th>N° OPERACION</th>
+                            <th>CONCEPTO</th>
+                            <th>PROVEEDOR</th>
+                            <th>DESCRIPCION</th>
+                            <th>MONTO</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {filas.map((g) => (
+                            <tr key={`${g.empresaGasto}-${g.id}`}>
+                                <td className="text-center">
+                                    <input
+                                        type="checkbox"
+                                        className="form-check-input"
+                                        style={{ width: '1.5rem', height: '1.5rem', cursor: 'pointer' }}
+                                        checked={Number(g.id_porCuenta) === Number(cuenta.id)}
+                                        disabled={gastoGuardando === g.id}
+                                        onChange={(e) => onCheckGastoCuenta(g, e.target.checked)}
+                                    />
+                                </td>
+                                {/* id_porCuenta guardado en el gasto (0 = sin enlazar) */}
+                                <td className={Number(g.id_porCuenta) > 0 ? 'text-success fw-bold' : ''}>
+                                    {Number(g.id_porCuenta) || '-'}
+                                </td>
+                                <td>{g.id}</td>
+                                <td>{g.empresaGasto}</td>
+                                <td>{g.fec_comprobante ? DateMaskStr(g.fec_comprobante, 'DD/MM/YYYY') : '-'}</td>
+                                <td>{g.n_operacion}</td>
+                                <td>{g.tb_parametros_gasto?.nombre_gasto || '-'}</td>
+                                <td>{g.tb_Proveedor?.razon_social_prov || '-'}</td>
+                                <td>{g.descripcion || '-'}</td>
+                                <td><Monto moneda={g.moneda} monto={g.monto} /></td>
+                                <td className="text-nowrap">
+                                    <Button icon="pi pi-pencil" rounded outlined className="mr-2" onClick={() => setgastoEditar(g)} />
+                                    <Button icon="pi pi-trash" rounded outlined severity="danger" onClick={() => confirmarEliminar(g)} />
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        )
+
     return (
         <>
             {/* Se monta solo al editar: ModalCustomGasto toma la empresa en su estado inicial */}
@@ -241,61 +306,10 @@ export const ModalCoincidenciasGastos = ({ cuenta, gastos, onHide }) => {
                 header={`Coincidencias de gastos - Cuenta ${cuenta?.id ?? ''} | Op. ${cuenta?.n_operacion ?? ''}`}
                 style={{ width: '80rem' }}
             >
-                {coincidencias.length === 0 ? (
-                    <div className="fs-4 p-3 text-center">No hay gastos con el mismo n° de operacion, monto y moneda</div>
-                ) : (
-                    <div className="table-responsive">
-                        <table className="table table-bordered table-hover">
-                            <thead>
-                                <tr>
-                                    <th>CHECK_GASTO_CUENTAS</th>
-                                    <th>ID_CUENTABALANCE</th>
-                                    <th>ID GASTO</th>
-                                    <th>EMPRESA</th>
-                                    <th>FECHA COMPROBANTE</th>
-                                    <th>N° OPERACION</th>
-                                    <th>CONCEPTO</th>
-                                    <th>PROVEEDOR</th>
-                                    <th>DESCRIPCION</th>
-                                    <th>MONTO</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {coincidencias.map((g) => (
-                                    <tr key={`${g.empresaGasto}-${g.id}`}>
-                                        <td className="text-center">
-                                            <input
-                                                type="checkbox"
-                                                className="form-check-input"
-                                                style={{ width: '1.5rem', height: '1.5rem', cursor: 'pointer' }}
-                                                checked={Number(g.id_porCuenta) === Number(cuenta.id)}
-                                                disabled={gastoGuardando === g.id}
-                                                onChange={(e) => onCheckGastoCuenta(g, e.target.checked)}
-                                            />
-                                        </td>
-                                        {/* id_porCuenta guardado en el gasto (0 = sin enlazar) */}
-                                        <td className={Number(g.id_porCuenta) > 0 ? 'text-success fw-bold' : ''}>
-                                            {Number(g.id_porCuenta) || '-'}
-                                        </td>
-                                        <td>{g.id}</td>
-                                        <td>{g.empresaGasto}</td>
-                                        <td>{g.fec_comprobante ? DateMaskStr(g.fec_comprobante, 'DD/MM/YYYY') : '-'}</td>
-                                        <td>{g.n_operacion}</td>
-                                        <td>{g.tb_parametros_gasto?.nombre_gasto || '-'}</td>
-                                        <td>{g.tb_Proveedor?.razon_social_prov || '-'}</td>
-                                        <td>{g.descripcion || '-'}</td>
-                                        <td><Monto moneda={g.moneda} monto={g.monto} /></td>
-                                        <td className="text-nowrap">
-                                            <Button icon="pi pi-pencil" rounded outlined className="mr-2" onClick={() => setgastoEditar(g)} />
-                                            <Button icon="pi pi-trash" rounded outlined severity="danger" onClick={() => confirmarEliminar(g)} />
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
+                <h4 className="mb-2">Gastos enlazados por ID ({enlazados.length})</h4>
+                {renderTabla(enlazados, `No hay gastos enlazados a la cuenta ${cuenta?.id ?? ''}`)}
+                <h4 className="mt-4 mb-2">Coincidencias sin enlazar ({coincidencias.length})</h4>
+                {renderTabla(coincidencias, 'No hay gastos con el mismo n° de operacion, monto y moneda')}
             </Dialog>
         </>
     )
