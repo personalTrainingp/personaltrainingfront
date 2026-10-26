@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useRenovationsBreakdown } from '../hooks/useRenovationsBreakdown';
 import { fmtMoney } from '../../resumenEjecutivo/adapters/executibleLogic';
+import { ClickableTd, DetalleVentasModal } from './DetalleVentasModal';
 
 export const RenovationsBreakdownTable = ({ ventas = [], monthsData = [], customStartDay = 1, customEndDay = 31 }) => {
 
     const { repData, totals, grandTotal } = useRenovationsBreakdown(ventas, monthsData, customStartDay, customEndDay);
+
+    const [detalle, setDetalle] = useState(null);
+    const openDetalle = (titulo, items) => setDetalle({ titulo, items });
 
     // --- ESTILOS (Copiados de ReentryBreakdownTable) ---
     const styles = {
@@ -168,9 +172,11 @@ export const RenovationsBreakdownTable = ({ ventas = [], monthsData = [], custom
                             // Calculate row total
                             let rowCount = 0;
                             let rowAmount = 0;
+                            const rowItems = [];
                             monthMap.forEach(val => {
                                 rowCount += val.count;
                                 rowAmount += val.amount;
+                                rowItems.push(...val.items);
                             });
 
                             return (
@@ -180,18 +186,18 @@ export const RenovationsBreakdownTable = ({ ventas = [], monthsData = [], custom
                                         const data = monthMap.get(m.key) || { count: 0, amount: 0 };
                                         return (
                                             <React.Fragment key={m.key}>
-                                                <td style={styles.td}>
+                                                <ClickableTd style={styles.td} items={data.items} onOpen={() => openDetalle(`${repName} · ${m.label}`, data.items)}>
                                                     {data.count > 0 ? data.count : '-'}
-                                                </td>
-                                                <td style={styles.td}>
+                                                </ClickableTd>
+                                                <ClickableTd style={styles.td} items={data.items} onOpen={() => openDetalle(`${repName} · ${m.label}`, data.items)}>
                                                     {data.amount > 0 ? fmtMoney(data.amount) : '-'}
-                                                </td>
+                                                </ClickableTd>
                                             </React.Fragment>
                                         );
                                     })}
                                     {/* Row Total Column */}
-                                    <td style={styles.tdTotalRow}>{rowCount > 0 ? rowCount : '-'}</td>
-                                    <td style={styles.tdTotalRow}>{rowAmount > 0 ? fmtMoney(rowAmount) : '-'}</td>
+                                    <ClickableTd style={styles.tdTotalRow} items={rowItems} onOpen={() => openDetalle(`${repName} · TOTAL ACUMULADO`, rowItems)}>{rowCount > 0 ? rowCount : '-'}</ClickableTd>
+                                    <ClickableTd style={styles.tdTotalRow} items={rowItems} onOpen={() => openDetalle(`${repName} · TOTAL ACUMULADO`, rowItems)}>{rowAmount > 0 ? fmtMoney(rowAmount) : '-'}</ClickableTd>
                                 </tr>
                             );
                         })}
@@ -204,17 +210,17 @@ export const RenovationsBreakdownTable = ({ ventas = [], monthsData = [], custom
                                 </td>
                                 {monthsData.map(m => (
                                     <React.Fragment key={m.key}>
-                                        <td style={styles.tdGrandTotalValue}>
+                                        <ClickableTd style={styles.tdGrandTotalValue} items={totals[m.key]?.items} onOpen={() => openDetalle(`TOTAL · ${m.label}`, totals[m.key]?.items)}>
                                             {totals[m.key]?.count || 0}
-                                        </td>
-                                        <td style={styles.tdGrandTotalValue}>
+                                        </ClickableTd>
+                                        <ClickableTd style={styles.tdGrandTotalValue} items={totals[m.key]?.items} onOpen={() => openDetalle(`TOTAL · ${m.label}`, totals[m.key]?.items)}>
                                             {fmtMoney(totals[m.key]?.amount || 0)}
-                                        </td>
+                                        </ClickableTd>
                                     </React.Fragment>
                                 ))}
                                 {/* Grand Total Column */}
-                                <td style={styles.tdGrandTotalValue}>{grandTotal.count}</td>
-                                <td style={styles.tdGrandTotalValue}>{fmtMoney(grandTotal.amount)}</td>
+                                <ClickableTd style={styles.tdGrandTotalValue} items={grandTotal?.items} onOpen={() => openDetalle('TOTAL ACUMULADO', grandTotal?.items)}>{grandTotal.count}</ClickableTd>
+                                <ClickableTd style={styles.tdGrandTotalValue} items={grandTotal?.items} onOpen={() => openDetalle('TOTAL ACUMULADO', grandTotal?.items)}>{fmtMoney(grandTotal.amount)}</ClickableTd>
                             </tr>
                         )}
 
@@ -228,6 +234,7 @@ export const RenovationsBreakdownTable = ({ ventas = [], monthsData = [], custom
                     </tbody>
                 </table>
             </div>
+            <DetalleVentasModal detalle={detalle} onHide={() => setDetalle(null)} />
         </div>
     );
 };

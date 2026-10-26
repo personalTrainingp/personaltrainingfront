@@ -10,7 +10,7 @@ export const useTiktok = (ventas, monthsData, customStartDay = 1, customEndDay =
 		const monthlyTotals = {};
 
 		// Inicializar totales por mes
-		monthsData.forEach((m) => (monthlyTotals[m.key] = { count: 0, amount: 0 }));
+		monthsData.forEach((m) => (monthlyTotals[m.key] = { count: 0, amount: 0, items: [] }));
 
 		const toLimaDate = limaFromISO;
 
@@ -48,17 +48,19 @@ export const useTiktok = (ventas, monthsData, customStartDay = 1, customEndDay =
 
 			const repMonthMap = repsMap.get(repName);
 			if (!repMonthMap.has(vKey)) {
-				repMonthMap.set(vKey, { count: 0, amount: 0 });
+				repMonthMap.set(vKey, { count: 0, amount: 0, items: [] });
 			}
 
 			const current = repMonthMap.get(vKey);
 			current.count += 1;
 			current.amount += amount;
+			current.items.push({ venta: v, amount });
 
 			// Totales Globales
 			if (monthlyTotals[vKey]) {
 				monthlyTotals[vKey].count += 1;
 				monthlyTotals[vKey].amount += amount;
+				monthlyTotals[vKey].items.push({ venta: v, amount });
 			}
 		});
 
@@ -66,10 +68,11 @@ export const useTiktok = (ventas, monthsData, customStartDay = 1, customEndDay =
 		const sortedReps = Array.from(repsMap.entries()).sort((a, b) => a[0].localeCompare(b[0]));
 
 		// Calculate Grand Total for all months
-		const grandTotal = { count: 0, amount: 0 };
+		const grandTotal = { count: 0, amount: 0, items: [] };
 		Object.values(monthlyTotals).forEach((val) => {
 			grandTotal.count += val.count;
 			grandTotal.amount += val.amount;
+			grandTotal.items.push(...val.items);
 		});
 
 		return {

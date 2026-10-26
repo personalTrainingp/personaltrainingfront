@@ -4,11 +4,15 @@ export const getQuotaForMonth = (monthIndex, year) => {
     const m = Number(monthIndex);
 
     // Caso específico: Febrero (1) de 2026
-    if (y === 2026 && m === 1) return 100000;
+    if (y === 2026 && m === 1) return 80000;
     if (y === 2026 && m === 2) return 100000;
+    if (y === 2026 && m === 3) return 80000;
+    if (y === 2026 && m === 4) return 80000;
+    if (y === 2026 && m === 5) return 80000;
+    if (y === 2026 && m === 6) return 80000;
 
     // Resto de 2026 en adelante: 110k
-    if (y >= 2026) return 110000;
+    if (y >= 2026) return 80000;
 
     if (y === 2025) {
         // Enero (0) a Julio (6): 60k

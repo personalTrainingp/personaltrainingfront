@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useReentryBreakdown } from '../hooks/useReentryBreakdown';
 import { fmtMoney } from '../../resumenEjecutivo/adapters/executibleLogic';
+import { ClickableTd, DetalleVentasModal } from './DetalleVentasModal';
 
 export const ReentryBreakdownTable = ({ ventas = [], monthsData = [], customStartDay = 1, customEndDay = 31 }) => {
 
     const { repData, totals, grandTotal } = useReentryBreakdown(ventas, monthsData, customStartDay, customEndDay);
+
+    const [detalle, setDetalle] = useState(null);
+    const openDetalle = (titulo, items) => setDetalle({ titulo, items });
 
     // --- ESTILOS (Copiados de GeneralSalesBreakdownTable) ---
     const styles = {
@@ -169,12 +173,14 @@ export const ReentryBreakdownTable = ({ ventas = [], monthsData = [], customStar
                             // Calcular totales horizontales
                             let rowCount = 0;
                             let rowAmount = 0;
+                            const rowItems = [];
 
                             const cells = monthsData.map(m => {
                                 const data = monthMap.get(m.key);
                                 if (data) {
                                     rowCount += data.count;
                                     rowAmount += data.amount;
+                                    rowItems.push(...data.items);
                                 }
                                 return data;
                             });
@@ -184,20 +190,20 @@ export const ReentryBreakdownTable = ({ ventas = [], monthsData = [], customStar
                                     <td style={{ ...styles.tdStickyLeft, background: '#c00000' }}>{repName}</td>
                                     {cells.map((data, i) => (
                                         <React.Fragment key={i}>
-                                            <td style={styles.td}>
+                                            <ClickableTd style={styles.td} items={data?.items} onOpen={() => openDetalle(`${repName} · ${monthsData[i].label}`, data?.items)}>
                                                 {data && data.count > 0 ? data.count : '-'}
-                                            </td>
-                                            <td style={styles.td}>
+                                            </ClickableTd>
+                                            <ClickableTd style={styles.td} items={data?.items} onOpen={() => openDetalle(`${repName} · ${monthsData[i].label}`, data?.items)}>
                                                 {data && data.amount > 0 ? fmtMoney(data.amount) : '-'}
-                                            </td>
+                                            </ClickableTd>
                                         </React.Fragment>
                                     ))}
-                                    <td style={{ ...styles.tdTotalRow }}>
+                                    <ClickableTd style={{ ...styles.tdTotalRow }} items={rowItems} onOpen={() => openDetalle(`${repName} · TOTAL ACUMULADO`, rowItems)}>
                                         {rowCount > 0 ? rowCount : '-'}
-                                    </td>
-                                    <td style={{ ...styles.tdTotalRow, color: rowAmount > 0 ? '#c00000' : '#333' }}>
+                                    </ClickableTd>
+                                    <ClickableTd style={{ ...styles.tdTotalRow, color: rowAmount > 0 ? '#c00000' : '#333' }} items={rowItems} onOpen={() => openDetalle(`${repName} · TOTAL ACUMULADO`, rowItems)}>
                                         {rowAmount > 0 ? fmtMoney(rowAmount) : '-'}
-                                    </td>
+                                    </ClickableTd>
                                 </tr>
                             );
                         })}
@@ -212,26 +218,27 @@ export const ReentryBreakdownTable = ({ ventas = [], monthsData = [], customStar
                                 const total = totals[m.key];
                                 return (
                                     <React.Fragment key={m.key}>
-                                        <td style={styles.tdGrandTotalValue}>
+                                        <ClickableTd style={styles.tdGrandTotalValue} items={total?.items} onOpen={() => openDetalle(`TOTAL · ${m.label}`, total?.items)}>
                                             {total && total.count > 0 ? total.count : '-'}
-                                        </td>
-                                        <td style={styles.tdGrandTotalValue}>
+                                        </ClickableTd>
+                                        <ClickableTd style={styles.tdGrandTotalValue} items={total?.items} onOpen={() => openDetalle(`TOTAL · ${m.label}`, total?.items)}>
                                             {total && total.amount > 0 ? fmtMoney(total.amount) : '-'}
-                                        </td>
+                                        </ClickableTd>
                                     </React.Fragment>
                                 );
                             })}
 
-                            <td style={{ ...styles.tdGrandTotalValue }}>
+                            <ClickableTd style={{ ...styles.tdGrandTotalValue }} items={grandTotal?.items} onOpen={() => openDetalle('TOTAL ACUMULADO', grandTotal?.items)}>
                                 {grandTotal?.count > 0 ? grandTotal.count : '-'}
-                            </td>
-                            <td style={{ ...styles.tdGrandTotalValue }}>
+                            </ClickableTd>
+                            <ClickableTd style={{ ...styles.tdGrandTotalValue }} items={grandTotal?.items} onOpen={() => openDetalle('TOTAL ACUMULADO', grandTotal?.items)}>
                                 {grandTotal?.amount > 0 ? fmtMoney(grandTotal.amount) : '-'}
-                            </td>
+                            </ClickableTd>
                         </tr>
                     </tbody>
                 </table>
             </div>
+            <DetalleVentasModal detalle={detalle} onHide={() => setDetalle(null)} />
         </div>
     );
 };

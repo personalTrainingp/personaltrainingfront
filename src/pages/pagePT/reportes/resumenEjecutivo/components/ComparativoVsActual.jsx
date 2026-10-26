@@ -195,7 +195,7 @@ export const ComparativoVsActual = ({
     <Card className="shadow-sm rounded-3 overflow-hidden">
       <Card.Body style={{ padding: "0" }}>
         <div style={{ fontFamily: "Inter, system-ui, Segoe UI, Roboto, sans-serif" }}>
-          <div style={sTitle}>COMPARATIVO MENSUAL VS MES ACTUAL</div>
+          <div style={sTitle}>Diferencia a la fecha de facturación vs los mejores meses</div>
           {["MEMBRESÍAS", "PRODUCTOS", "MONKEY FIT", "TOTAL"].map((tipo) => (
             <table key={tipo} style={{ ...sTable, marginTop: 12 }}>
               <thead>

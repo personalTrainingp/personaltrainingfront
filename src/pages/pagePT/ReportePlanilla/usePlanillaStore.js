@@ -189,9 +189,21 @@ export const usePlanillaStore = () => {
 			console.log(error);
 		}
 	};
+	// Colaboradores con contrato (planilla): el contrato más reciente de cada uno
+	const [dataColaboradoresConContrato, setdataColaboradoresConContrato] = useState([]);
+	const obtenerColaboradoresConContrato = async (id_enterprice) => {
+		try {
+			const { data } = await PTApi.get(`/recursosHumanos/colaboradores-con-contrato/${id_enterprice}`);
+			setdataColaboradoresConContrato(data);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	return {
 		obtenerSemana,
 		dataPlanilla,
+		obtenerColaboradoresConContrato,
+		dataColaboradoresConContrato,
 	};
 };
 
