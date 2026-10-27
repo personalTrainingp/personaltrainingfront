@@ -128,6 +128,7 @@ export const TableSeguimientos = ({desde, hasta, title='SEG', dataSeguimientoxFe
                 exportHeader: 'ID',
                 exportValue: (row) => row.id,
 		    },
+            {id: 'id_cli', exportHeader: 'ID_CLI', exportValue: (row)=>row.id_cli},
             {
                 id: 'cliente',
                 exportHeader: 'CLIENTE',

@@ -5,6 +5,11 @@ import { onSetDataViewComercial } from './dataComercialSlice';
 import Swal from 'sweetalert2';
 import { arrayEstadoComercial } from '@/types/type';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
+
+dayjs.extend(utc);
 
 export const useGestionComercialStore = () => {
 	const [dataEmpleados, setdataEmpleados] = useState([]);
@@ -192,6 +197,59 @@ export const useGestionComercialStore = () => {
 			console.log(error);
 		}
 	};
+	// Excel de clientes en seguimiento que no estan en prospectos (sin repetidos)
+	const descargarClientesSinProspecto = async () => {
+		try {
+			const { data } = await PTApi.get('/prospecto/lead/clientes-sin-prospecto');
+			const hoy = dayjs().format('YYYY-MM-DD');
+			const wb = new ExcelJS.Workbook();
+			const ws = wb.addWorksheet('Sin prospecto');
+			ws.columns = [
+				{ header: 'ID CLIENTE', key: 'id_cli', width: 12 },
+				{ header: 'NOMBRES', key: 'nombres', width: 22 },
+				{ header: 'APELLIDOS', key: 'apellidos', width: 28 },
+				{ header: 'DNI', key: 'dni', width: 13 },
+				{ header: 'CELULAR', key: 'celular', width: 14 },
+				{ header: 'EMAIL', key: 'email', width: 30 },
+				{ header: 'ULTIMO PROGRAMA', key: 'programa', width: 18 },
+				{ header: 'MONTO ULT. MEMBRESIA', key: 'monto', width: 20 },
+				{ header: 'FECHA VENTA', key: 'fecha_venta', width: 14 },
+				{ header: 'VENDEDOR', key: 'vendedor', width: 30 },
+				{ header: 'FECHA VENCIMIENTO', key: 'fecha_vencimiento', width: 18 },
+				{ header: 'ESTADO', key: 'estado', width: 10 },
+				{ header: 'N° MEMBRESIAS', key: 'cantidad_membresias', width: 15 },
+			];
+			data.clientes.forEach((c) => {
+				// fecha_vencimiento es "solo fecha" (medianoche UTC): se toma el dia en UTC
+				const vencimiento = c.fecha_vencimiento ? dayjs.utc(c.fecha_vencimiento).format('YYYY-MM-DD') : '';
+				ws.addRow({
+					id_cli: c.id_cli,
+					nombres: (c.nombre_cli ?? '').trim(),
+					apellidos: [c.apPaterno_cli, c.apMaterno_cli].map((a) => (a ?? '').trim()).filter(Boolean).join(' '),
+					dni: (c.numDoc_cli ?? '').trim(),
+					celular: c.tel_cli,
+					email: c.email_cli,
+					programa: c.name_pgm ?? '',
+					monto: Number(c.tarifa_monto) || 0,
+					fecha_venta: c.fecha_venta ? dayjs(c.fecha_venta).format('DD/MM/YYYY') : '',
+					vendedor: (c.vendedor ?? '').trim(),
+					fecha_vencimiento: vencimiento ? dayjs(vencimiento).format('DD/MM/YYYY') : '',
+					estado: vencimiento && vencimiento >= hoy ? 'ACTIVO' : 'VENCIDO',
+					cantidad_membresias: c.cantidad_membresias,
+				});
+			});
+			ws.getRow(1).font = { bold: true, color: { argb: 'FFFFFFFF' } };
+			ws.getRow(1).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
+			ws.getColumn('monto').numFmt = '"S/ "#,##0.00';
+			ws.views = [{ state: 'frozen', ySplit: 1 }];
+			ws.autoFilter = { from: 'A1', to: 'M1' };
+			const buffer = await wb.xlsx.writeBuffer();
+			saveAs(new Blob([buffer]), `clientes_seguimiento_sin_prospecto_${dayjs().format('DDMMYYYY')}.xlsx`);
+		} catch (error) {
+			console.log(error);
+			Swal.fire({ icon: 'error', title: 'No se pudo descargar el Excel' });
+		}
+	};
 	const obtenerTareasReporte = async () => {
 		try {
 			setisLoadingTareasReporte(true);
@@ -257,6 +315,7 @@ export const useGestionComercialStore = () => {
 		dataProspectosMes,
 		obtenerTareasxProspecto,
 		obtenerMembresiasxCliente,
+		descargarClientesSinProspecto,
 		obtenerTareasReporte,
 		dataTareasReporte,
 		isLoadingTareasReporte,

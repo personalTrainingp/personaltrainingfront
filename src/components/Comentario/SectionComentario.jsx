@@ -14,7 +14,8 @@ const registerComentario ={
 	comentario_com: ''
 }
 
-export const SectionComentario = ({uid_comentario}) => {
+// antesDeComentarios: contenido opcional que va despues del input y antes de la lista de comentarios
+export const SectionComentario = ({uid_comentario, antesDeComentarios}) => {
 	console.log(uid_comentario);
 	
     const {user} = useSelector(e=>e.auth)
@@ -62,6 +63,7 @@ export const SectionComentario = ({uid_comentario}) => {
                     </div>
                 </div>
 			</li>
+			{antesDeComentarios && <li>{antesDeComentarios}</li>}
 			{
 				dataComentarios.map(e=>{
                     return(

@@ -15,7 +15,7 @@ import { ordenarEstadosComerciales, useGestionComercialStore } from './useGestio
 
 export const AppGestionComercial = () => {
     const {dataView} = useSelector(e=>e.COMERCIAL)
-    const { obtenerProspectosHastaAyer, prospectosHastaAyer, dataProspectosMes } = useGestionComercialStore()
+    const { obtenerProspectosHastaAyer, prospectosHastaAyer, dataProspectosMes, descargarClientesSinProspecto } = useGestionComercialStore()
     const [isOpenModalProspectosRedes, setisOpenModalProspectosRedes] = useState(false)
     const [filtroFecha, setfiltroFecha] = useState(null)
     useEffect(() => {
@@ -120,6 +120,7 @@ export const AppGestionComercial = () => {
           </div>
           <InputButton variant={'link'} label={'Reporte'} onClick={()=>setisOpenModalReporteTareas(true)}/>
           <InputButton variant={'link'} label={'Gestionar WSP'} onClick={()=>setisOpenModalMensajesWsp(true)}/>
+          <InputButton variant={'link'} label={'Descargar Excel: clientes sin prospecto'} onClick={descargarClientesSinProspecto}/>
         </div>
         <DataTableGestionComercial onOpenModalComentario={onOpenModalComentario} onOpenModalGestionComercial={onOpenModalGestionComercial} onOpenModalTareas={onOpenModalTareas} onOpenModalMembresias={onOpenModalMembresias} filtroEstado={filtroEstado} filtroAsesor={filtroAsesor} filtroFecha={filtroFecha}/>
         <ModalComentario onHide={onCloseModalComentario} show={isOpenModalComentario.isOpen} uid_comentario={isOpenModalComentario.uid}/>

@@ -131,14 +131,14 @@ export const PerfilCliente = () => {
                   <AsistenciasCliente uid={uid}/>
                 </ScrollPanel>
                 </TabPanel>
-                <TabPanel header='Documentos adjuntos'>
-                <ScrollPanel style={{ width: '100%', height: '55vh' }} className="custombar2">
-                  <SectionFiles uid_file={userCliente.uid_file_adj}/>
-                </ScrollPanel>
-                </TabPanel>
                 <TabPanel header='Comentarios'>
                 <ScrollPanel style={{ width: '100%', height: '55vh' }} className="custombar2">
                   <SectionComentarios data={userCliente}/>
+                </ScrollPanel>
+                </TabPanel>
+                <TabPanel header='Documentos adjuntos'>
+                <ScrollPanel style={{ width: '100%', height: '55vh' }} className="custombar2">
+                  <SectionFiles uid_file={userCliente.uid_file_adj}/>
                 </ScrollPanel>
                 </TabPanel>
                 <TabPanel header='Compras'>
