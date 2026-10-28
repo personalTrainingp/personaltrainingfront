@@ -30,6 +30,7 @@ export const AppGestionComercial = () => {
       return ordenarEstadosComerciales([...estados].map(([value, label])=>({label, value})))
     }, [dataView])
     const [filtroAsesor, setfiltroAsesor] = useState(null)
+    const [filtroTipo, setfiltroTipo] = useState(null)
     const asesoresEnData = useMemo(() => {
       const asesores = new Map()
       dataView?.forEach(e=>{
@@ -107,6 +108,17 @@ export const AppGestionComercial = () => {
               FECHA: {dayjs(filtroFecha).format('DD/MM/YYYY')} <i className='mdi mdi-close'></i>
             </span>
           }
+          <div style={{width: 200}}>
+            <InputSelect
+              label={''}
+              placeholder={'TIPO'}
+              options={[{label: 'PROSPECTO', value: 'PROSPECTO'}, {label: 'ACTIVO', value: 'ACTIVO'}, {label: 'INACTIVO', value: 'INACTIVO'}]}
+              nameInput={'filtroTipo'}
+              value={filtroTipo}
+              onChange={(e)=>setfiltroTipo(e.target.value ?? null)}
+              isClearable
+            />
+          </div>
           <div style={{width: 260}}>
             <InputSelect
               label={''}
@@ -122,7 +134,7 @@ export const AppGestionComercial = () => {
           <InputButton variant={'link'} label={'Gestionar WSP'} onClick={()=>setisOpenModalMensajesWsp(true)}/>
           <InputButton variant={'link'} label={'Descargar Excel: clientes sin prospecto'} onClick={descargarClientesSinProspecto}/>
         </div>
-        <DataTableGestionComercial onOpenModalComentario={onOpenModalComentario} onOpenModalGestionComercial={onOpenModalGestionComercial} onOpenModalTareas={onOpenModalTareas} onOpenModalMembresias={onOpenModalMembresias} filtroEstado={filtroEstado} filtroAsesor={filtroAsesor} filtroFecha={filtroFecha}/>
+        <DataTableGestionComercial onOpenModalComentario={onOpenModalComentario} onOpenModalGestionComercial={onOpenModalGestionComercial} onOpenModalTareas={onOpenModalTareas} onOpenModalMembresias={onOpenModalMembresias} filtroEstado={filtroEstado} filtroAsesor={filtroAsesor} filtroFecha={filtroFecha} filtroTipo={filtroTipo}/>
         <ModalComentario onHide={onCloseModalComentario} show={isOpenModalComentario.isOpen} uid_comentario={isOpenModalComentario.uid}/>
         <ModalMembresiasCliente onHide={onCloseModalMembresias} show={isOpenModalMembresias.isOpen} lead={isOpenModalMembresias.lead}/>
         <ModalReporteTareas onHide={()=>setisOpenModalReporteTareas(false)} show={isOpenModalReporteTareas}/>

@@ -9,13 +9,17 @@ import { useGestionComercialStore } from './useGestionComercialStore'
 import { ModalAgregarTarea } from './ModalAgregarTarea'
 
 export const ModalTareas = ({show, onHide, lead=null}) => {
-  const { obtenerTareasxProspecto, postTareaProspecto, dataTareas } = useGestionComercialStore()
+  const { obtenerTareasxProspecto, obtenerTareasxCliente, postTareaProspecto, dataTareas } = useGestionComercialStore()
   const [isOpenModalAgregarTarea, setisOpenModalAgregarTarea] = useState(false)
+  // socio de seguimiento (no es prospecto): sus tareas van por id_cli
   useEffect(() => {
-    if (show && lead?.id) obtenerTareasxProspecto(lead.id)
-  }, [show, lead?.id])
+    if (!show) return
+    if (lead?.esSocio) { if (lead.id_cli) obtenerTareasxCliente(lead.id_cli) }
+    else if (lead?.id) obtenerTareasxProspecto(lead.id)
+  }, [show, lead?.id, lead?.id_cli])
   const onRegistrarTarea = ({ id_tarea, observacion, fecha })=>{
-    return postTareaProspecto({ id_prospecto: lead.id, id_tarea, observacion, fecha })
+    const destino = lead.esSocio ? { id_cli: lead.id_cli } : { id_prospecto: lead.id }
+    return postTareaProspecto({ ...destino, id_tarea, observacion, fecha })
   }
   return (
     <>

@@ -63,7 +63,6 @@ export const SectionComentario = ({uid_comentario, antesDeComentarios}) => {
                     </div>
                 </div>
 			</li>
-			{antesDeComentarios && <li>{antesDeComentarios}</li>}
 			{
 				dataComentarios.map(e=>{
                     return(
@@ -73,6 +72,7 @@ export const SectionComentario = ({uid_comentario, antesDeComentarios}) => {
                     )
                 })
 			}
+			{antesDeComentarios && <li>{antesDeComentarios}</li>}
 		</ul>
     </DivContainer>
   )

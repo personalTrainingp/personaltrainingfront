@@ -9,8 +9,9 @@ import 'dayjs/locale/es'
 
 // TIPO de fila: prospecto o socio de seguimiento (activo / inactivo)
 const tipoFila = (row)=>!row.esSocio ? 'PROSPECTO' : row.activo ? 'ACTIVO' : 'INACTIVO'
+const colorTipo = { PROSPECTO: '#7b2cbf', ACTIVO: '#198754', INACTIVO: '#dc3545' }
 
-export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGestionComercial, onOpenModalTareas, onOpenModalMembresias, filtroEstado, filtroAsesor, filtroFecha}) => {
+export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGestionComercial, onOpenModalTareas, onOpenModalMembresias, filtroEstado, filtroAsesor, filtroFecha, filtroTipo}) => {
   const { obtenerGestionComercial, validarEdicionLead, obtenerSociosActivosSinProspecto, dataSociosSinProspecto } = useGestionComercialStore()
   const {dataView} = useSelector(e=>e.COMERCIAL)
   const onClickEditar = async(row)=>{
@@ -40,6 +41,8 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
         vendedor: (c.vendedor ?? '').trim(),
         vencimiento: c.vencimiento,
         activo: c.activo,
+        // los comentarios del socio van en el cliente (tb_clientes.uid_comentario)
+        uid_comentario: c.uid_comentario,
       }))
   }, [dataView, dataSociosSinProspecto])
   const dataFiltrada = useMemo(() => {
@@ -53,8 +56,10 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
     // los socios no tienen status/asesor/fecha de prospecto: solo se muestran sin filtros
     const hayFiltros = filtroEstado || filtroAsesor || filtroFecha
     // tipo en la fila para que el buscador encuentre ACTIVO / INACTIVO / PROSPECTO
-    return (hayFiltros ? prospectos : [...prospectos, ...dataSocios]).map(e=>({...e, tipo: tipoFila(e)}))
-  }, [dataView, dataSocios, filtroEstado, filtroAsesor, filtroFecha])
+    return (hayFiltros ? prospectos : [...prospectos, ...dataSocios])
+      .map(e=>({...e, tipo: tipoFila(e)}))
+      .filter(e=>!filtroTipo || e.tipo===filtroTipo)
+  }, [dataView, dataSocios, filtroEstado, filtroAsesor, filtroFecha, filtroTipo])
   const columns = [
     {
       id: 0, header: 'ID', render:(row)=>{
@@ -67,10 +72,9 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
     },
     {
       id: 16, header: 'TIPO', render: (row)=>{
+        const tipo = tipoFila(row)
         return (
-          <>
-          {tipoFila(row)}
-          </>
+          <Button className='border-none' style={{ backgroundColor: colorTipo[tipo] }} label={tipo}/>
         )
       }
     },
@@ -188,7 +192,12 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
     },
     {
       id: 10, header: '', render: (row)=>{
-        if (row.esSocio) return null
+        if (row.esSocio) return (
+          <>
+            <Button icon="pi pi-comment" onClick={()=>onOpenComentario(row.uid_comentario)} rounded outlined severity="danger"  className='mr-2' disabled={!row.uid_comentario}/>
+            <Button icon="pi pi-list-check" onClick={()=>onOpenModalTareas(row)} rounded outlined severity="danger"  className='mr-2' tooltip='TAREAS' tooltipOptions={{ position: 'top' }}/>
+          </>
+        )
         return (
           <>
             <Button icon="pi pi-pencil" onClick={()=>onClickEditar(row)} rounded outlined severity="danger"  className='mr-2' tooltip='EDITAR' tooltipOptions={{ position: 'top' }}/>

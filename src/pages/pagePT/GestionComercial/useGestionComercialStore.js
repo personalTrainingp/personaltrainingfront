@@ -313,10 +313,21 @@ export const useGestionComercialStore = () => {
 			console.log(error);
 		}
 	};
+	// tareas de un socio que no es prospecto: se guardan por id_cli
+	const obtenerTareasxCliente = async (id_cli) => {
+		try {
+			setdataTareas([]);
+			const { data } = await PTApi.get(`/prospecto/lead/tarea-cliente/${id_cli}`);
+			setdataTareas(data.tareas);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const postTareaProspecto = async (formState) => {
 		try {
 			await PTApi.post('/prospecto/lead/tarea', formState);
-			await obtenerTareasxProspecto(formState.id_prospecto);
+			if (formState.id_prospecto) await obtenerTareasxProspecto(formState.id_prospecto);
+			else await obtenerTareasxCliente(formState.id_cli);
 			return true;
 		} catch (error) {
 			console.log(error);
@@ -335,6 +346,7 @@ export const useGestionComercialStore = () => {
 		prospectosHastaAyer,
 		dataProspectosMes,
 		obtenerTareasxProspecto,
+		obtenerTareasxCliente,
 		obtenerMembresiasxCliente,
 		descargarClientesSinProspecto,
 		obtenerSociosActivosSinProspecto,
