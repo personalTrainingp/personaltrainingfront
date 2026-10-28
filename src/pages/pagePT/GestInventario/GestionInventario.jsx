@@ -26,13 +26,13 @@ export const GestionInventario = () => {
                   ? (<></>)
                   : (
                               <TabView>
-                              <TabPanel header={<>INVENTARIO <br/> MARZO 2024 <br/> MANOJ</>}>
+                              <TabPanel header={<div className="text-gray">INVENTARIO <br/> MARZO 2024 <br/> MANOJ</div>}>
                                     <DataInventario id_enterprice={600} id_zona={600}/>
                               </TabPanel>
-                              <TabPanel header={<>INVENTARIO <br/> MAYO 2025</>}>
+                              <TabPanel header={<div className="text-gray">INVENTARIO <br/> MAYO 2025</div>}>
                                     <DataInventario id_enterprice={2598} id_zona={598}/>
                               </TabPanel>
-                              <TabPanel header={<>INVENTARIO<br/> AGOSTO 2026 </>}>
+                              <TabPanel header={<>INVENTARIO<br/> OCTUBRE 2026 </>}>
                                     <DataInventario id_enterprice={598} id_zona={598}/>
                               </TabPanel>
 
@@ -47,7 +47,7 @@ export const GestionInventario = () => {
                         uid_user==='3a15e3db-428b-4e2c-ac52-e1907c691e1d'
                         ? (<></>)
                         : (
-                              <TabPanel header={<>INVENTARIO <br/> MAYO 2025</>}>
+                              <TabPanel  header={<div  className="text-gray">INVENTARIO <br/> MAYO 2025</div>}>
                                     <DataInventario ImgproyCircus3={ImgproyRedN3} ImgproyCircus2={ImgproyRedN2} ImgproyCircus1={ImgproyRedN1} id_enterprice={599} id_zona={599}/>
                               </TabPanel>
                         )
@@ -56,12 +56,12 @@ export const GestionInventario = () => {
                         uid_user==='3a15e3db-428b-4e2c-ac52-e1907c691e1d'
                         ? (<></>)
                         : (
-                              <TabPanel header={<>INVENTARIO <br/> OCTUBRE 2025</>}>
+                              <TabPanel header={<div  className="text-gray">INVENTARIO <br/> OCTUBRE 2025</div>}>
                                     <DataInventario id_enterprice={1599} id_zona={599}/>
                               </TabPanel>
                         )
                   }
-                  <TabPanel header={<>INVENTARIO <br/> SEPTIEMBRE 2026 <br/>(3 y 3 1/2)</>}>
+                  <TabPanel header={<>INVENTARIO <br/> OCTUBRE 2026</>}>
                         <DataInventario id_enterprice={2599} id_zona={599}/>
                   </TabPanel>
             </TabView>

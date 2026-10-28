@@ -27,6 +27,7 @@ export const useGestionComercialStore = () => {
 	const [isLoadingMembresias, setisLoadingMembresias] = useState(false);
 	const [prospectosHastaAyer, setprospectosHastaAyer] = useState(null);
 	const [dataProspectosMes, setdataProspectosMes] = useState([]);
+	const [dataSociosSinProspecto, setdataSociosSinProspecto] = useState([]);
 	const dispatch = useDispatch();
 	// Prospectos por redes (tb_leadsDia): total de ayer y el detalle del mes actual
 	const obtenerProspectosHastaAyer = async () => {
@@ -250,6 +251,26 @@ export const useGestionComercialStore = () => {
 			Swal.fire({ icon: 'error', title: 'No se pudo descargar el Excel' });
 		}
 	};
+	// Socios de seguimiento (activos e inactivos) que no estan en prospectos, uno por id_cli
+	const obtenerSociosActivosSinProspecto = async () => {
+		try {
+			const { data } = await PTApi.get('/prospecto/lead/clientes-sin-prospecto');
+			const hoy = dayjs().format('YYYY-MM-DD');
+			const socios = new Map();
+			data.clientes.forEach((c) => {
+				const vencimiento = c.fecha_vencimiento ? dayjs.utc(c.fecha_vencimiento).format('YYYY-MM-DD') : '';
+				if (!c.id_cli) return;
+				// si se repite el id_cli se queda el de vencimiento mas reciente
+				const previo = socios.get(c.id_cli);
+				if (!previo || vencimiento > previo.vencimiento)
+					socios.set(c.id_cli, { ...c, vencimiento, activo: vencimiento !== '' && vencimiento >= hoy });
+			});
+			setdataSociosSinProspecto([...socios.values()]);
+		} catch (error) {
+			console.log(error);
+			setdataSociosSinProspecto([]);
+		}
+	};
 	const obtenerTareasReporte = async () => {
 		try {
 			setisLoadingTareasReporte(true);
@@ -316,6 +337,8 @@ export const useGestionComercialStore = () => {
 		obtenerTareasxProspecto,
 		obtenerMembresiasxCliente,
 		descargarClientesSinProspecto,
+		obtenerSociosActivosSinProspecto,
+		dataSociosSinProspecto,
 		obtenerTareasReporte,
 		dataTareasReporte,
 		isLoadingTareasReporte,

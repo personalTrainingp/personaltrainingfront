@@ -100,6 +100,8 @@ export const ModalInventario = ({onHide, show, data, isLoading, onShow, showToas
                 obtenerSubCategoria('articulo', 'subcategoria')
                 if(!data){
                     onInputChangeFunction('id_empresa', id_enterprice)
+                    // CHECK ID solo aplica al inventario 2599
+                    if(id_enterprice!==2599) onInputChangeFunction('id_color_subrayado', null)
                 }
             }
         }, [show])

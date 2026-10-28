@@ -664,22 +664,26 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                             </>
                         )
                     }
-                    <div className='d-flex flex-wrap align-items-center gap-4 my-3 font-24'>
-                        <span className='fw-bold'>LEYENDA CHECK ID:</span>
-                        {
-                            [
-                                { id: 1, label: 'RAL', color: '#2c10cd' },
-                                { id: 2, label: 'CIRCUS', color: '#EEBE00' },
-                                { id: 3, label: 'REDUCTO', color: '#17a700' },
-                                { id: 4, label: 'INSUMOS', color: '#C8A2C8' },
-                            ].map(c=>(
-                                <div key={c.id} className='d-flex align-items-center gap-2'>
-                                    <span style={{ display: 'inline-block', width: '28px', height: '28px', backgroundColor: c.color, border: '1px solid #555' }}></span>
-                                    <span><span className='fw-bold'>{c.id}</span> = {c.label}</span>
-                                </div>
-                            ))
-                        }
-                    </div>
+                    {
+                        id_enterprice===2599 && (
+                            <div className='d-flex flex-wrap align-items-center gap-4 my-3 font-24'>
+                                <span className='fw-bold'>LEYENDA CHECK ID:</span>
+                                {
+                                    [
+                                        { id: 1, label: 'RAL', color: '#2c10cd' },
+                                        { id: 2, label: 'CIRCUS', color: '#EEBE00' },
+                                        { id: 3, label: 'REDUCTO', color: '#17a700' },
+                                        { id: 4, label: 'INSUMOS', color: '#C8A2C8' },
+                                    ].map(c=>(
+                                        <div key={c.id} className='d-flex align-items-center gap-2'>
+                                            <span style={{ display: 'inline-block', width: '28px', height: '28px', backgroundColor: c.color, border: '1px solid #555' }}></span>
+                                            <span><span className='fw-bold'>{c.id}</span> = {c.label}</span>
+                                        </div>
+                                    ))
+                                }
+                            </div>
+                        )
+                    }
                     <TabView>
                         {
                             groupedData.map(g=>{
@@ -714,13 +718,13 @@ export default function TableInventario({showToast, id_enterprice, id_zona, Imgp
                                             showGridlines={true}
                                             loading={loading} 
                                             stripedRows
-                                            rowClassName={(rowData)=>(rowData.id_color_subrayado ? `row-color-subrayado-${rowData.id_color_subrayado}` : '')}
+                                            rowClassName={(rowData)=>(id_enterprice===2599 && rowData.id_color_subrayado ? `row-color-subrayado-${rowData.id_color_subrayado}` : '')}
                                             scrollable
                                             onValueChange={valueFiltered}
                                             >
                                     <Column header={<span className={'font-24'}>Id</span>} field='id' style={{ width: '15px' }} body={IdBodyTemplate}/>
                                     <Column header={<span className={'font-24'}>ORDEN</span>} field='orden' sortable style={{ width: '80px' }} body={ordenBodyTemplate}/>
-                                    <Column header={<span className={'font-24'}>CHECK ID</span>} field='id_color_subrayado' sortable style={{ width: '80px' }} body={checkIdBodyTemplate}/>
+                                    {id_enterprice===2599 && <Column header={<span className={'font-24'}>CHECK ID</span>} field='id_color_subrayado' sortable style={{ width: '80px' }} body={checkIdBodyTemplate}/>}
                                     <Column header={<span className={'font-24'}>FOTO</span>} style={{ width: '10rem' }} body={imagenBodyTemplate}/>
                                     <Column header={<span className={'font-24'}>ITEM</span>} field='producto' filterField="producto" sortable style={{ width: '3rem'}} body={ItemBodyTemplate} filter/>
                                     <Column header={<span className={'font-24'}>MARCA</span>} field='marca' filterField="marca" sortable style={{ width: '3rem' }} body={marcaBodyTemplate} filter/>
