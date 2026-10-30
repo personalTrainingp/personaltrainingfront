@@ -40,7 +40,7 @@ export const AppGestionComercial = () => {
       return [...asesores].map(([value, label])=>({label, value}))
     }, [dataView])
     const [isOpenModalGestionComercial, setisOpenModalGestionComercial] = useState({isOpen: false, id: 0, isCopy: false, lead: null})
-    const [isOpenModalComentario, setisOpenModalComentario] = useState({isOpen: false, uid: 0})
+    const [isOpenModalComentario, setisOpenModalComentario] = useState({isOpen: false, uid: 0, id_cli: null})
     const [isOpenModalVista, setisOpenModalVista] = useState({isOpen: false, uid: 0})
     const [isOpenModalHistory, setisOpenModalHistory] = useState({isOpen: false, uid: 0})
     const onOpenModalGestionComercial = (id, isCopy, lead=null)=>{
@@ -49,11 +49,12 @@ export const AppGestionComercial = () => {
     const onCloseModalGestionComercial = ()=>{
         setisOpenModalGestionComercial({isOpen: false, id: 0, isCopy: false, lead: null})
     }
-    const onOpenModalComentario = (uid)=>{
-        setisOpenModalComentario({isOpen: true, uid})
+    // id_cli: cliente vinculado al prospecto, para mostrar tambien sus comentarios de gestion de socios
+    const onOpenModalComentario = (uid, id_cli=null)=>{
+        setisOpenModalComentario({isOpen: true, uid, id_cli})
     }
     const onCloseModalComentario=()=>{
-        setisOpenModalComentario({isOpen: false, uid: ''})
+        setisOpenModalComentario({isOpen: false, uid: '', id_cli: null})
     }
     const onOpenModalVista = (uid)=>{
         setisOpenModalVista({isOpen: true, uid})
@@ -135,7 +136,7 @@ export const AppGestionComercial = () => {
           <InputButton variant={'link'} label={'Descargar Excel: clientes sin prospecto'} onClick={descargarClientesSinProspecto}/>
         </div>
         <DataTableGestionComercial onOpenModalComentario={onOpenModalComentario} onOpenModalGestionComercial={onOpenModalGestionComercial} onOpenModalTareas={onOpenModalTareas} onOpenModalMembresias={onOpenModalMembresias} filtroEstado={filtroEstado} filtroAsesor={filtroAsesor} filtroFecha={filtroFecha} filtroTipo={filtroTipo}/>
-        <ModalComentario onHide={onCloseModalComentario} show={isOpenModalComentario.isOpen} uid_comentario={isOpenModalComentario.uid}/>
+        <ModalComentario onHide={onCloseModalComentario} show={isOpenModalComentario.isOpen} uid_comentario={isOpenModalComentario.uid} id_cli={isOpenModalComentario.id_cli}/>
         <ModalMembresiasCliente onHide={onCloseModalMembresias} show={isOpenModalMembresias.isOpen} lead={isOpenModalMembresias.lead}/>
         <ModalReporteTareas onHide={()=>setisOpenModalReporteTareas(false)} show={isOpenModalReporteTareas}/>
         <ModalMensajesWsp onHide={()=>setisOpenModalMensajesWsp(false)} show={isOpenModalMensajesWsp}/>

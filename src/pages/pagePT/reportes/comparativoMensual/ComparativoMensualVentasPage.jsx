@@ -97,6 +97,8 @@ const ComparativoMensualVentasPage = () => {
                                         customEndDay={customEndDay}
                                         firstNDays={firstNDays}
                                         lastNDays={lastNDays}
+                                        showIndex
+                                        semana5SinFebrero
                                     />
 
                                     <hr className="my-5" />
@@ -104,6 +106,9 @@ const ComparativoMensualVentasPage = () => {
                                         arrayOrigenDeCliente.map(m=>{
                                             return (
                                                 <ComparativoMensualTable
+                                                    key={m.value}
+                                                    showIndex
+                                                    semana5SinFebrero
                                                     ventas={dataVentas.filter(v => v.id_origen === m.value)}
                                                     year={year}
                                                     startMonth={selectedMonth - 1}

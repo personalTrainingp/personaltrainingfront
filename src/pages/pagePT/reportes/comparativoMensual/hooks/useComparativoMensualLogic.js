@@ -24,7 +24,7 @@ const groupConsecutiveDays = (days = []) => {
     return groups.map(([a, b]) => (a === b ? `${a}` : `${a}-${b}`)).join(', ');
 };
 
-export const useComparativoMensualLogic = ({ ventas = [], year, startMonth = 0, cutDay = 21, customStartDay = 1, customEndDay = 1, firstNDays = 0, lastNDays = 0 }) => {
+export const useComparativoMensualLogic = ({ ventas = [], year, startMonth = 0, cutDay = 21, customStartDay = 1, customEndDay = 1, firstNDays = 0, lastNDays = 0, semana5SinFebrero = false }) => {
 
     const toLimaDate = limaFromISO;
 
@@ -228,6 +228,11 @@ export const useComparativoMensualLogic = ({ ventas = [], year, startMonth = 0, 
         sumFields.forEach(field => {
             avgRow[field] = sums[field] / count;
         });
+        // promedio exacto de la semana 5: solo entre los meses que la tienen (sin febrero)
+        if (semana5SinFebrero) {
+            const rowsW5 = pastRows.filter(row => Number(row.monthIdx) !== 1);
+            avgRow.w5 = rowsW5.length ? rowsW5.reduce((s, row) => s + (row.w5 || 0), 0) / rowsW5.length : 0;
+        }
 
         // Calcular porcentajes en base al promedio de cuota
         const avgQuota = avgRow.quota;

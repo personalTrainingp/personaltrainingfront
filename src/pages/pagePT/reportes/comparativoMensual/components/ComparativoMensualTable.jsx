@@ -15,9 +15,13 @@ export const ComparativoMensualTable = ({
     displayYear = null,
     displayStartMonth = null,
     firstNDays = 0,
-    lastNDays = 0
+    lastNDays = 0,
+    showIndex = false,
+    semana5SinFebrero = false
 }) => {
     const [viewMode, setViewMode] = useState('none');
+    // orden por la columna RANGO: asc -> desc -> sin orden
+    const [sortRango, setSortRango] = useState(null);
 
     const { monthsData, top3Indices, top3Averages, last6Averages, getWeightedAverages } = useComparativoMensualLogic({
         ventas,
@@ -27,7 +31,8 @@ export const ComparativoMensualTable = ({
         customStartDay,
         customEndDay,
         firstNDays,
-        lastNDays
+        lastNDays,
+        semana5SinFebrero
     });
 
     // Bloques de primeros / últimos N días (se ocultan si N = 0)
@@ -57,13 +62,19 @@ export const ComparativoMensualTable = ({
         tdNDays: { background: '#fff', color: '#000', fontWeight: '700' },
         thNDays: { background: '#7030a0', color: '#fff' },
         highlightCell:{ background: '#dc3545', color: '#fff', fontWeight: '700' },
-        headerActions: { display: 'flex', justifyContent: 'flex-end', marginBottom: '15px' }
+        headerActions: { display: 'flex', justifyContent: 'flex-end', marginBottom: '15px' },
+        // columna # fija a la izquierda, antes de MES
+        indexCol: { position: 'sticky', left: 0, width: '60px', minWidth: '60px', maxWidth: '60px', boxSizing: 'border-box', textAlign: 'center' }
     };
+    // MES queda fijo justo despues de la columna #
+    const mesLeft = showIndex ? '60px' : 0;
 
     const handleToggle = (mode) => setViewMode(mode === viewMode ? 'none' : mode);
 
     // Calcular filas visibles según el modo activo
-    const visibleRows = (() => {
+    const onSortRango = () => setSortRango(s => s === null ? 'asc' : s === 'asc' ? 'desc' : null);
+
+    const baseRows = (() => {
         if (viewMode === 'top3') {
             return [...monthsData].sort((a, b) => b.total - a.total).slice(0, 3);
         }
@@ -81,20 +92,35 @@ export const ComparativoMensualTable = ({
             return pastMonths.slice(-6);
         }
         // Vista estándar: mostrar desde el mes seleccionado por el usuario
+        let rows = monthsData;
         if (displayYear !== null && displayStartMonth !== null) {
             const fromAbs = Number(displayYear) * 12 + Number(displayStartMonth);
-            return monthsData.filter(row => {
+            rows = monthsData.filter(row => {
                 const rowAbs = Number(row.year) * 12 + Number(row.monthIdx);
                 return rowAbs >= fromAbs;
             });
         }
-        return monthsData;
+        return rows;
     })();
+    const visibleRows = !sortRango ? baseRows : [...baseRows].sort((a, b) =>
+        sortRango === 'asc'
+            ? (a.customRangeTotal ?? 0) - (b.customRangeTotal ?? 0)
+            : (b.customRangeTotal ?? 0) - (a.customRangeTotal ?? 0)
+    );
 
     const renderCell = (row, field, isPct = false, customStyle = {}) => {
         let style = { ...styles.td, ...customStyle };
         if (isPct) style = { ...style, textAlign: 'center', color: '#000000' };
 
+        // febrero no tiene semana 5: celdas vacias
+        if (semana5SinFebrero && field === 'w5' && row.monthIdx === 1) {
+            return (
+                <React.Fragment key={`cell-${row.key}-${field}`}>
+                    <td style={{ ...style, textAlign: 'center' }}>—</td>
+                    <td style={{ ...style, textAlign: 'center' }}></td>
+                </React.Fragment>
+            );
+        }
         const val = row[field];
         const pctKey = `pct${field.charAt(0).toUpperCase() + field.slice(1)}`;
         const valPct = row[pctKey];
@@ -178,13 +204,18 @@ export const ComparativoMensualTable = ({
                 <table style={styles.table}>
                     <thead>
                         <tr>
-                            <th style={{ ...styles.th, width: '90px', position: 'sticky', left: 0, zIndex: 2 }}>MES </th>
+                            {showIndex && <th style={{ ...styles.th, ...styles.indexCol, zIndex: 2 }}>#</th>}
+                            <th style={{ ...styles.th, width: '90px', position: 'sticky', left: mesLeft, zIndex: 2 }}>MES </th>
                             <th style={{ ...styles.th }}>TOTAL<br /> VENTA<br /><span style={{ color: '#fff' }}>S/</span></th>
                             <th style={{ ...styles.th }}>ALCANCE<br />CUOTA<br /><span style={{ color: '#fff' }}>S/</span></th>
 
                             {/* CUSTOM RANGE COLUMN */}
-                            <th style={{ ...styles.th, background: '#c00000', color: '#fff' }}>
+                            <th onClick={onSortRango} title="Ordenar" style={{ ...styles.th, background: '#c00000', color: '#fff', cursor: 'pointer', userSelect: 'none' }}>
                                 RANGO<br />({customStartDay}-{customEndDay})<br /><span style={{ color: '#fff' }}>S/</span>
+                                <span style={{ display: 'inline-flex', flexDirection: 'column', fontSize: '12px', lineHeight: '11px', marginLeft: '6px', verticalAlign: 'middle' }}>
+                                    <span style={{ opacity: sortRango === 'asc' ? 1 : 0.35 }}>▲</span>
+                                    <span style={{ opacity: sortRango === 'desc' ? 1 : 0.35 }}>▼</span>
+                                </span>
                             </th>
                             <th style={{ ...styles.th, background: '#c00000', color: '#fff' }}>
                                 ALCANCE DE    <br />CUOTA  <br /> <span>  %  </span>
@@ -214,7 +245,9 @@ export const ComparativoMensualTable = ({
                     <tbody>
                         {visibleRows.map((row, idx) => (
                             <tr key={row.key} style={{ background: idx % 2 === 0 ? '#fff' : '#fcfcfc' }}>
-                                <td style={{ ...styles.td, ...styles.tdLabel }}>
+                                {/* # : posicion de la fila en la tabla */}
+                                {showIndex && <td style={{ ...styles.td, ...styles.indexCol, background: '#fff', color: '#000', fontWeight: '700', zIndex: 1 }}>{idx + 1}</td>}
+                                <td style={{ ...styles.td, ...styles.tdLabel, left: mesLeft }}>
                                     <span style={{ display: 'block', lineHeight: '1.2' }}>{row.label}</span>
                                 </td>
                                 <td style={{ ...styles.td, fontWeight: '700', color: '#000', background: 'rgba(0,0,0,0.02)' }}>{fmtNum(row.total, 0)}</td>
@@ -246,7 +279,8 @@ export const ComparativoMensualTable = ({
                         {/* --- ADD PROMEDIOS ROW HERE --- */}
                         {avgRow && (
                             <tr key={avgRow.key} style={{ background: '#ffebcd', borderTop: '3px solid #c00000' }}>
-                                <td style={{ ...styles.td, ...styles.tdLabel, background: '#a00000', borderTop: '3px solid #c00000', padding: '13px 12px', fontSize: '26px' }}>
+                                {showIndex && <td style={{ ...styles.td, ...styles.indexCol, background: '#ffebcd', borderTop: '3px solid #c00000', zIndex: 1 }}></td>}
+                                <td style={{ ...styles.td, ...styles.tdLabel, left: mesLeft, background: '#a00000', borderTop: '3px solid #c00000', padding: '13px 12px', fontSize: '26px' }}>
                                     <span style={{ display: 'block', lineHeight: '1.2' }}>{avgRow.label}</span>
                                 </td>
                                 <td style={{ ...styles.td, fontWeight: '800', color: '#000', borderTop: '3px solid #c00000', padding: '13px 12px', fontSize: '26px' }}>{fmtNum(avgRow.total, 0)}</td>

@@ -250,6 +250,28 @@ export const useVentasStore = () => {
 			console.log(error);
 		}
 	};
+	// Sube la firma (si hay), genera el PDF del contrato (con o sin firma), lo guarda y lo manda por wsp
+	const enviarContratoVenta = async (dataVenta, formState, firmaCli) => {
+		const { id_cli, telefono_cli } = formState.detalle_cli_modelo ?? {};
+		if (firmaCli) {
+			const formData = new FormData();
+			formData.append('file', base64ToFile(firmaCli, `firma_cli${id_cli}.png`));
+			await PTApi.post(`/storage/blob/create/${dataVenta.uid_firma}?container=firmasmembresia`, formData);
+		}
+		const { data: dataMail } = await PTApi.post(`/venta/invoice-mail/${dataVenta.idVenta}`, {
+			firma_base64: firmaCli || null,
+		});
+		const formData_contratoPDF = new FormData();
+		formData_contratoPDF.append('file', base64ToFile(dataMail.base64_contratoPDF, `contrato_${id_cli}.pdf`));
+		const { data: blobContrato } = await PTApi.post(
+			`/storage/blob/create/${dataVenta.uid_contrato}?container=contratos-cli`,
+			formData_contratoPDF
+		);
+		await PTApi.post('/wsp/doc', {
+			telefono: telefono_cli,
+			httpDoc: `${config.API_IMG.FILE_CONTRATOS_CLI}${blobContrato.img.name_image}`,
+		});
+	};
 	const startRegisterVenta = async (formState, funToast) => {
 		try {
 			setloadingVenta(true);
@@ -257,47 +279,23 @@ export const useVentasStore = () => {
 
 			const { data } = await PTApi.post('/venta/post-ventas/598', formState);
 
-			if (formState.dataVenta.detalle_venta_programa[0]?.firmaCli) {
-				const file = base64ToFile(
-					formState.dataVenta.detalle_venta_programa[0].firmaCli,
-					`firma_cli${formState.detalle_cli_modelo.id_cli}.png`
-				);
-				const formData = new FormData();
-				formData.append('file', file);
-				const { data: blobFirma } = await PTApi.post(
-					`/storage/blob/create/${data.uid_firma}?container=firmasmembresia`,
-					formData
-				);
-				console.log({ blobFirma });
-
-				const { data: dataMail } = await PTApi.post(`/venta/invoice-mail/${data.idVenta}`, {
-					firma_base64: formState.dataVenta.detalle_venta_programa[0].firmaCli,
-				});
-				console.log({ dataMail });
-
-				const file_contratoPDF = base64ToFile(
-					dataMail.base64_contratoPDF,
-					`contrato_${formState.detalle_cli_modelo.id_cli}.pdf`
-				);
-				const formData_contratoPDF = new FormData();
-				formData_contratoPDF.append('file', file_contratoPDF);
-				// console.log(formData_contratoPDF);
-
-				const { data: blobContrato } = await PTApi.post(
-					`/storage/blob/create/${data.uid_contrato}?container=contratos-cli`,
-					formData_contratoPDF
-				);
-			}
-			const { data: MsgWsp } = await PTApi.post('/wsp/doc', {
-				telefono: formState.detalle_cli_modelo?.telefono_cli,
-				httpDoc: `${config.API_IMG.FILE_CONTRATOS_CLI}${blobContrato.img.name_image}`,
-			});
-			console.log({ blobContrato, MsgWsp });
-			setloadingVenta(false);
-
 			if (data.ok == false) {
+				setloadingVenta(false);
 				return Swal.fire('Error', 'Error, el socio es nuevo', 'error');
 			}
+
+			// Contrato de la membresia: se genera y se manda por wsp con o sin firma
+			const membresia = formState.dataVenta.detalle_venta_programa[0];
+			if (membresia) {
+				try {
+					await enviarContratoVenta(data, formState, membresia.firmaCli);
+				} catch (error) {
+					// la venta ya se registro: solo se avisa que fallo el envio del contrato
+					console.log(error);
+					funToast('warn', 'Contrato', 'La venta se registro, pero no se pudo enviar el contrato por WhatsApp', 'warn', 8000);
+				}
+			}
+			setloadingVenta(false);
 			funToast('success', 'Venta', 'Venta agregada con exitos', 'success', 5000);
 		} catch (error) {
 			console.log(error);

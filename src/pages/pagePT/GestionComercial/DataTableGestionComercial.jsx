@@ -201,7 +201,7 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
         return (
           <>
             <Button icon="pi pi-pencil" onClick={()=>onClickEditar(row)} rounded outlined severity="danger"  className='mr-2' tooltip='EDITAR' tooltipOptions={{ position: 'top' }}/>
-            <Button icon="pi pi-comment" onClick={()=>onOpenComentario(row.uid_comentario)} rounded outlined severity="danger"  className='mr-2'/>
+            <Button icon="pi pi-comment" onClick={()=>onOpenComentario(row.uid_comentario, row.id_cli)} rounded outlined severity="danger"  className='mr-2'/>
             {/* <Button icon="pi pi-history" onClick={()=>onOpenComentario(row.uid_comentario)} rounded outlined severity="danger"  className='mr-2'/>
             <Button icon="pi pi-eye" onClick={()=>onOpenComentario(row.uid_comentario)} rounded outlined severity="danger"  className='mr-2'/> */}
             <Button icon="pi pi-list-check" onClick={()=>onOpenModalTareas(row)} rounded outlined severity="danger"  className='mr-2' tooltip='TAREAS' tooltipOptions={{ position: 'top' }}/>
@@ -210,8 +210,8 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
       }
     },
   ]
-  const onOpenComentario = (uid)=>{
-    onOpenModalComentario(uid)
+  const onOpenComentario = (uid, id_cli)=>{
+    onOpenModalComentario(uid, id_cli)
   }
   // columnas del "Descargar Excel": DataTableCR solo exporta estas
   const columnsExports = [
