@@ -252,7 +252,9 @@ export const useVentasStore = () => {
 	};
 	// Sube la firma (si hay), genera el PDF del contrato (con o sin firma), lo guarda y lo manda por wsp
 	const enviarContratoVenta = async (dataVenta, formState, firmaCli) => {
-		const { id_cli, telefono_cli } = formState.detalle_cli_modelo ?? {};
+		const { id_cli, telefono_cli, nombre_cli = '' } = formState.detalle_cli_modelo ?? {};
+		const nombreSocio = nombre_cli.trim().replace(/\s+/g, '-').toUpperCase() || id_cli;
+		const nombreContrato = `contrato-${nombreSocio}.pdf`;
 		if (firmaCli) {
 			const formData = new FormData();
 			formData.append('file', base64ToFile(firmaCli, `firma_cli${id_cli}.png`));
@@ -262,7 +264,7 @@ export const useVentasStore = () => {
 			firma_base64: firmaCli || null,
 		});
 		const formData_contratoPDF = new FormData();
-		formData_contratoPDF.append('file', base64ToFile(dataMail.base64_contratoPDF, `contrato_${id_cli}.pdf`));
+		formData_contratoPDF.append('file', base64ToFile(dataMail.base64_contratoPDF, nombreContrato));
 		const { data: blobContrato } = await PTApi.post(
 			`/storage/blob/create/${dataVenta.uid_contrato}?container=contratos-cli`,
 			formData_contratoPDF
@@ -270,6 +272,8 @@ export const useVentasStore = () => {
 		await PTApi.post('/wsp/doc', {
 			telefono: telefono_cli,
 			httpDoc: `${config.API_IMG.FILE_CONTRATOS_CLI}${blobContrato.img.name_image}`,
+			nombreArchivo: nombreContrato,
+			mensaje: `Hola, ${nombre_cli.trim()}. Tu contrato de membresía ha sido generado con los datos registrados en tu inscripción y te lo enviamos adjunto.\n\nPara dejar constancia de tu conformidad, responde a este mensaje con la siguiente frase:\n\n*“CONFIRMO MI CONFORMIDAD CON EL CONTRATO RECIBIDO.”*\n\nTu confirmación quedará registrada junto con el contrato.`,
 		});
 	};
 	const startRegisterVenta = async (formState, funToast) => {

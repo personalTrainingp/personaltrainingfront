@@ -42,7 +42,8 @@ const DatosCliente = ({dataCliente}) => {
             numero_transac: numero_transac, 
             id_origen: id_origen, 
             observacion: observacion,
-			telefono_cli: clienteSelect?.tel_cli
+			telefono_cli: clienteSelect?.tel_cli,
+			nombre_cli: (DataClientes.find((option) => option.value === id_cli)?.label || '').split('|')[0].trim()
 		}))
 	}, [id_cli, id_empl, id_tipo_transaccion, numero_transac, id_origen, observacion])
 	
