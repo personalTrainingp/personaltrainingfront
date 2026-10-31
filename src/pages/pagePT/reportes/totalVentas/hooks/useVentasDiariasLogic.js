@@ -182,3 +182,7 @@ export const useVentasDiariasLogic = ({
         norm
     };
 };
+
+// Nombre que se muestra en pantalla para cada asesor (la clave interna sigue siendo el primer nombre)
+const NOMBRES_VISIBLES = { JOSE: "CHANGE THE SLIM STUDIO" };
+export const nombreVisibleAsesor = (a) => NOMBRES_VISIBLES[norm(a)] || a;

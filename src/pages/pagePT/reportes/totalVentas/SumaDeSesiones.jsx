@@ -2,6 +2,7 @@ import React from "react";
 import { Row, Col } from "react-bootstrap";
 import './SumaDeSesiones.css';
 import { useSumaSesionesLogic, fmt, normalizeImgUrl } from "./hooks/useSumaSesionesLogic";
+import { nombreVisibleAsesor } from "./hooks/useVentasDiariasLogic";
 
 export function SumaDeSesiones(props) {
   const { advisorOriginByProg, avatarByAdvisor } = props;
@@ -74,7 +75,7 @@ export function SumaDeSesiones(props) {
                     <td className="img-with-name">
                       <div className="img-cap">
                         {imgUrl && <img src={imgUrl} alt={asesor} loading="lazy" />}
-                        <div className="cap">{asesor}</div>
+                        <div className="cap">{nombreVisibleAsesor(asesor)}</div>
                         {rank === 1 && (<div className="copa-champions" title="Primer lugar 🏆"><img src="/copa_1_lugar.jpg" alt="Copa" style={{ width: "45px", height: "70px", filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.4))" }} /></div>)}
                       </div>
                     </td>
