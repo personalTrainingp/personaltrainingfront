@@ -25,6 +25,7 @@ import { CrecimientoNeto } from "./components/CrecimientoNeto";
 import { LtvCacChart } from "./components/LtvCacChart";
 import { ModalConflictsHistory } from "./components/ModalConflictsHistory";
 import { ConversionEfficiencyTable } from "./components/ConversionEfficiencyTable";
+import { IngresosComparativoAnual } from "@/pages/pagePT/FlujoCaja/view/IngresosComparativoAnual";
 
 export const App = ({ id_empresa }) => {
   const {
@@ -268,6 +269,16 @@ export const App = ({ id_empresa }) => {
                 <Col lg={12}>
                   <ProductosResumenMensual
                     id_empresa={id_empresa} year={year} selectedMonth={selectedMonth}
+                  />
+                </Col>
+              </Row>
+
+              {/* Ingresos del COMPARATIVO ANUAL del flujo de caja (por defecto CHANGE) */}
+              <Row className="mb-6 mt-5">
+                <Col lg={12}>
+                  <IngresosComparativoAnual
+                    id_empresa={id_empresa ?? 598}
+                    classNameEmpresa={'bg-change text-white'}
                   />
                 </Col>
               </Row>
