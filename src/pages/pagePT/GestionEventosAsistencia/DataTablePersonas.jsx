@@ -76,6 +76,8 @@ export const DataTablePersonas = ({
 	onReenviarPersona,
 	onAgregarDedo,
 	onCambiarEstado,
+	onEditarDni,
+	onMoverHuellas,
 }) => {
 	const columns = [
 		// { id: 'pin', header: 'PIN', accessor: 'pin', sortable: true, width: 100, headerAlign: 'left', cellAlign: 'left' },
@@ -84,10 +86,25 @@ export const DataTablePersonas = ({
 			header: 'DNI',
 			accessor: 'dni',
 			sortable: true,
-			width: 100,
+			width: 130,
 			headerAlign: 'left',
 			cellAlign: 'left',
-			render: (row) => (row.dni ? row.dni : <span className="text-muted">—</span>),
+			render: (row) => (
+				<div className="d-flex align-items-center gap-1">
+					{row.dni ? row.dni : <span className="text-muted">—</span>}
+					<button
+						type="button"
+						className="btn btn-link btn-sm p-0 lh-1"
+						title="Editar DNI"
+						onClick={(e) => {
+							e.stopPropagation();
+							onEditarDni(row);
+						}}
+					>
+						<i className="pi pi-pencil" style={{ fontSize: '0.8rem' }} />
+					</button>
+				</div>
+			),
 		},
 		{ id: 'nombre', header: 'Nombre', accessor: 'nombre', sortable: true, width: 200, headerAlign: 'left', cellAlign: 'left' },
 		{
@@ -192,7 +209,7 @@ export const DataTablePersonas = ({
 		{
 			id: 'acciones',
 			header: 'Acciones',
-			width: 290,
+			width: 400,
 			headerAlign: 'center',
 			cellAlign: 'center',
 			render: (row) => (
@@ -219,6 +236,18 @@ export const DataTablePersonas = ({
 						}}
 					>
 						Agregar dedo
+					</Button>
+					<Button
+						variant="outline-secondary"
+						size="sm"
+						title="Pasar sus huellas a otra persona (también en los huelleros)"
+						disabled={row.dedos.length === 0}
+						onClick={(e) => {
+							e.stopPropagation();
+							onMoverHuellas(row);
+						}}
+					>
+						Mover huellas
 					</Button>
 					<Button
 						variant="outline-danger"

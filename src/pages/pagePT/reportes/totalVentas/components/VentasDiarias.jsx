@@ -2,7 +2,8 @@ import React from "react";
 import { useVentasDiariasLogic, fmtMoney } from "../hooks/useVentasDiariasLogic";
 
 export default function VentasDiarias(props) {
-  const { year, month, avatarByAdvisor } = props;
+  const { year, month, avatarByAdvisor, agruparPorAsesor = false } = props;
+  const extraCol = agruparPorAsesor ? 1 : 0;
 
   const {
     days,
@@ -17,7 +18,7 @@ export default function VentasDiarias(props) {
     norm
   } = useVentasDiariasLogic(props);
 
-  const renderRow = (a, tipo) => {
+  const renderRow = (a, tipo, grouped = false) => {
     const isSocios = tipo === "SOCIOS";
     const isMonto = tipo === "MONTO";
     const socMap = dataByAsesor[a]?.sociosByDay || {};
@@ -28,8 +29,9 @@ export default function VentasDiarias(props) {
     const pct = totalMontoMes > 0 ? Math.round((totalMonto * 100) / totalMontoMes) : 0;
 
     return (
-      <tr key={`${a}-${tipo}`} style={{ background: "#fff" }}>
-        <td style={{ border: "1px solid #000", padding: "6px 10px", textAlign: "center" }}>
+      <tr key={`${a}-${tipo}`} style={{ background: "#fff", ...(grouped && isMonto ? { borderTop: "3px solid #000" } : {}) }}>
+        {(!grouped || isMonto) && (
+        <td rowSpan={grouped ? 2 : 1} style={{ border: "1px solid #000", padding: "6px 10px", textAlign: "center", verticalAlign: "middle" }}>
           {(() => {
             const url = avatarByAdvisor[norm(a)] || "";
             return url
@@ -43,10 +45,24 @@ export default function VentasDiarias(props) {
               : "—";
           })()}
         </td>
-        <td style={{ border: "1px solid #000", padding: "6px 10px", fontWeight: 800, fontSize: 18 }}>
-          {a}  <br />
-          {isSocios ? "SOCIOS" : "VENTAS"}
-        </td>
+        )}
+        {grouped ? (
+          <>
+            {isMonto && (
+              <td rowSpan={2} style={{ border: "1px solid #000", padding: "6px 10px", fontWeight: 800, fontSize: 18, verticalAlign: "middle" }}>
+                {a}
+              </td>
+            )}
+            <td style={{ border: "1px solid #000", padding: "6px 10px", fontWeight: 800, fontSize: 16, textAlign: "center" }}>
+              {isSocios ? "SOCIOS" : "VENTAS"}
+            </td>
+          </>
+        ) : (
+          <td style={{ border: "1px solid #000", padding: "6px 10px", fontWeight: 800, fontSize: 18 }}>
+            {a}  <br />
+            {isSocios ? "SOCIOS" : "VENTAS"}
+          </td>
+        )}
 
         {days.map((d) => (
           <td
@@ -83,7 +99,7 @@ export default function VentasDiarias(props) {
         <thead>
           <tr>
             <th
-              colSpan={labels.length + 5}
+              colSpan={labels.length + 5 + extraCol}
               style={{
                 background: "#c00000",
                 color: "#fff",
@@ -105,6 +121,9 @@ export default function VentasDiarias(props) {
             </th>
             <th style={{ border: "1px solid #000", padding: "8px 10px", background: "#c00000", fontSize: 20 }}>
               ASESOR            </th>
+            {agruparPorAsesor && (
+              <th style={{ border: "1px solid #000", padding: "8px 10px", fontSize: 20 }}></th>
+            )}
             {labels.map((lab, i) => (
               <th key={i} style={{ border: "1px solid #000", padding: "8px 10px", fontSize: 20, textAlign: "center" }}>{lab}</th>
             ))}
@@ -116,25 +135,36 @@ export default function VentasDiarias(props) {
         <tbody>
           {asesoresActivos.length === 0 && (
             <tr>
-              <td colSpan={labels.length + 5} style={{ padding: 12, textAlign: "center" }}>
+              <td colSpan={labels.length + 5 + extraCol} style={{ padding: 12, textAlign: "center" }}>
                 Sin datos
               </td>
             </tr>
           )}
-          {asesoresActivos.map((a) => (
-            <React.Fragment key={`${a}-monto`}>
-              {renderRow(a, "MONTO")}
-            </React.Fragment>
-          ))}
-          {asesoresActivos.map((a) => (
-            <React.Fragment key={`${a}-socios`}>
-              {renderRow(a, "SOCIOS")}
-            </React.Fragment>
-          ))}
+          {agruparPorAsesor ? (
+            asesoresActivos.map((a) => (
+              <React.Fragment key={`${a}-grupo`}>
+                {renderRow(a, "MONTO", true)}
+                {renderRow(a, "SOCIOS", true)}
+              </React.Fragment>
+            ))
+          ) : (
+            <>
+              {asesoresActivos.map((a) => (
+                <React.Fragment key={`${a}-monto`}>
+                  {renderRow(a, "MONTO")}
+                </React.Fragment>
+              ))}
+              {asesoresActivos.map((a) => (
+                <React.Fragment key={`${a}-socios`}>
+                  {renderRow(a, "SOCIOS")}
+                </React.Fragment>
+              ))}
+            </>
+          )}
           {asesoresActivos.length > 0 && (
             <tr style={{ background: "#f6f6f6", fontWeight: 800 }}>
               <td style={{ border: "1px solid #000", borderTop: "4px solid #000", padding: "8px 10px", textAlign: "center" }}></td>
-              <td style={{ border: "1px solid #000", borderTop: "4px solid #000", padding: "8px 10px", fontSize: 20 }}>
+              <td colSpan={1 + extraCol} style={{ border: "1px solid #000", borderTop: "4px solid #000", padding: "8px 10px", fontSize: 20 }}>
                 VENTA X DÍA
               </td>
               {days.map((d) => (
@@ -164,7 +194,7 @@ export default function VentasDiarias(props) {
           {asesoresActivos.length > 0 && (
             <tr style={{ background: "#f6f6f6", fontWeight: 800 }}>
               <td style={{ border: "1px solid #000", padding: "8px 10px", textAlign: "center" }}></td>
-              <td style={{ border: "1px solid #000", padding: "8px 10px", fontSize: 20 }}>
+              <td colSpan={1 + extraCol} style={{ border: "1px solid #000", padding: "8px 10px", fontSize: 20 }}>
                 SOCIOS X DÍA
               </td>
               {days.map((d) => (

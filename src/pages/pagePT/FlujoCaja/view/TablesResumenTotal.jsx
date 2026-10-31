@@ -44,10 +44,10 @@ export const TablesResumenTotal = ({classNameEmpresa, bgPastel, id_empresa, nomb
                         </tr>
                     </thead>
                     <tbody>
-                        <TrItemVentas anio={2026} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2026' arrayFechas={anio2026} id_empresa={id_empresa}/>
-                        <TrItemVentas anio={2025} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2025' arrayFechas={anio2025} id_empresa={id_empresa}/>
-                        <TrItemVentas anio={2024} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2024' arrayFechas={anio2024} id_empresa={id_empresa}/>
-                        <TrItemVentas anio={2020} className={'fs-1'} classNameTotal={'text-center border-left-10 border-right-10 border-bottom-10 '} label='TOTAL ACUMULADO' arrayFechas={anioTotal} id_empresa={id_empresa}/>
+                        <TrItemVentas onOpenModalDataItems={onOpenModalDataItems} anio={2026} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2026' arrayFechas={anio2026} id_empresa={id_empresa}/>
+                        <TrItemVentas onOpenModalDataItems={onOpenModalDataItems} anio={2025} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2025' arrayFechas={anio2025} id_empresa={id_empresa}/>
+                        <TrItemVentas onOpenModalDataItems={onOpenModalDataItems} anio={2024} className={'fs-2'} classNameTotal={'text-center border-left-10 border-right-10'} label='2024' arrayFechas={anio2024} id_empresa={id_empresa}/>
+                        <TrItemVentas onOpenModalDataItems={onOpenModalDataItems} anio={2020} className={'fs-1'} classNameTotal={'text-center border-left-10 border-right-10 border-bottom-10 '} label='TOTAL ACUMULADO' arrayFechas={anioTotal} id_empresa={id_empresa}/>
                     </tbody>
                 </Table>
             </div>

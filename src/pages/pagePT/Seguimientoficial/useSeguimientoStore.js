@@ -62,10 +62,10 @@ export const useSeguimientoStore = () => {
 						email_cli: m.email_cli,
 						tel_cli: m.tel_cli,
 						dni: m.numDoc_cli,
-						// contrato de la ultima membresia: firmado, sin firmar, o no requiere (monto 0)
+						// contrato de la ultima membresia: firmado, sin firmar, o canje (monto 0)
 						contrato:
 							Number(venta.tarifa_monto) === 0
-								? 'NO REQUIERE'
+								? 'CANJE'
 								: venta.firma_cli
 									? 'CON CONTRATO'
 									: 'SIN CONTRATO',

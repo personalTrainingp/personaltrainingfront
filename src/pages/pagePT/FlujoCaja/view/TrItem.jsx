@@ -16,7 +16,7 @@ const fontSizeTotal = (className, anio) => {
 }
 
 export const TrItemVentas = ({ label = '', anio=2024,
-	arrayFechas = [],
+	arrayFechas = [], onOpenModalDataItems,
 	arrayDates=[new Date('2024-01-01 15:45:47.6640000 +00:00'), new Date('2024-12-31 15:45:47.6640000 +00:00')], id_empresa = 0, classNameTotal='', className='',
 	dataIngresosxFecha: dataIngresosxFechaProp, ocultarMeses = false }) => {
 	const { obtenerIngresosxFecha, dataIngresosxFecha: dataIngresosxFechaFetched } = useFlujoCaja();
@@ -34,9 +34,10 @@ export const TrItemVentas = ({ label = '', anio=2024,
 				const dataIngresos = dataIngresosxFecha.flujoxGrupo?.filter(f=>f.id!==121).flatMap((f) => f.itemsxDia)
 								?.filter((f) => f.mes === e.mes)
 								.flatMap((f) => f.items)
-								?.reduce((total, item) => total + item.monto, 0)
 				return {
-					sumaIngresos: dataIngresos
+					sumaIngresos: dataIngresos?.reduce((total, item) => total + item.monto, 0),
+					// items del mes para el modal de detalle (igual que en EGRESOS)
+					data: dataIngresos
 				}
 			})
 	const alterMesCompleto = generarMesYanio(
@@ -45,9 +46,9 @@ export const TrItemVentas = ({ label = '', anio=2024,
 				const dataIngresos = dataIngresosxFecha.flujoxGrupo?.filter(f=>f.id!==121).flatMap((f) => f.itemsxDia)
 								?.filter((f) => Number(f.mes) === Number(e.mes))
 								.flatMap((f) => f.items)
-								?.reduce((total, item) => total + item.monto, 0)
 				return {
-					sumaIngresos: dataIngresos
+					sumaIngresos: dataIngresos?.reduce((total, item) => total + item.monto, 0),
+					data: dataIngresos
 				}
 			})
 	return (
@@ -55,7 +56,7 @@ export const TrItemVentas = ({ label = '', anio=2024,
 			<td className={`border-left-10 border-right-10 sticky-td-${id_empresa} text-center text-white fs-1`}>{label}</td>
 			{!ocultarMeses && alter.map((e) => {
 				return (
-					<td className='text-center'>
+					<td className='text-center' onClick={()=>onOpenModalDataItems?.(e.data)}>
 						{
 							anio!==2020 && (
 								<NumberFormatMoney
@@ -68,11 +69,13 @@ export const TrItemVentas = ({ label = '', anio=2024,
 				);
 			})}
 			<td className={classNameTotal}>
+				<div onClick={()=>onOpenModalDataItems?.(alterMesCompleto.flatMap(e=>e.data ?? []))}>
 				<NumberFormatMoney
 							className=''
 							style={{fontSize: fontSizeTotal(className, anio)}}
 					amount={alterMesCompleto.reduce((total, item)=>total+item.sumaIngresos, 0)}
 				/>
+				</div>
 			</td>
 			<td className={classNameTotal}>
 				{

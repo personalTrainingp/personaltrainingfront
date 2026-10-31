@@ -19,9 +19,8 @@ export const TableSeguimientos = ({desde, hasta, title='SEG', dataSeguimientoxFe
         const conHuella = huellasCargando ? 0 : data.filter(f => tieneHuella(f.dni)).length
         const conContrato = data.filter(f => f.contrato === 'CON CONTRATO').length
         const sinContrato = data.filter(f => f.contrato === 'SIN CONTRATO').length
-        const noRequiere = data.length - conContrato - sinContrato
+        const canje = data.filter(f => f.contrato === 'CANJE').length
         const pct = (n, total) => total === 0 ? '0.00' : ((n / total) * 100).toFixed(2)
-        const filtroNoRequiere = { label: 'NO REQUIERE CONTRATO', filtro: (f) => f.contrato === 'NO REQUIERE' }
         const tarjetasReporte = [
             {
                 titulo: 'HUELLAS',
@@ -33,14 +32,15 @@ export const TableSeguimientos = ({desde, hasta, title='SEG', dataSeguimientoxFe
             {
                 titulo: 'CONTRATOS',
                 items: [
-                    { label: 'SIN CONTRATO', valor: sinContrato, total: conContrato + sinContrato, filtro: (f) => f.contrato === 'SIN CONTRATO' },
-                    { label: 'CON CONTRATO', valor: conContrato, total: conContrato + sinContrato, filtro: (f) => f.contrato === 'CON CONTRATO' },
+                    { label: 'SIN CONTRATO', valor: sinContrato, total: data.length, filtro: (f) => f.contrato === 'SIN CONTRATO' },
+                    { label: 'CON CONTRATO', valor: conContrato, total: data.length, filtro: (f) => f.contrato === 'CON CONTRATO' },
+                    { label: 'CANJE', valor: canje, total: data.length, filtro: (f) => f.contrato === 'CANJE' },
                 ],
             },
         ]
         // Al hacer click en un numero del reporte se filtra la tabla (otro click lo quita)
         const [filtroReporte, setfiltroReporte] = useState(null)
-        const filtroActivo = [...tarjetasReporte.flatMap(t => t.items), filtroNoRequiere].find(r => r.label === filtroReporte)
+        const filtroActivo = tarjetasReporte.flatMap(t => t.items).find(r => r.label === filtroReporte)
         const dataTabla = filtroActivo ? data.filter(filtroActivo.filtro) : data
         const onClickReporte = (r) => {
             if (r.cargando) return
@@ -218,18 +218,6 @@ export const TableSeguimientos = ({desde, hasta, title='SEG', dataSeguimientoxFe
                                             }
                                         </li>
                                     ))
-                                }
-                                {
-                                    t.titulo === 'CONTRATOS' && noRequiere > 0 && (
-                                        <li
-                                            onClick={()=>onClickReporte(filtroNoRequiere)}
-                                            className='px-2 my-1 rounded fs-6 text-muted cursor-pointer'
-                                            style={{ border: `2px solid ${filtroReporte === filtroNoRequiere.label ? 'currentColor' : 'transparent'}` }}
-                                            title='Ultima membresia con monto 0: no requiere contrato'
-                                        >
-                                            {noRequiere} no requieren contrato (monto 0)
-                                        </li>
-                                    )
                                 }
                             </ul>
                         </div>

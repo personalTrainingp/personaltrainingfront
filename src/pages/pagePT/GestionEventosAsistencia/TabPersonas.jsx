@@ -4,11 +4,14 @@ import { confirmDialog } from 'primereact/confirmdialog';
 import { DataTablePersonas, EstadoSincronizacion } from './DataTablePersonas';
 import { ModalAgregarPersona } from './ModalAgregarPersona';
 import { ModalAgregarDedo } from './ModalAgregarDedo';
-import { useEventosAsistenciaStore } from './useEventosAsistenciaStore';
+import { ModalEditarDni } from './ModalEditarDni';
+import { ModalMoverHuellas } from './ModalMoverHuellas';import { useEventosAsistenciaStore } from './useEventosAsistenciaStore';
 import { nombreDedo } from './dedos';
 
 export const TabPersonas = () => {
 	const {
+		moverHuellas,
+		editarDniPersona,
 		agregarHuella,
 		cambiarEstadoPersona,
 		reenviarPersona,
@@ -46,6 +49,25 @@ export const TabPersonas = () => {
 		setmensajeError('');
 		setmensajeExito(
 			`Se agregó la huella del ${nombreDedo(dedo).toLowerCase()} a ${persona.nombre} (DNI ${persona.pin})` +
+				(huelleros.length
+					? ` y se está enviando a: ${huelleros.join(', ')}. Revisa la columna "Sincronización".`
+					: '. No hay huelleros activos.')
+		);
+		obtenerPersonas();
+	};
+	// Editar DNI: persona a la que se le corrige (null = formulario cerrado)
+	const [personaEditarDni, setpersonaEditarDni] = useState(null);
+	const onDniEditado = ({ persona }) => {
+		setmensajeError('');
+		setmensajeExito(`El DNI de ${persona.nombre} quedó como ${persona.dni} (el PIN del huellero sigue siendo ${persona.pin}).`);
+		obtenerPersonas();
+	};
+	// Mover huellas: persona de la que salen (null = formulario cerrado)
+	const [personaMoverHuellas, setpersonaMoverHuellas] = useState(null);
+	const onHuellasMovidas = ({ origen, destino, dedos, huelleros }) => {
+		setmensajeError('');
+		setmensajeExito(
+			`Se movieron ${dedos.length} huella(s) (${dedos.map(nombreDedo).join(', ').toLowerCase()}) de ${origen.nombre} a ${destino.nombre}` +
 				(huelleros.length
 					? ` y se está enviando a: ${huelleros.join(', ')}. Revisa la columna "Sincronización".`
 					: '. No hay huelleros activos.')
@@ -308,6 +330,21 @@ export const TabPersonas = () => {
 				onReenviarPersona={onReenviarPersona}
 				onAgregarDedo={(persona) => setpersonaAgregarDedo(persona)}
 				onCambiarEstado={onCambiarEstado}
+				onEditarDni={(persona) => setpersonaEditarDni(persona)}
+				onMoverHuellas={(persona) => setpersonaMoverHuellas(persona)}
+			/>
+			<ModalMoverHuellas
+				persona={personaMoverHuellas}
+				personas={dataPersonas}
+				onHide={() => setpersonaMoverHuellas(null)}
+				moverHuellas={moverHuellas}
+				onMovidas={onHuellasMovidas}
+			/>
+			<ModalEditarDni
+				persona={personaEditarDni}
+				onHide={() => setpersonaEditarDni(null)}
+				editarDniPersona={editarDniPersona}
+				onEditado={onDniEditado}
 			/>
 			<ModalAgregarDedo
 				persona={personaAgregarDedo}

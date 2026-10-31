@@ -26,7 +26,14 @@ export const PanelMembresias = ({uid}) => {
   return (
     <div>
     {
-            dataSeguimientos?.map((seg)=>{
+            [...(dataSeguimientos || [])]
+                // Ordenar por fecha de venta, de la mas reciente a la mas antigua
+                .sort((a, b) => {
+                    const fa = new Date(a.venta?.tb_ventum?.fecha_venta || 0).getTime() || 0
+                    const fb = new Date(b.venta?.tb_ventum?.fecha_venta || 0).getTime() || 0
+                    return fb - fa
+                })
+                .map((seg)=>{
                 const venta = seg.venta;
                 if(!venta) return null;
                 const fecha_venta = dayjs.utc(venta.tb_ventum?.fecha_venta).format('dddd DD [de] MMMM [del] YYYY')

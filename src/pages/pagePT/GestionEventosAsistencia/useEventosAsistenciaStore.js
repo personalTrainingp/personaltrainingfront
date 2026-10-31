@@ -161,7 +161,37 @@ export const useEventosAsistenciaStore = () => {
 		}
 	};
 
+	// Corrige el DNI de la persona (el PIN del huellero no cambia). Retorna { ok, msg, persona }
+	const editarDniPersona = async (pin, dni) => {
+		try {
+			const { data } = await PTApi.put(`/eventos-asistencia/personas/${pin}/dni`, { dni });
+			return data;
+		} catch (error) {
+			console.log(error);
+			return {
+				ok: false,
+				msg: error.response?.data?.msg || 'No se pudo editar el DNI',
+			};
+		}
+	};
+
+	// Mueve huellas de una persona a otra (BD y huelleros). Retorna { ok, msg, origen, destino, dedos, huelleros }
+	const moverHuellas = async (pin, { pinDestino, dedos }) => {
+		try {
+			const { data } = await PTApi.post(`/eventos-asistencia/personas/${pin}/mover-huellas`, { pinDestino, dedos });
+			return data;
+		} catch (error) {
+			console.log(error);
+			return {
+				ok: false,
+				msg: error.response?.data?.msg || 'No se pudieron mover las huellas',
+			};
+		}
+	};
+
 	return {
+		moverHuellas,
+		editarDniPersona,
 		cambiarEstadoPersona,
 		agregarHuella,
 		reenviarPersona,

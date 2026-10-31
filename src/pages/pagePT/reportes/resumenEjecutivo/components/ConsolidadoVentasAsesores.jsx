@@ -28,6 +28,7 @@ export const ConsolidadoVentasAsesores = ({
                     ventas={dataVentas} year={year} month={selectedMonth}
                     initDay={initDay} cutDay={cutDay}
                     showSocios={true} sumMode="programas" avatarByAdvisor={avatarByAdvisor}
+                    agruparPorAsesor
                 />
                 <GraficoLinealVentasDiarias
                     ventas={dataVentas} year={year} month={selectedMonth}
