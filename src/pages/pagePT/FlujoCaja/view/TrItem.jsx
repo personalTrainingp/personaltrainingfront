@@ -18,8 +18,11 @@ const fontSizeTotal = (className, anio) => {
 export const TrItemVentas = ({ label = '', anio=2024,
 	arrayFechas = [], onOpenModalDataItems,
 	arrayDates=[new Date('2024-01-01 15:45:47.6640000 +00:00'), new Date('2024-12-31 15:45:47.6640000 +00:00')], id_empresa = 0, classNameTotal='', className='',
-	dataIngresosxFecha: dataIngresosxFechaProp, ocultarMeses = false }) => {
+	dataIngresosxFecha: dataIngresosxFechaProp, ocultarMeses = false,
+	// opcional: quedarse solo con algunos items (ej. SUPLEMENTOS id_gasto 1149, ACCESORIOS 1150)
+	filtroItem = null }) => {
 	const { obtenerIngresosxFecha, dataIngresosxFecha: dataIngresosxFechaFetched } = useFlujoCaja();
+	const aplicarFiltro = (items) => (filtroItem ? items?.filter(filtroItem) : items);
 	// Si el padre ya trae los datos (fila TOTAL con las 4 empresas juntas),
 	// los usamos directo y no volvemos a pedirlos por id_empresa.
 	const dataIngresosxFecha = dataIngresosxFechaProp ?? dataIngresosxFechaFetched;
@@ -31,9 +34,9 @@ export const TrItemVentas = ({ label = '', anio=2024,
 	const alter = generarMesYanio(
 				arrayDates[0], arrayDates[1]
 			).map(e=>{
-				const dataIngresos = dataIngresosxFecha.flujoxGrupo?.filter(f=>f.id!==121).flatMap((f) => f.itemsxDia)
+				const dataIngresos = aplicarFiltro(dataIngresosxFecha.flujoxGrupo?.filter(f=>f.id!==121).flatMap((f) => f.itemsxDia)
 								?.filter((f) => f.mes === e.mes)
-								.flatMap((f) => f.items)
+								.flatMap((f) => f.items))
 				return {
 					sumaIngresos: dataIngresos?.reduce((total, item) => total + item.monto, 0),
 					// items del mes para el modal de detalle (igual que en EGRESOS)
@@ -43,9 +46,9 @@ export const TrItemVentas = ({ label = '', anio=2024,
 	const alterMesCompleto = generarMesYanio(
 				arrayDates[0], arrayDates[1]
 			).map(e=>{
-				const dataIngresos = dataIngresosxFecha.flujoxGrupo?.filter(f=>f.id!==121).flatMap((f) => f.itemsxDia)
+				const dataIngresos = aplicarFiltro(dataIngresosxFecha.flujoxGrupo?.filter(f=>f.id!==121).flatMap((f) => f.itemsxDia)
 								?.filter((f) => Number(f.mes) === Number(e.mes))
-								.flatMap((f) => f.items)
+								.flatMap((f) => f.items))
 				return {
 					sumaIngresos: dataIngresos?.reduce((total, item) => total + item.monto, 0),
 					data: dataIngresos

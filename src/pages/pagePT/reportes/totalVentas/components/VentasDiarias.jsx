@@ -117,7 +117,7 @@ export default function VentasDiarias(props) {
           <tr style={{ background: "#c00000", color: "#fff" }}>
 
             <th style={{ border: "1px solid #000", padding: "8px 10px" }} >
-              AVATAR
+              {agruparPorAsesor ? "FOTO" : "AVATAR"}
             </th>
             <th style={{ border: "1px solid #000", padding: "8px 10px", background: "#c00000", fontSize: 20 }}>
               ASESOR            </th>
