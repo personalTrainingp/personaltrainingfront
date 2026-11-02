@@ -23,11 +23,9 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
     obtenerGestionComercial()
     obtenerSociosActivosSinProspecto()
   }, [])
-  // socios activos de seguimiento: se quitan los id_cli que ya estan en prospectos
+  // socios de seguimiento: se muestran todos, esten o no repetidos en prospectos
   const dataSocios = useMemo(() => {
-    const idsEnProspecto = new Set(dataView?.map(e=>e.id_cli).filter(Boolean))
     return dataSociosSinProspecto
-      .filter(c=>!idsEnProspecto.has(c.id_cli))
       .map(c=>({
         esSocio: true,
         codigo: `CLI${c.id_cli}`,
@@ -44,7 +42,7 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
         // los comentarios del socio van en el cliente (tb_clientes.uid_comentario)
         uid_comentario: c.uid_comentario,
       }))
-  }, [dataView, dataSociosSinProspecto])
+  }, [dataSociosSinProspecto])
   const dataFiltrada = useMemo(() => {
     const prospectos = (dataView ?? []).filter(e=>
       (!filtroEstado || e.parametro_estado?.id_param===filtroEstado) &&

@@ -200,9 +200,11 @@ export const useComparativoMensualLogic = ({ ventas = [], year, startMonth = 0, 
         const currentYear = now.getFullYear();
 
         // Filtrar filas: solo meses pasados (año menor o año igual y mes menor estricto)
+        // En 2024 el promedio solo considera de septiembre a diciembre
         const pastRows = rows.filter(row => {
             const rowYear = Number(row.year);
             const rowMonth = Number(row.monthIdx);
+            if (rowYear === 2024 && rowMonth < 8) return false;
             return rowYear < currentYear || (rowYear === currentYear && rowMonth < currentMonthIdx);
         });
 

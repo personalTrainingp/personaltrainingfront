@@ -251,10 +251,10 @@ export const useGestionComercialStore = () => {
 			Swal.fire({ icon: 'error', title: 'No se pudo descargar el Excel' });
 		}
 	};
-	// Socios de seguimiento (activos e inactivos) que no estan en prospectos, uno por id_cli
+	// Socios de seguimiento (activos e inactivos), esten o no en prospectos, uno por id_cli
 	const obtenerSociosActivosSinProspecto = async () => {
 		try {
-			const { data } = await PTApi.get('/prospecto/lead/clientes-sin-prospecto');
+			const { data } = await PTApi.get('/prospecto/lead/clientes-sin-prospecto', { params: { incluirProspectos: 1 } });
 			const hoy = dayjs().format('YYYY-MM-DD');
 			const socios = new Map();
 			data.clientes.forEach((c) => {
