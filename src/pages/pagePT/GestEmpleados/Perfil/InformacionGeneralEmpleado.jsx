@@ -404,21 +404,6 @@ export const InformacionGeneralEmpleado = ({data}) => {
         </Col>
         <Col xl={4}>
         <div className="m-2">
-                <label htmlFor="salario_empl" className="form-label">
-                    Salario*
-                </label>
-                <input
-                    className="form-control"
-                    name="salario_empl"
-                    id="salario_empl"
-                    value={salario_empl}
-                    onChange={onInputChange}
-                    required
-                />
-            </div>
-        </Col>
-        <Col xl={4}>
-        <div className="m-2">
                 <label htmlFor="tipoContrato_empl" className="form-label">
                     Tipo de jornada*
                 </label>

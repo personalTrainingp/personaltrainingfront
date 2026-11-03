@@ -136,7 +136,7 @@ export const useGastosStore = () => {
 		try {
 			console.log({ id_empresa }, 2);
 			await PTApi.post(`/egreso/`, formState);
-			obtenerGastos(id_empresa);
+			await obtenerGastos(id_empresa);
 			Swal.fire({
 				icon: 'success',
 				title: 'GASTO REGISTRADO CORRECTAMENTE',
@@ -156,7 +156,7 @@ export const useGastosStore = () => {
 	const updateGastoxID = async (id, formState, id_empresa) => {
 		try {
 			await PTApi.put(`/egreso/id/${id}`, formState);
-			obtenerGastos(id_empresa);
+			await obtenerGastos(id_empresa);
 			Swal.fire({
 				icon: 'success',
 				title: 'GASTO ACTUALIZADO CORRECTAMENTE',
@@ -177,7 +177,7 @@ export const useGastosStore = () => {
 		try {
 			console.log({ id_empresa }, 4);
 			await PTApi.put(`/egreso/delete/id/${id}`);
-			obtenerGastos(id_empresa);
+			await obtenerGastos(id_empresa);
 			Swal.fire({
 				icon: 'success',
 				title: 'GASTO ELIMINADO CORRECTAMENTE',

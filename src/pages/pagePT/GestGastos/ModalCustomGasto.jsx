@@ -152,27 +152,58 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
         }
     }, [grupo, id_empresa, id_tipoGasto, dataTerm2EmpresaxConcepto, show])
     
-    const onSubmit = async()=>{
+    const [showModalIGV, setshowModalIGV] = useState(false)
+    const [hoverIGV, sethoverIGV] = useState(null)
+    // AL PRESIONAR GUARDAR: PRIMERO SE PREGUNTA POR EL IGV
+    const onClickGuardar = ()=>{
+        sethoverIGV(null)
+        setshowModalIGV(true)
+    }
+    // AL ELEGIR SI/NO: 1. SE HACE EL POST (O UPDATE) DEL GASTO  2. SE RECARGAN LOS GASTOS
+    const onSelectIGV = async(conIGV)=>{
+        setshowModalIGV(false)
+        await onSubmit({...formState, impuesto_igv: conIGV})
+    }
+    const onSubmit = async(dataForm = formState)=>{
         if(isCopy){
             setisLoading(true)
-            const {  id, ...valores } = formState;
+            const {  id, ...valores } = dataForm;
             await postGasto(valores, id_enterprice)
             setisLoading(false)
             cancelarGasto()
         }else{
             if(id===0){
                 setisLoading(true)
-                await postGasto(formState, id_enterprice)
+                await postGasto(dataForm, id_enterprice)
                 setisLoading(false)
                 cancelarGasto()
             }else{
                 setisLoading(true)
-                await updateGastoxID(id, {...formState}, id_enterprice)
+                await updateGastoxID(id, {...dataForm}, id_enterprice)
                 setisLoading(false)
                 cancelarGasto()
             }
         }
     }
+    const styleBtnIGV = (key)=>({
+        fontSize: '4rem',
+        fontWeight: 800,
+        width: 200,
+        height: 140,
+        borderRadius: 20,
+        border: '3px solid #fff',
+        background: hoverIGV===key
+            ? 'rgba(255,255,255,.28)'
+            : 'rgba(255,255,255,.08)',
+        color: '#fff',
+        boxShadow: hoverIGV===key
+            ? '0 14px 28px rgba(0,0,0,.35), 0 6px 10px rgba(0,0,0,.2)'
+            : '0 8px 18px rgba(0,0,0,.25)',
+        transform: hoverIGV===key ? 'translateY(-4px) scale(1.03)' : 'none',
+        textShadow: '0 2px 4px rgba(0,0,0,.3)',
+        cursor: 'pointer',
+        transition: 'all .2s ease',
+    })
     const cancelarGasto = ()=>{
         onHide()
         onResetForm()
@@ -351,11 +382,44 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
                         </div>
                     </Col>
                     <Col lg={12}>
-                        <InputButton label={'GUARDAR'} onClick={onSubmit}/>
+                        <InputButton label={'GUARDAR'} onClick={onClickGuardar}/>
                         <InputButton label={'CANCELAR'} onClick={()=>cancelarGasto()} variant={'link'}/>
                     </Col>
                 </Row>
             </form>
+        </Modal.Body>
+    </Modal>
+    <style>{`
+        .modal-igv-content{
+            border: none !important;
+            border-radius: 24px !important;
+            background: linear-gradient(160deg, #e63946 0%, #b02a37 100%) !important;
+            color: #fff !important;
+            box-shadow: 0 30px 60px rgba(0,0,0,.35), 0 12px 24px rgba(0,0,0,.22), 0 0 0 1px rgba(0,0,0,.04) !important;
+            overflow: hidden;
+        }
+    `}</style>
+    <Modal show={showModalIGV} onHide={()=>setshowModalIGV(false)} centered contentClassName='modal-igv-content'>
+        <Modal.Body>
+            <div className='text-center py-3'>
+                <div style={{fontSize: '6rem', fontWeight: 900, lineHeight: 1, letterSpacing: 4, color: '#fff', textShadow: '0 4px 10px rgba(0,0,0,.35)'}}>IGV</div>
+                <div className='d-flex justify-content-center gap-4 mt-4 pb-2'>
+                    <button
+                        type='button'
+                        style={styleBtnIGV('SI')}
+                        onMouseEnter={()=>sethoverIGV('SI')}
+                        onMouseLeave={()=>sethoverIGV(null)}
+                        onClick={()=>onSelectIGV(true)}
+                    >SI</button>
+                    <button
+                        type='button'
+                        style={styleBtnIGV('NO')}
+                        onMouseEnter={()=>sethoverIGV('NO')}
+                        onMouseLeave={()=>sethoverIGV(null)}
+                        onClick={()=>onSelectIGV(false)}
+                    >NO</button>
+                </div>
+            </div>
         </Modal.Body>
     </Modal>
     </>
