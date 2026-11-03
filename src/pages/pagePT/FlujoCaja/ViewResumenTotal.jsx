@@ -70,7 +70,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
         const utilidadBruta = dateActual>7?sumaGastos===0?0:sumaIngresos-(sumaProyectado+sumaGastos): sumaGastos===0?0:sumaIngresos-(sumaProyectado+sumaGastos)
         const utilidadNeta = (sumaIngresos)-sumaGastos
         const utilidadUltimaLinea = ((utilidadBruta && sumaIngresos) && (utilidadBruta*100)/sumaIngresos)
-        const utilidadUltimaLineaChangeMasBolsa = ((utilidadBruta && sumaIngresos) && ((utilidadBruta+utilidadBolsa))/(sumaIngresos+sumaIngresosExcepcional))
+        const utilidadUltimaLineaChangeMasBolsa = ((utilidadBruta && sumaIngresos) && (100*(utilidadBruta+utilidadBolsa))/(sumaIngresos+sumaIngresosExcepcional))
         const utilidadEmpresaMasBolsa = utilidadBolsa+utilidadBruta
         const bonoGerencia = (sumaIngresos-(sumaProyectado+sumaGastos))*0.05
         const utilidadPerdida_ultimaLinea = utilidadBruta<=0?utilidadBruta:sumaIngresos-(sumaProyectado+sumaGastos+sumagastos1272)
