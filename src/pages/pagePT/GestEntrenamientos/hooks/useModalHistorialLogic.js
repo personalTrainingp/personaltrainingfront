@@ -87,7 +87,8 @@ export function useModalHistorialLogic({ show, onHide, onSaved, catalogo, tiposE
     // --- CORRECCIÓN 1: SOLO 2 OPCIONES (AM y PM) ---
     const momentoOptions = [
         { value: 'AM', label: 'AM (Mañana)' },
-        { value: 'PM', label: 'PM (Tarde / Noche)' }
+        { value: 'PM', label: 'PM (Tarde / Noche)' },
+        { value: 'PM', label: 'PM (Tarde / Noche)' },
     ];
 
     // --- CORRECCIÓN 2: FILTRO BINARIO ---

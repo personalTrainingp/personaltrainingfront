@@ -7,6 +7,7 @@ import utc from 'dayjs/plugin/utc';
 import { useForm } from '@/hooks/useForm';
 import { usePlanillaStore } from './usePlanillaStore';
 import { InputSelect } from '@/components/InputText';
+import { useTerminos2Store } from '../../GestGastos/useTerminos2Store';
 dayjs.extend(utc);
 const registrarNomina = {
   fecha_desde: '',
@@ -15,7 +16,12 @@ const registrarNomina = {
   tipo_jornada: '',
   fecha_pago: '',
   observacion: '',
+  grupo: '',
+  id_gasto: 0,
 }
+// LA PLANILLA ES DE CHANGE
+const ID_EMPRESA_CHANGE = 598
+const ID_TIPO_GASTO_EGRESO = 1573
 const optionsTipoPago = [
   {value: 'MENSUAL', label: 'MENSUAL'},
   {value: 'QUINCENAL', label: 'QUINCENAL'},
@@ -28,10 +34,21 @@ const optionsTipoJornada = [
 ]
 // id = 0 -> AGREGAR, id != 0 -> EDITAR
 export const ModalAgregarNomina = ({show, onHide, uid_empl, id = 0, onSaved}) => {
-    const { fecha_desde, sueldo, tipo_pago, tipo_jornada, fecha_pago, observacion, formState, onInputChange, onInputChangeFields, onResetForm } = useForm(registrarNomina)
+    const { fecha_desde, sueldo, tipo_pago, tipo_jornada, fecha_pago, observacion, grupo, id_gasto, formState, onInputChange, onInputChangeFields, onResetForm } = useForm(registrarNomina)
     const { postPlanillaxEMPL, actualizarPlanillaxID, obtenerPlanillaxID, dataPlanilla } = usePlanillaStore()
     const [msgError, setmsgError] = useState('')
     const [isSaving, setisSaving] = useState(false)
+    const { obtenerTermino2xEmpresaxTipo, dataTerminologia2EmpresaxTipo } = useTerminos2Store()
+    useEffect(() => {
+      if(show){
+        obtenerTermino2xEmpresaxTipo(ID_EMPRESA_CHANGE, ID_TIPO_GASTO_EGRESO)
+      }
+    }, [show])
+    const dataGrupos = dataTerminologia2EmpresaxTipo.dataGrupos
+    const dataConceptosxGrupo = dataTerminologia2EmpresaxTipo.dataConcepto.filter(c=>c.grupo===grupo)
+    const onInputChangeGrupo = (e)=>{
+      onInputChangeFields({grupo: e.target.value, id_gasto: 0})
+    }
 
     useEffect(() => {
       if(show && id!==0){
@@ -48,6 +65,8 @@ export const ModalAgregarNomina = ({show, onHide, uid_empl, id = 0, onSaved}) =>
           tipo_jornada: dataPlanilla.tipo_jornada || '',
           fecha_pago: dataPlanilla.fecha_pago?dayjs.utc(dataPlanilla.fecha_pago).format('YYYY-MM-DD'):'',
           observacion: dataPlanilla.observacion || '',
+          grupo: dataPlanilla.grupo || '',
+          id_gasto: dataPlanilla.id_gasto || 0,
         })
       }
     }, [dataPlanilla, show, id])
@@ -153,6 +172,19 @@ export const ModalAgregarNomina = ({show, onHide, uid_empl, id = 0, onSaved}) =>
                         value={observacion}
                         onChange={onInputChange}
                       />
+                  </div>
+                </Col>
+                <Col lg={12}>
+                  <h4 className='mb-3 border-bottom pb-2'>DATOS PARA FLUJO DE CAJA</h4>
+                </Col>
+                <Col xxl={6}>
+                  <div className="mb-4">
+                    <InputSelect label={'GRUPO'} nameInput={'grupo'} onChange={onInputChangeGrupo} value={grupo} options={dataGrupos}/>
+                  </div>
+                </Col>
+                <Col xxl={6}>
+                  <div className="mb-4">
+                    <InputSelect label={'CONCEPTO'} nameInput={'id_gasto'} onChange={onInputChange} value={id_gasto} options={dataConceptosxGrupo}/>
                   </div>
                 </Col>
               </Row>

@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { obtenerAnioMesDiaActualPeru } from '../helpers/fechaPeru';
 import { onQuitarMontoEditado, onSetMontoEditado } from '@/store/dataImaginaria/imaginariaSlice';
 import { MontoVistaEditable } from '../view/MontoVistaEditable';
+import { ModalDetalleSueldos } from '../view/ModalDetalleSueldos';
 
 // Conceptos que se resaltan con bgPastel en la columna de nombre y en las celdas de cada mes
 const CONCEPTOS_PASTEL = [1272]
@@ -20,6 +21,8 @@ export const DataTablePrincipal = ({anio, cat='', id_empresa, sumaTotal, itemsxD
   // Celda que se esta editando (clave del monto). Con "Editar montos" activo: doble click edita
   // y el click en el monto ya no abre el modal de detalle.
   const [celdaEditando, setceldaEditando] = useState(null)
+  // RR.HH. (ADMINISTRATIVO / COLABORADOR): detalle de los sueldos que forman el proyectado
+  const [detalleSueldos, setdetalleSueldos] = useState(null)
   const abrirModalItems = (items) => {
     if (!modoEditarMontos) onOpenModalTableItems(items)
   }
@@ -165,7 +168,10 @@ export const DataTablePrincipal = ({anio, cat='', id_empresa, sumaTotal, itemsxD
                               }
                               {
                                 m.monto_proyectado!=0 && nombreGrupo!=='INGRESOS' && (
-                                  <span className={`text-orange ${textoGrisDestacado}`}>
+                                  <span
+                                    className={`text-orange ${textoGrisDestacado} ${m.detalle_sueldos_mes ? 'cursor-pointer' : ''}`}
+                                    onClick={()=>m.detalle_sueldos_mes && !modoEditarMontos && setdetalleSueldos({concepto: `${c.nombre_gasto} - ${m.mesSTR?.toUpperCase() ?? m.mes}`, items: m.detalle_sueldos_mes})}
+                                  >
                                     <NumberFormatMoney amount={m.monto_proyectado}/>
                                   </span>
                                 )
@@ -237,6 +243,12 @@ export const DataTablePrincipal = ({anio, cat='', id_empresa, sumaTotal, itemsxD
           </tr>
         </tbody>
       </Table>
+      <ModalDetalleSueldos
+        show={!!detalleSueldos}
+        onHide={()=>setdetalleSueldos(null)}
+        concepto={detalleSueldos?.concepto}
+        items={detalleSueldos?.items ?? []}
+      />
     </>
   )
 }

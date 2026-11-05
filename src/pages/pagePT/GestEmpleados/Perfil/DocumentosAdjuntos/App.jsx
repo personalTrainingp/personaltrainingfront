@@ -4,18 +4,18 @@ import { Button } from 'primereact/button'
 import { ModalCustomArchivo } from './ModalCustomArchivo'
 
 export const App = ({uid_docs}) => {
-    const [isOpenModalCustomDocAdj, setisOpenModalCustomDocAdj] = useState({isOpen: false, id: 0})
+    const [isOpenModalCustomDocAdj, setisOpenModalCustomDocAdj] = useState({isOpen: false, doc: null})
     const onCloseModalCustomDocAdj = ()=>{
-        setisOpenModalCustomDocAdj({isOpen: false, id: 0})
+        setisOpenModalCustomDocAdj({isOpen: false, doc: null})
     }
-    const onOpenModalCustomDocAdj = (id)=>{
-        setisOpenModalCustomDocAdj({isOpen: true, id})
+    const onOpenModalCustomDocAdj = (doc=null)=>{
+        setisOpenModalCustomDocAdj({isOpen: true, doc})
     }
   return (
     <div>
-        <Button label='AGREGAR DOCUMENTO' onClick={()=>onOpenModalCustomDocAdj(0)}/>
-        <ModalCustomArchivo uid_location={uid_docs} show={isOpenModalCustomDocAdj.isOpen} id={isOpenModalCustomDocAdj.id} onHide={onCloseModalCustomDocAdj} />
-        <DataTable uid_location={uid_docs}/>
+        <Button label='AGREGAR DOCUMENTO' onClick={()=>onOpenModalCustomDocAdj()}/>
+        <ModalCustomArchivo uid_location={uid_docs} show={isOpenModalCustomDocAdj.isOpen} doc={isOpenModalCustomDocAdj.doc} onHide={onCloseModalCustomDocAdj} />
+        <DataTable uid_location={uid_docs} onEditar={onOpenModalCustomDocAdj}/>
         {uid_docs}
     </div>
   )

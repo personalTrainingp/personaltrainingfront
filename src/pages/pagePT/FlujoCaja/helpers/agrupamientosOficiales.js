@@ -31,6 +31,30 @@ const anioActual = fecha.getFullYear();
 const dateActual = fecha.getDate();
 const mesActual = fecha.getMonth();
 
+// RR.HH. (ADMINISTRATIVO / COLABORADOR): contratos que cuentan en un mes según su
+// "fecha desde" (y "fecha hasta" si tiene). Si una persona tiene varios, se toma
+// el más reciente que ya empezó en ese mes.
+const claveMes = (fecha) => (fecha ? new Date(fecha).toISOString().slice(0, 7) : null);
+export const sueldosDelMes = (contratos = [], anio, mes) => {
+	const mesKey = `${anio}-${String(mes).padStart(2, '0')}`;
+	const vigentes = contratos.filter((c) => {
+		const desde = claveMes(c.fecha_desde);
+		const hasta = claveMes(c.fecha_hasta);
+		return desde && desde <= mesKey && (!hasta || hasta >= mesKey);
+	});
+	const porPersona = new Map();
+	vigentes.forEach((c) => {
+		const actual = porPersona.get(c.uid_empleado);
+		if (
+			!actual ||
+			new Date(c.fecha_desde) > new Date(actual.fecha_desde) ||
+			(new Date(c.fecha_desde).getTime() === new Date(actual.fecha_desde).getTime() && c.id > actual.id)
+		) {
+			porPersona.set(c.uid_empleado, c);
+		}
+	});
+	return [...porPersona.values()];
+};
 export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = [], anio = 2026) => {
 	const itemsXdiaGenerado = generarMesYanio(
 		new Date('2026-01-15T00:00:00.000Z'),
@@ -69,7 +93,16 @@ export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = [], anio 
 							agrupadoxDia
 								.find((f) => f.mes === g.mes)
 								?.items.filter((e) => e?.id_estado_gasto === 1424) || [];
-						const monto_pro = f.sin_limite
+						// RR.HH.: el proyectado del mes es la suma de los sueldos de los contratos
+						// que ya empezaron ("fecha desde") en ese mes
+						const detalle_sueldos_mes = f.detalle_sueldos
+							? sueldosDelMes(f.detalle_sueldos, g.anio, g.mes).filter(
+									(c) => Number(c.id_gasto) === Number(f.id)
+								)
+							: undefined;
+						const monto_pro = detalle_sueldos_mes
+							? detalle_sueldos_mes.reduce((total, c) => total + Number(c.sueldo || 0), 0)
+							: f.sin_limite
 							? f.isPromediado
 								? sumaGastos_Total_menos_mesActual /
 										gastos_antes_mesActual_costos_sin_cero.length || 0
@@ -118,6 +151,7 @@ export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = [], anio 
 							monto_proyectado:
 								monto_proyectado <= 0 ? 0 : Number(monto_proyectado || 0) || 0,
 							monto_pro: monto_pro - monto <= 0 ? 0 : monto_pro - monto,
+							detalle_sueldos_mes,
 							gast,
 							...g,
 						};
@@ -135,6 +169,8 @@ export const agruparPorGrupoYConcepto = (dataGastos = [], dataGrupos = [], anio 
 						nombre_gasto: f.nombre_gasto,
 						gasto: gast,
 						len: gast.length,
+						// RR.HH.: contratos cuyo sueldo forma el proyectado (ver useFlujoCajaStore)
+						detalle_sueldos: f.detalle_sueldos,
 						monto_pro: itemsXdia.reduce((total, item) => total + item.monto_pro, 0),
 						monto_proyectado: itemsXdia.reduce(
 							(total, item) => total + item.monto_proyectado,

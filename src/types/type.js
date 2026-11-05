@@ -337,7 +337,7 @@ export const arrayCargoEmpl = [
 	{ label: 'Gerencia', value: 15 },
 	{ label: 'Jefe de ventas', value: 16 },
 	{ label: 'Limpieza', value: 17 },
-	{ label: 'Mantenimiento', value: 18 },
+	{ label: 'Jefe de Mantenimiento y limpieza', value: 18 },
 	{ label: 'Marketing', value: 19 },
 	{ label: 'Nutricion', value: 20 },
 	{ label: 'Operaciones', value: 21 },
@@ -351,6 +351,7 @@ export const arrayCargoEmpl = [
 	{ label: 'MKT COMERCIAL', value: 30 },
 	{ label: 'RECUPERACION DE CARTERA', value: 31 },
 	{ label: 'ASESOR FINANCIERO Y COMERCIAL', value: 32 },
+	{ label: 'JEFE DE OPERACIONES Y COMERCIAL', value: 60 },
 	{ label: 'ASESOR COMERCIAL', value: 34 },
 	{ label: 'MANICURISTA', value: 62 },
 	{ label: 'ADMINISTRACION / ATENCION AL CLIENTE', value: 63 },
@@ -4707,3 +4708,34 @@ export const arrayDistrito = [
 	{ value: '250400', label: 'PURUS' },
 	{ value: '250401', label: 'PURUS' },
 ];
+
+// Cuota de ventas por mes (mes: 1 = enero ... 12 = diciembre).
+export const cuotasMonto = [
+	{ monto: 60000, mes: 1, anio: 2025 },
+	{ monto: 60000, mes: 2, anio: 2025 },
+	{ monto: 60000, mes: 3, anio: 2025 },
+	{ monto: 60000, mes: 4, anio: 2025 },
+	{ monto: 60000, mes: 5, anio: 2025 },
+	{ monto: 60000, mes: 6, anio: 2025 },
+	{ monto: 60000, mes: 7, anio: 2025 },
+	{ monto: 70000, mes: 8, anio: 2025 },
+	{ monto: 75000, mes: 9, anio: 2025 },
+	{ monto: 85000, mes: 10, anio: 2025 },
+	{ monto: 90000, mes: 11, anio: 2025 },
+	{ monto: 90000, mes: 12, anio: 2025 },
+	{ monto: 120000, mes: 1, anio: 2026 },
+	{ monto: 100000, mes: 2, anio: 2026 },
+	{ monto: 90000, mes: 3, anio: 2026 },
+	{ monto: 70000, mes: 4, anio: 2026 },
+	{ monto: 100000, mes: 5, anio: 2026 },
+	{ monto: 80000, mes: 6, anio: 2026 },
+	{ monto: 90000, mes: 7, anio: 2026 },
+	{ monto: 100000, mes: 8, anio: 2026 },
+	{ monto: 80000, mes: 9, anio: 2026 },
+	{ monto: 90000, mes: 10, anio: 2026 },
+	{ monto: 120000, mes: 11, anio: 2026 },
+	{ monto: 105000, mes: 12, anio: 2026 },
+];
+
+export const getCuotaMonto = (mes, anio, montoPorDefecto = 0) =>
+	cuotasMonto.find((c) => c.mes === Number(mes) && c.anio === Number(anio))?.monto ?? montoPorDefecto;

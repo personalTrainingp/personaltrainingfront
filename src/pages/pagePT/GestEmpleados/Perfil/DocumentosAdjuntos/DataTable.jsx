@@ -4,9 +4,21 @@ import { useCenterArchive } from './useCenterArchive'
 import { useSelector } from 'react-redux'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import config from '@/config'
+import { Button } from 'primereact/button'
+import { confirmDialog } from 'primereact/confirmdialog'
 
-export const DataTable = ({uid_location}) => {
-  const { obtenerArchivCenterxUidLocation } = useCenterArchive()
+export const DataTable = ({uid_location, onEditar}) => {
+  const { obtenerArchivCenterxUidLocation, onDeleteArchivo } = useCenterArchive()
+  const confirmarEliminar = (id)=>{
+    confirmDialog({
+      header: 'Eliminar documento',
+      message: '¿Quieres eliminar este documento?',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Sí, eliminar',
+      rejectLabel: 'Cancelar',
+      accept: ()=>onDeleteArchivo(id, uid_location),
+    })
+  }
     const { obtenerParametroPorEntidadyGrupo:obtenerTipoDoc, DataGeneral:datatipoDoc } = useTerminoStore()
   const { dataView } = useSelector(e=>e.DATA)
   useEffect(() => {
@@ -24,13 +36,14 @@ export const DataTable = ({uid_location}) => {
               <th></th>
               <th>TIPO</th>
               <th>DESCRIPCION</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
             {
               dataView.map((d, index)=>{
                 return (
-                  <tr>
+                  <tr key={d.id}>
                     <td>
                       {index+1}
                     </td>
@@ -44,6 +57,10 @@ export const DataTable = ({uid_location}) => {
                     </td>
                     <td>
                       {d.observacion}
+                    </td>
+                    <td className='text-nowrap'>
+                      <Button label='EDITAR' size='small' outlined className='me-2' onClick={()=>onEditar(d)}/>
+                      <Button label='ELIMINAR' size='small' outlined severity='danger' onClick={()=>confirmarEliminar(d.id)}/>
                     </td>
                   </tr>
                 )

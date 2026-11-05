@@ -3,6 +3,7 @@ import { useFlujoCaja } from './hook/useFlujoCajaStore'
 import { agruparPorGrupoYConcepto } from './helpers/agrupamientosOficiales'
 import { Table } from 'react-bootstrap'
 import { NumberFormatMoney } from '@/components/CurrencyMask'
+import { getCuotaMonto } from '@/types/type'
 
 export const ViewResumenTotalOficial = ({fechas, id_enterprice, bgTotal, bgPastel, anio, onOpenModalTableItems}) => {
     const fechaElegida = new Date(anio[0])
@@ -26,7 +27,7 @@ export const ViewResumenTotalOficial = ({fechas, id_enterprice, bgTotal, bgPaste
             f.tb_parametros_gasto.parametro_grupo.id!==150).filter(f=>f.fechaP.mesP===Number(m.mes))
         const dataIngresos = dataIngresosxFecha.items.filter(f=>f.fechaP.mesP===m.mes)
         const dataIngresosVentas = dataIngresos.filter(f=>f.tb_parametros_gasto.parametro_grupo.id!==121)
-        const cuotaAlcanzarVentas = getQuotaParaMes(m.mes, m.anio).meta
+        const cuotaAlcanzarVentas = getCuotaMonto(m.mes, m.anio)
         const sumaGastosReal = dataGastos.reduce((total, item)=>total+item.monto, 0)
         const sumaGastosProyectado = dataGastos.reduce((total, item)=>total+item.monto_proyectado, 0)
         const sumaVentasReal = dataIngresosVentas.reduce((total, item)=>total+item.monto, 0)
@@ -255,96 +256,3 @@ if(anio===year){
   return 12;
 }
 }
-
-
-
-const getQuotaParaMes = (monthIndex, year) => {
-  const y = year;
-  const m = monthIndex;
-  switch (`${m}-${y}`) {
-    case "5-2026":
-      return {
-        meta: 110000,
-      };
-    case "4-2026":
-      return {
-        meta: 115000,
-      };
-    case "3-2026":
-      return {
-        meta: 100000,
-      };
-    case "2-2026":
-      return {
-        meta: 100000,
-      };
-    case "1-2026":
-      return {
-        meta: 110000,
-      };
-    case "12-2025":
-      return {
-        meta: 90000,
-      };
-
-    case "11-2025":
-      return {
-        meta: 90000,
-      };
-
-    case "10-2025":
-      return {
-        meta: 85000,
-      };
-
-    case "9-2025":
-      return {
-        meta: 75000,
-      };
-
-    case "8-2025":
-      return {
-        meta: 70000,
-      };
-
-    case "7-2025":
-      return {
-        meta: 60000,
-      };
-
-    case "6-2025":
-      return {
-        meta: 60000,
-      };
-
-    case "5-2025":
-      return {
-        meta: 60000,
-      };
-
-    case "4-2025":
-      return {
-        meta: 60000,
-      };
-
-    case "3-2025":
-      return {
-        meta: 60000,
-      };
-
-    case "2-2025":
-      return {
-        meta: 60000,
-      };
-
-    case "1-2025":
-      return {
-        meta: 60000,
-      };
-
-    default:
-      return {
-        meta: 0,
-      };
-  }
-};

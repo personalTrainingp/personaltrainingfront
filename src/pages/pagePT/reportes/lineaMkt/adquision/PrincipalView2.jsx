@@ -25,6 +25,8 @@ import { useDispatch } from 'react-redux'
 import { TableResumen3 } from './TableResumen3'
 import { TableResumen4 } from './TableResumen4'
 import { GraficoLineal } from './GraficoLineal'
+import { getCuotaMonto } from '@/types/type'
+import { MESES, aliasMes } from '../../resumenEjecutivo/hooks/useResumenUtils'
 const sumarTarifaMonto = (items)=>{
       const ventas = items.reduce((accum, item) => accum + (item.detalle_ventaMembresium?.tarifa_monto || 0), 0)
     return ventas
@@ -567,12 +569,7 @@ const stickyFirstColStyle = {
     reinscripciones: 'REINSCRIPCIONES',
   };
   const widthTable=150
-  const cuotasMetas = [
-    {
-      mes: 'JULIO',
-      meta: 60000,
-    },
-  ]
+  const getCuotaDelMes = (mes) => getCuotaMonto(MESES.indexOf(aliasMes(mes.mes)) + 1, mes.anio)
   return (
     <div style={{ overflowX: 'auto' }}>
       <table 
@@ -607,13 +604,13 @@ const stickyFirstColStyle = {
                   <br/>
                   <div >
                         {
-                          !cuotasMetas.find(e=>e?.mes===mes.mes.toUpperCase())?(''):(
+                          !getCuotaDelMes(mes)?(''):(
                             <div className='text-left d-flex flex-column'>
                               <span className='fs-2'>
-                              CUOTA: <NumberFormatMoney amount={cuotasMetas.find(e=>e?.mes===mes.mes.toUpperCase())?.meta}/> (100%)
+                              CUOTA: <NumberFormatMoney amount={getCuotaDelMes(mes)}/> (100%)
                               </span>
                               <span className='fs-2'>
-                                AVANCE: <NumberFormatMoney amount={ordenarAsesores(mes.itemVendedores).reduce((total, item)=>total + item.datos.total.tarifa, 0)}/> (<NumberFormatter amount={((ordenarAsesores(mes.itemVendedores).reduce((total, item)=>total + item.datos.total.tarifa, 0) )/(cuotasMetas.find(e=>e?.mes===mes.mes.toUpperCase())?.meta))*100}/>%)
+                                AVANCE: <NumberFormatMoney amount={ordenarAsesores(mes.itemVendedores).reduce((total, item)=>total + item.datos.total.tarifa, 0)}/> (<NumberFormatter amount={((ordenarAsesores(mes.itemVendedores).reduce((total, item)=>total + item.datos.total.tarifa, 0) )/getCuotaDelMes(mes))*100}/>%)
                               </span>
                             </div>
                           )

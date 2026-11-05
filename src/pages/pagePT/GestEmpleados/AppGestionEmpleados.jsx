@@ -8,6 +8,7 @@ export const AppGestionEmpleados = ({idEstado=true}) => {
         <ColorEmpresa
             childrenChange={<ViewGestionEmpleados id_empresa={598} id_estado={idEstado}/>}
             childrenCircus={<ViewGestionEmpleados id_empresa={599} id_estado={idEstado}/>}
+            childrenRal={<ViewGestionEmpleados id_empresa={600} id_estado={idEstado}/>}
         />
     </div>
   )

@@ -32,7 +32,7 @@ export const DataTable = ({onOpenModalCustomPariente, uid_contactoEmergencia, en
                     <th>NOMBRE DEL PARIENTE</th>
                     <th>telefono</th>
                     <th>email</th>
-                    <th>obsevacion</th>
+                    <th>observacion</th>
                     <th></th>
                 </tr>
             </thead>

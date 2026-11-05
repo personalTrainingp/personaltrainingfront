@@ -37,6 +37,21 @@ flag(pin):true
 const registerImgAvatar={
     imgAvatar_BASE64: ''
 }
+const camposMedidas = [
+    { name: 'medidaPolo', label: 'POLO' },
+    { name: 'medidaShort', label: 'SHORT' },
+    { name: 'medidaCasaca', label: 'CASACA' },
+    { name: 'medidaChompa', label: 'CHOMPA' },
+    { name: 'medidaPantalon', label: 'PANTALON' },
+    { name: 'medidaBata', label: 'BATA' },
+]
+// Fechas <= 1900-01-01 se tratan como "sin fecha", igual que en el input de nacimiento.
+const calcularEdad = (fechaNacimiento) => {
+    const fecha = String(fechaNacimiento || '').slice(0, 10)
+    if (!fecha || fecha <= '1900-01-01') return ''
+    const edad = dayjs().diff(dayjs(fecha), 'year')
+    return edad >= 0 ? edad : ''
+}
 export const InformacionGeneralEmpleado = ({data}) => {
     const { 
         formState,
@@ -61,17 +76,20 @@ export const InformacionGeneralEmpleado = ({data}) => {
         tipoContrato_empl,
         horario_empl,
         estado_empl,
+        id_turno,
         onInputChange, onInputChangeReact, onFileChange } = useForm(data)
 	    const [selectedFile, setSelectedFile] = useState(sinAvatar);
         
                 const { obtenerDistritosxDepxProvincia:obtenerDistritosDeLima, dataDistritos:distritosDeLima } = useTerminoStore()
                 const { obtenerDistritosxDepxProvincia:obtenerDistritosDeCallao, dataDistritos:distritosDeCallao } = useTerminoStore()
+                const { obtenerParametroPorEntidadyGrupo:obtenerTurnos, DataGeneral:dataTurnos } = useTerminoStore()
     const { formState: formStateAvatar, onFileChange: onRegisterFileChange } = useForm(registerImgAvatar)
     
             
               useEffect(() => {
                 obtenerDistritosDeLima(1501, 15)
                 obtenerDistritosDeCallao(701, 7)
+                obtenerTurnos('empleado', 'turno')
               }, [])
         const dataDistritos = [
             ...distritosDeLima,
@@ -172,6 +190,21 @@ export const InformacionGeneralEmpleado = ({data}) => {
         </Col>
         <Col xl={3}>
             <div className="m-2">
+                <label htmlFor="edad_empl" className="form-label">
+                    Edad
+                </label>
+                <input
+                    className="form-control"
+                    type="text"
+                    id="edad_empl"
+                    value={calcularEdad(fecNac_empl)}
+                    readOnly
+                    disabled
+                />
+            </div>
+        </Col>
+        <Col xl={3}>
+            <div className="m-2">
                 <label htmlFor="sexo_empl" className="form-label">
                     Sexo*
                 </label>
@@ -257,7 +290,7 @@ export const InformacionGeneralEmpleado = ({data}) => {
                     classNamePrefix="react-select"
                     options={arrayNacionalidad}
                     value={arrayNacionalidad.find(
-                        (option) => option.value === nacionalidad_empl
+                        (option) => String(option.value) === String(nacionalidad_empl)
                     )}
                     required
                 />
@@ -348,7 +381,7 @@ export const InformacionGeneralEmpleado = ({data}) => {
                 />
             </div>
         </Col>
-        <Col xl={4}>
+        {/* <Col xl={4}>
         <div className="m-2">
                 <label htmlFor="fecContrato_empl" className="form-label">
                     Fecha de contrato*
@@ -363,7 +396,7 @@ export const InformacionGeneralEmpleado = ({data}) => {
                     required
                 />
             </div>
-        </Col>
+        </Col> */}
         <Col xl={4}>
         <div className="m-2">
                 <label htmlFor="fecContrato_empl" className="form-label">
@@ -434,13 +467,13 @@ export const InformacionGeneralEmpleado = ({data}) => {
                     classNamePrefix="react-select"
                     options={[{label: 'ACTIVO', value: 1}, {label: 'INACTIVO', value: 0}]}
                     value={[{label: 'ACTIVO', value: 1}, {label: 'INACTIVO', value: 0}].find(
-                        (option) => option.value === estado_empl
+                        (option) => option.value === Number(estado_empl)
                     )}
                     required
                 />
             </div>
         </Col>
-        <Col xl={4}>
+        {/* <Col xl={4}>
             <div className="m-2">
                 <label htmlFor="horario_empl" className="form-label">
                     Horario*
@@ -455,7 +488,46 @@ export const InformacionGeneralEmpleado = ({data}) => {
                     required
                 />
             </div>
+        </Col> */}
+        <Col xl={4}>
+            <div className="m-2">
+                <label htmlFor="id_turno" className="form-label">
+                    Turno
+                </label>
+                <Select
+                    onChange={(e) => onInputChangeReact(e, 'id_turno')}
+                    name="id_turno"
+                    inputId="id_turno"
+                    placeholder={'Seleccionar el turno'}
+                    className="react-select"
+                    classNamePrefix="react-select"
+                    options={dataTurnos}
+                    value={dataTurnos.find(
+                        (option) => option.value === id_turno
+                    )}
+                />
+            </div>
         </Col>
+        <Col xl={12}>
+            <h4 className="m-2 mt-3">Medidas</h4>
+        </Col>
+        {camposMedidas.map(({ name, label }) => (
+            <Col xl={4} key={name}>
+                <div className="m-2">
+                    <label htmlFor={name} className="form-label">
+                        {label}
+                    </label>
+                    <input
+                        className="form-control"
+                        name={name}
+                        id={name}
+                        value={formState[name] ?? ''}
+                        onChange={onInputChange}
+                        maxLength={20}
+                    />
+                </div>
+            </Col>
+        ))}
         {/* {JSON.stringify(data, null, 2)} */}
         <Button onClick={onUpdateEmpleado}>Guardar</Button>
     </Row>

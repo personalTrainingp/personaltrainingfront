@@ -152,6 +152,48 @@ const fetchIngresosxFecha = async (enterprice, arrayDate) => {
 	};
 };
 
+// RR.HH. -> ADMINISTRATIVO / COLABORADOR: el proyectado (morado) es la suma del
+// sueldo del contrato vigente de cada persona cuyo contrato (planilla) está
+// cargado a ese concepto ("DATOS PARA FLUJO DE CAJA" en perfil-colaborador).
+const normalizar = (t = '') =>
+	t.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^A-Z]/gi, '').toUpperCase();
+const esGrupoRRHH = (label) => normalizar(label) === 'RRHH';
+const esConceptoSueldos = (nombre) => {
+	const n = normalizar(nombre);
+	return n.includes('ADMINISTRATIVO') || n.includes('COLABORADOR');
+};
+const aplicarSueldosPlanillaAlProyectado = async (termGastos = []) => {
+	let sueldos = [];
+	try {
+		const { data } = await PTApi.get(`/recursosHumanos/sueldos-flujo-caja`);
+		sueldos = data || [];
+	} catch (error) {
+		console.log(error);
+		return termGastos;
+	}
+	return termGastos.map((g) => {
+		if (!esGrupoRRHH(g.param_label)) return g;
+		return {
+			...g,
+			parametro_grupo_gasto: g.parametro_grupo_gasto?.map((c) => {
+				if (!esConceptoSueldos(c.nombre_gasto)) return c;
+				// el monto de cada mes se calcula en agruparPorGrupoYConcepto según la
+				// "fecha desde" de cada contrato (sueldosDelMes)
+				// todos los contratos: el vigente de cada persona se elige por mes y luego
+				// se filtra por este concepto (id_gasto)
+				const detalle_sueldos = sueldos;
+				return {
+					...c,
+					detalle_sueldos,
+					monto_proyectado: 0,
+					sin_limite: true,
+					isPromediado: false,
+				};
+			}),
+		};
+	});
+};
+
 // Igual que fetchIngresosxFecha, pero para egresos. `dataPagosVentas` se usa
 // como `[]`: la llamada que la llenaría (obtenerPagosVentas) ya estaba
 // deshabilitada antes de este cache, así que este arreglo nunca tenía datos
@@ -181,6 +223,7 @@ const fetchEgresosxFecha = async (enterprice, arrayDate) => {
 	const { data: dataParametrosGastos } = await PTApi.get(
 		`/terminologia/grupo-y-concepto/${enterprice}/1573`
 	);
+	const termGastos = await aplicarSueldosPlanillaAlProyectado(dataParametrosGastos.termGastos);
 	const dataGastosEnTotal = [...dataGastos, ...dataGastosOperadoresVentas].map((m) => {
 		const fechaPrimaria = new Date(m.fecha_primaria);
 		const mesP = fechaPrimaria.getUTCMonth() + 1;
@@ -194,10 +237,10 @@ const fetchEgresosxFecha = async (enterprice, arrayDate) => {
 	return {
 		flujoxGrupo: agruparPorGrupoYConcepto(
 			aplicarTipoDeCambio(dataTipoTC, dataGastosEnTotal),
-			dataParametrosGastos.termGastos
+			termGastos
 		),
 		items: aplicarTipoDeCambio(dataTipoTC, dataGastosEnTotal),
-		terminologiasUsadas: dataParametrosGastos.termGastos,
+		terminologiasUsadas: termGastos,
 	};
 };
 

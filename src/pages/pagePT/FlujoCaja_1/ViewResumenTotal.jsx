@@ -3,6 +3,7 @@ import { useFlujoCaja } from './hook/useFlujoCajaStore';
 import { Table } from 'react-bootstrap';
 import dayjs from 'dayjs';
 import { NumberFormatMoney } from '@/components/CurrencyMask';
+import { getCuotaMonto } from '@/types/type';
 import { useSelector } from 'react-redux';
 import { InputText } from 'primereact/inputtext';
 
@@ -30,7 +31,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
         const dataGastoBolsa = dataGrupoGastos.filter(f=>f.id===153).flatMap(e=>e.itemsxDia).filter(e=>e?.mes===f?.mes).flatMap(e=>e.items);
         const dataIngresos = dataGrupoIngresos.filter(f=>f.id!==121).flatMap(e=>e.parametro_grupo_gasto).flatMap(e=>e.itemsxDia).filter(e=>e?.mes===f?.mes);
         const dataIngresosExcepcionales = dataGrupoIngresos.filter(f=>f.id===121).flatMap(e=>e.parametro_grupo_gasto).flatMap(e=>e.itemsxDia).filter(e=>e?.mes===f?.mes);
-        const cuotas = getQuotaParaMes(f?.mes, f.anio)?.meta
+        const cuotas = getCuotaMonto(f?.mes, f.anio)
         // SUMA
         const sumaProyectado = dataGast.reduce((total, item)=>item.monto_proyectado+total, 0)
         const sumaNoPagados = dataGast.reduce((total, item)=>item.monto_no_pagados+total, 0)
@@ -464,103 +465,3 @@ if(anio===year){
   return 12;
 }
 }
-
-
-const getQuotaParaMes = (monthIndex, year) => {
-  const y = year;
-  const m = monthIndex;
-  switch (`${m}-${y}`) {
-    case "7-2026":
-      return {
-        meta: 100000,
-      };
-    case "6-2026":
-      return {
-        meta: 90000,
-      };
-    case "5-2026":
-      return {
-        meta: 80000,
-      };
-    case "4-2026":
-      return {
-        meta: 90000,
-      };
-    case "3-2026":
-      return {
-        meta: 100000,
-      };
-    case "2-2026":
-      return {
-        meta: 90000,
-      };
-    case "1-2026":
-      return {
-        meta: 110000,
-      };
-    case "12-2025":
-      return {
-        meta: 90000,
-      };
-
-    case "11-2025":
-      return {
-        meta: 90000,
-      };
-
-    case "10-2025":
-      return {
-        meta: 85000,
-      };
-
-    case "9-2025":
-      return {
-        meta: 75000,
-      };
-
-    case "8-2025":
-      return {
-        meta: 70000,
-      };
-
-    case "7-2025":
-      return {
-        meta: 60000,
-      };
-
-    case "6-2025":
-      return {
-        meta: 60000,
-      };
-
-    case "5-2025":
-      return {
-        meta: 60000,
-      };
-
-    case "4-2025":
-      return {
-        meta: 60000,
-      };
-
-    case "3-2025":
-      return {
-        meta: 60000,
-      };
-
-    case "2-2025":
-      return {
-        meta: 60000,
-      };
-
-    case "1-2025":
-      return {
-        meta: 60000,
-      };
-
-    default:
-      return {
-        meta: 0,
-      };
-  }
-};

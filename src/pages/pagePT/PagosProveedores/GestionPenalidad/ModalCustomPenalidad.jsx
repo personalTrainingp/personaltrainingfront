@@ -57,7 +57,7 @@ export const ModalCustomPenalidad = ({id, onHide, show, idContrato=0}) => {
                 </Col>
                 <Col lg={12}>
                     <div className='mb-3'>
-                        <InputTextArea  label={'OBSEVACION'} nameInput={'observacion'} onChange={onInputChange} value={observacion} required />
+                        <InputTextArea  label={'OBSERVACION'} nameInput={'observacion'} onChange={onInputChange} value={observacion} required />
                     </div>
                 </Col>
                 <Col lg={12}>

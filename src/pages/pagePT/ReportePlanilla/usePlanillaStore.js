@@ -1,5 +1,5 @@
 import { PTApi } from '@/common';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 const generarDiasContratados = ({ estabilidades, semana, fecha_inicio, fechaFin }) => {
 	const resultado = [];
@@ -191,10 +191,16 @@ export const usePlanillaStore = () => {
 	};
 	// Colaboradores con contrato (planilla): el contrato más reciente de cada uno
 	const [dataColaboradoresConContrato, setdataColaboradoresConContrato] = useState([]);
-	const obtenerColaboradoresConContrato = async (id_enterprice) => {
+	const ultimaConsultaContratos = useRef(0);
+	const obtenerColaboradoresConContrato = async (id_enterprice, mes, anio) => {
+		// al cambiar de mes rápido, solo vale la última respuesta; nunca se muestran datos de otro mes
+		const consulta = ++ultimaConsultaContratos.current;
+		setdataColaboradoresConContrato([]);
 		try {
-			const { data } = await PTApi.get(`/recursosHumanos/colaboradores-con-contrato/${id_enterprice}`);
-			setdataColaboradoresConContrato(data);
+			const { data } = await PTApi.get(`/recursosHumanos/colaboradores-con-contrato/${id_enterprice}`, {
+				params: { mes, anio },
+			});
+			if (consulta === ultimaConsultaContratos.current) setdataColaboradoresConContrato(data);
 		} catch (error) {
 			console.log(error);
 		}

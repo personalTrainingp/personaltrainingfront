@@ -1,7 +1,7 @@
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import { useForm } from '@/hooks/useForm'
 import { Dialog } from 'primereact/dialog'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { Col, Row } from 'react-bootstrap'
 import styled from 'styled-components'
 import Select from 'react-select'
@@ -16,11 +16,16 @@ const registerFile = {
 const registerArchivo={
     imgAvatar_BASE64: ''
 }
-export const ModalCustomArchivo = ({uid_location, show, onHide, id}) => {
+export const ModalCustomArchivo = ({uid_location, show, onHide, doc}) => {
   const [file, setfile] = useState(null)
-  const { formState, id_tipo_doc, titulo, observacion, onInputChangeReact, onInputChange, onResetForm } = useForm(registerFile)
+  const formInicial = useMemo(()=>doc ? {
+    id_tipo_doc: doc.id_tipo_doc,
+    observacion: doc.observacion ?? '',
+    titulo: doc.titulo ?? '',
+  } : registerFile, [doc])
+  const { formState, id_tipo_doc, titulo, observacion, onInputChangeReact, onInputChange, onResetForm } = useForm(formInicial)
   const { obtenerParametroPorEntidadyGrupo:obtenerTipoDoc, DataGeneral:datatipoDoc } = useTerminoStore()
-  const { onPostArchivCenter } = useCenterArchive()
+  const { onPostArchivCenter, onUpdateArchivo } = useCenterArchive()
   useEffect(() => {
     if(show){
         obtenerTipoDoc('centro-archivo','tipo-archivo-doc-colaboradores')
@@ -29,6 +34,11 @@ export const ModalCustomArchivo = ({uid_location, show, onHide, id}) => {
     
     const onSubmitFile = (e)=>{
         e.preventDefault()
+        if(doc){
+            onUpdateArchivo(doc.id, formState, uid_location)
+            cancelModal()
+            return;
+        }
         if(!file){
             Swal.fire({
                 icon: 'error',
@@ -57,12 +67,12 @@ export const ModalCustomArchivo = ({uid_location, show, onHide, id}) => {
         setfile(file)
     }
   return (
-    <Dialog header='Agregar un documento' style={{width: '30rem'}} visible={show} onHide={cancelModal}>
+    <Dialog header={doc ? 'Editar documento' : 'Agregar un documento'} style={{width: '30rem'}} visible={show} onHide={cancelModal}>
         <DIVContainer>
             {/* <FileUploaderSN fileAccepted={".pdf,.doc,.docx,.txt,.xls,.xlsx,.ppt,.pptx"} onFileUpload={onChangeFileDieta} showPreview={true}/> */}
             <form className="dropzone-box" onSubmit={onSubmitFile}>
             <Row>
-                <Col xxl={12}>
+                {!doc && <Col xxl={12}>
                 <div className="dropzone-area my-2">
                     <div className="file-upload-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2"
@@ -82,7 +92,7 @@ export const ModalCustomArchivo = ({uid_location, show, onHide, id}) => {
                     />
                     <p className="message">{file ? `${file?.name}, ${file?.size} bytes` : "SIN ARCHIVOS SELECCIONADO"}</p>
                 </div>
-                </Col>
+                </Col>}
                 <Col xxl={12}>
                     <div className="mb-2">
                         <label htmlFor="id_tipo_doc" className="form-label">

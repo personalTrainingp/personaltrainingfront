@@ -1,9 +1,10 @@
 import { ImagenUploader } from '@/components/ImagenUploader'
 import { InputButton, InputDate, InputSelect, InputText } from '@/components/InputText'
 import { useForm } from '@/hooks/useForm'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Col, Modal, Row } from 'react-bootstrap'
 import { useEmpleadosStore } from './useEmpleadosStore'
+import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
 import { arrayDistrito, arrayEstadoCivil, arrayNacionalidad, arraySexo, arrayTipoDoc } from '@/types/type'
 const registroEmpleado={
     nombre_empl: '',
@@ -24,7 +25,14 @@ const registroEmpleado={
     departamento_empl: 0,
     salario_empl: 0,
     tipoContrato_empl: 0,
-    horario_empl: ''
+    horario_empl: '',
+    id_turno: null,
+    medidaPolo: '',
+    medidaShort: '',
+    medidaCasaca: '',
+    medidaChompa: '',
+    medidaPantalon: '',
+    medidaBata: '-'
 }
 const registerImgAvatar={
     imgAvatar_BASE64: ''
@@ -45,11 +53,24 @@ export const ModalCustomEmpleado = ({show, onHide, id, isCopy, id_empresa, id_es
     email_empl,
     telefono_empl,
     cargo_empl,
-    departamento_empl } = useForm(registroEmpleado)
+    departamento_empl,
+    id_turno,
+    medidaPolo,
+    medidaShort,
+    medidaCasaca,
+    medidaChompa,
+    medidaPantalon,
+    medidaBata } = useForm(registroEmpleado)
     const [selectedAvatar, setselectedAvatar] = useState(null)
     const { formState: formStateAvatar, onFileChange: onRegisterFileChange, onResetForm:resetFile } = useForm(registerImgAvatar)
     const [showLoading, setshowLoading] = useState(false)
     const { postEmpleado } = useEmpleadosStore()
+    const { obtenerParametroPorEntidadyGrupo:obtenerTurnos, DataGeneral:dataTurnos } = useTerminoStore()
+    useEffect(() => {
+        if(show){
+            obtenerTurnos('empleado', 'turno')
+        }
+    }, [show])
     const ViewDataImg = (e) => {
         setselectedAvatar(e.target.files[0])
     };
@@ -153,6 +174,44 @@ export const ModalCustomEmpleado = ({show, onHide, id, isCopy, id_empresa, id_es
                             <Col lg={4}>
                                 <div className='mb-2'>
                                     <InputText label={'TELEFONO'} nameInput={'telefono_empl'} value={telefono_empl} onChange={onInputChange} required/>
+                                </div>
+                            </Col>
+                            <Col lg={4}>
+                                <div className='mb-2'>
+                                    <InputSelect label={'TURNO'} nameInput={'id_turno'} value={id_turno} onChange={onInputChange} options={dataTurnos}/>
+                                </div>
+                            </Col>
+                        </Row>
+                        <h4 className='mt-3 mb-2'>Medidas</h4>
+                        <Row>
+                            <Col lg={4}>
+                                <div className='mb-2'>
+                                    <InputText label={'POLO'} nameInput={'medidaPolo'} value={medidaPolo} onChange={onInputChange} maxLength={20}/>
+                                </div>
+                            </Col>
+                            <Col lg={4}>
+                                <div className='mb-2'>
+                                    <InputText label={'SHORT'} nameInput={'medidaShort'} value={medidaShort} onChange={onInputChange} maxLength={20}/>
+                                </div>
+                            </Col>
+                            <Col lg={4}>
+                                <div className='mb-2'>
+                                    <InputText label={'CASACA'} nameInput={'medidaCasaca'} value={medidaCasaca} onChange={onInputChange} maxLength={20}/>
+                                </div>
+                            </Col>
+                            <Col lg={4}>
+                                <div className='mb-2'>
+                                    <InputText label={'CHOMPA'} nameInput={'medidaChompa'} value={medidaChompa} onChange={onInputChange} maxLength={20}/>
+                                </div>
+                            </Col>
+                            <Col lg={4}>
+                                <div className='mb-2'>
+                                    <InputText label={'PANTALON'} nameInput={'medidaPantalon'} value={medidaPantalon} onChange={onInputChange} maxLength={20}/>
+                                </div>
+                            </Col>
+                            <Col lg={4}>
+                                <div className='mb-2'>
+                                    <InputText label={'BATA'} nameInput={'medidaBata'} value={medidaBata} onChange={onInputChange} maxLength={20}/>
                                 </div>
                             </Col>
                         </Row>

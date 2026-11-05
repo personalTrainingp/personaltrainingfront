@@ -38,7 +38,7 @@ export const DataTableContratos = ({id_empleado, onOpenModalCustomCalendarioJorn
         </>
       )
     }},
-    {id: 1, header: 'FECHA DESDE', render: (row)=>{
+    {id: 1, header: 'INGRESO', render: (row)=>{
       return (
         <>
         {formatFecha(row.fecha_inicio)}

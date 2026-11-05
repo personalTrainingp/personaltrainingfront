@@ -16,7 +16,7 @@ import { Link } from 'react-router-dom';
   const qs = `?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   return `mailto:${email}${qs}`;
 };
-export const DataTableGestionEmpleados = ({id_empresa, id_estado}) => {
+export const DataTableGestionEmpleados = ({id_empresa, id_estado, editandoOrden, ordenes, onChangeOrden}) => {
     const { obtenerEmpleadosxidempresaxEstado, obtenerDocumentosDeEmpleados, dataDocumentosInternosEmpl, dataParientes, obtenerParientesEmpleados, } = useEmpleadosStore()
     const { dataView } = useSelector(e=>e.COLABORADORES)
     useEffect(() => {
@@ -25,7 +25,20 @@ export const DataTableGestionEmpleados = ({id_empresa, id_estado}) => {
         obtenerParientesEmpleados()
     }, [id_empresa, id_estado])
     const columns = [
-        {id: 0, header: '', render:(rowData, i)=>{
+        {id: 0, header: editandoOrden ? 'ORDEN' : '', render:(rowData, i)=>{
+        if(editandoOrden){
+            return(
+                <input
+                    className='form-control'
+                    style={{width: '80px'}}
+                    inputMode='numeric'
+                    maxLength={6}
+                    aria-label={`Orden de ${rowData.nombre_empl}`}
+                    value={ordenes[rowData.id_empl] ?? rowData.orden ?? ''}
+                    onChange={(e)=>onChangeOrden(rowData.id_empl, e.target.value.replace(/\D/g, ''))}
+                />
+            )
+        }
         return(
             <div className=''>
                 {i+1}

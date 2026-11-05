@@ -172,8 +172,8 @@ export const ReporteAsistencia = ({uid_empl, avatarImage}) => {
                         <thead className="bg-primary">
                             <tr>
                                 <th className='text-white p-1'>ID</th>
-                                <th className='text-white p-1'>FECHA DESDE</th>
-                                <th className='text-white p-1'>SUELDO <SymbolSoles/></th>
+                                <th className='text-white p-1'>INGRESO</th>
+                                <th className='text-white p-1'>HONORARIO <SymbolSoles/></th>
                                 <th className='text-white p-1'>TIPO DE PAGO</th>
                                 <th className='text-white p-1'>VER ASISTENCIA</th>
                                 <th className='text-white p-1'>VER NOMINA</th>

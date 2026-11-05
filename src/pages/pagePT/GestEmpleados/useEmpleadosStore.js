@@ -61,6 +61,19 @@ export const useEmpleadosStore = () => {
 			console.log(error);
 		}
 	};
+	const actualizarOrdenEmpleados = async (cambios, id_empresa, id_estado) => {
+		let guardado = true;
+		try {
+			await Promise.all(
+				cambios.map(({ id, orden }) => PTApi.put(`/empleado/id/${id}`, { orden }))
+			);
+		} catch (error) {
+			console.log(error);
+			guardado = false;
+		}
+		await obtenerEmpleadosxidempresaxEstado(id_empresa, id_estado);
+		return guardado;
+	};
 	const deleteEmpleadoxID = async (id, id_empresa, id_estado) => {
 		try {
 			const { data } = await PTApi.put(`/empleado/delete/id/${id}`);
@@ -71,6 +84,7 @@ export const useEmpleadosStore = () => {
 	};
 	return {
 		obtenerEmpleadosxidempresaxEstado,
+		actualizarOrdenEmpleados,
 		deleteEmpleadoxID,
 		updateEmpleadoxID,
 		obtenerParientesEmpleados,

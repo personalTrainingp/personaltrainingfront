@@ -3,6 +3,7 @@ import { useFlujoCaja } from './hook/useFlujoCajaStore';
 import { Table } from 'react-bootstrap';
 import dayjs from 'dayjs';
 import { NumberFormatMoney } from '@/components/CurrencyMask';
+import { getCuotaMonto } from '@/types/type';
 import { obtenerAnioMesDiaActualPeru } from './helpers/fechaPeru';
 
 // Suma un campo (o el resultado de una función) de un array de meses
@@ -50,7 +51,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
         const dataGastoBolsa = dataGastosxFecha.flujoxGrupo.filter(f=>f.id===idGrupoGastoBolsa).flatMap(e=>e.itemsxDia).filter(e=>e?.mes===f?.mes).flatMap(e=>e.items);
         const dataIngresos = dataIngresosxFecha.flujoxGrupo.filter(f=>f.grupo!=='PRESTAMOS A TERCEROS').filter(f=>f.id!==idGrupoIngresoBolsa).flatMap(e=>e.itemsxDia).filter(e=>e?.mes===f?.mes).flatMap(e=>e.items);
         const dataIngresosExcepcionales = dataIngresosxFecha.flujoxGrupo.filter(f=>f.id===idGrupoIngresoBolsa).flatMap(e=>e.itemsxDia).filter(e=>e?.mes===f?.mes).flatMap(e=>e.items);
-        const cuotas = getQuotaParaMes(f?.mes, f.anio)?.meta
+        const cuotas = getCuotaMonto(f?.mes, f.anio)
         // true si esta fila-mes es el mes en curso (se usa para resaltar la
         // columna y para las secciones "en vivo" que muestran el proyectado).
         const esMesActual = `${f?.mes}-${f.anio}`===`${mesActual}-${anioActual}`
@@ -133,6 +134,13 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
 
     const ingresosAcumulados = totalIngresos
     const utilidadBrutaTotal = totalIngresos - totalGastos
+    // RESULTADO ANUAL (TOTAL de EGRESOS y de UTILIDAD / PERDIDA): solo meses cerrados
+    // (hasta mesActual-1, sin el mes actual ni los siguientes), gastos reales + gastos proyectados
+    const egresosConProyectadoTotal = sumarCampo(dataAlterMesCompleto, (item)=>item.sumaGastos + item.sumaProyectado)
+    const utilidadConProyectadoTotal = totalIngresos - egresosConProyectadoTotal
+    // TOTAL ULTIMA LINEA = TOTAL UTILIDAD - TOTAL BONO GERENCIAS; y su % sobre TOTAL INGRESOS
+    const utilidadUltimaLineaTotal = utilidadConProyectadoTotal - totalGastos1272
+    const porcentajeUltimaLineaTotal = totalIngresos ? (utilidadUltimaLineaTotal*100)/totalIngresos : 0
     // Nota: a diferencia de los demás totales, este usa dataAlter (todos los
     // meses, incluido el actual) para los gastos — así estaba en el original.
     const utilidadNetaTotal = (totalIngresos + totalIngresosExcepcional) - sumarCampo(dataAlter, 'sumaGastos')
@@ -150,6 +158,12 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
     const divisorIngresosExcepcional = encontrarFechas(anioElegido, dataAlter.filter(f=>f.sumaIngresosExcepcional!=0).length)
     const divisorNoPagados = encontrarFechas(anioElegido, dataAlter.filter(f=>f.sumaNoPagados!=0).length)
 
+    // PROMEDIO MENSUAL de RESULTADO ANUAL: entre los meses ya cerrados del año
+    // actual (mesActual - 1); 2024 entre 4;
+    // los demás años anteriores, entre los 12 meses.
+    const divisorResultadoAnual = anioElegido===anioActual
+        ? Math.max(mesActual-1, 1)
+        : anioElegido===2024 ? 4 : 12
     // Resalta la columna del mes en curso con el color pastel de la empresa
     // (mismo `bg-${id_enterprice}-pastel` que ya se usaba en cada `<td>`).
     const claseMesActual = (esMesActual) => esMesActual ? `bg-${id_enterprice}-pastel` : ''
@@ -203,7 +217,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                   </div></td>
                           <td className={`text-end border-right-10 fs-1 text-center`}>
                             <div className='text-end' style={{fontSize: '30px'}}>
-                    <NumberFormatMoney className='fs-1' amount={totalCuotas/divisorIngresos}/>
+                    <NumberFormatMoney className='fs-1' amount={totalCuotas/divisorResultadoAnual}/>
                   </div></td>
                   </tr> 
                 )
@@ -226,7 +240,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                 </td>
                 <td className='border-right-10'>
                   <div className='text-end'>
-                    <NumberFormatMoney className='fs-1' amount={totalIngresos/divisorIngresos}/>
+                    <NumberFormatMoney className='fs-1' amount={totalIngresos/divisorResultadoAnual}/>
                   </div>
                 </td>
               </tr>
@@ -272,12 +286,13 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                 }
                 <td className='border-left-10 border-right-10'>
                   <div className='text-change text-end '>
-                    <NumberFormatMoney className='fs-1' amount={-totalGastos}/>
+                    {/* TOTAL EGRESOS = gastos reales + gastos proyectados hasta mesActual-1 */}
+                    <NumberFormatMoney className='fs-1' amount={-egresosConProyectadoTotal}/>
                   </div>
                 </td>
                 <td className='border-right-10 '>
                   <div className='text-change text-end '>
-                    <NumberFormatMoney className='fs-1' amount={-totalGastos/divisorGastos}/>
+                    <NumberFormatMoney className='fs-1' amount={-egresosConProyectadoTotal/divisorResultadoAnual}/>
                   </div>
                 </td>
               </tr>
@@ -312,11 +327,12 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                   })
                 }
                 <td className='border-left-10 border-right-10'>
-                  <div className={`${utilidadBrutaTotal>0?'text-ISESAC':'text-change'} text-end`} ><NumberFormatMoney className='fs-1' amount={utilidadBrutaTotal}/></div>
+                  {/* TOTAL UTILIDAD = ingresos - (gastos reales + gastos proyectados) hasta mesActual-1 */}
+                  <div className={`${utilidadConProyectadoTotal>0?'text-ISESAC':'text-change'} text-end`} ><NumberFormatMoney className='fs-1' amount={utilidadConProyectadoTotal}/></div>
                 </td>
                 <td className='border-right-10'>
-                  <div className={`${utilidadBrutaTotal>0?'text-ISESAC':'text-change'} text-end`}>
-                    <NumberFormatMoney className='fs-1' amount={(totalIngresos-totalGastos)/divisorGastos}/>
+                  <div className={`${utilidadConProyectadoTotal>0?'text-ISESAC':'text-change'} text-end`}>
+                    <NumberFormatMoney className='fs-1' amount={utilidadConProyectadoTotal/divisorResultadoAnual}/>
                   </div>
                 </td>
               </tr>
@@ -345,7 +361,7 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                           </td>
                           <td className={`text-end border-right-10`}>
                             <div className={`${utilidadBrutaTotal>0?'text-change':'text-change'}`}>
-                              <NumberFormatMoney className={'fs-1'} amount={-((totalGastos1272)/divisorGastosMesCompleto)}/>
+                              <NumberFormatMoney className={'fs-1'} amount={-((totalGastos1272)/divisorResultadoAnual)}/>
                             </div>
                           </td>
                   </tr>
@@ -381,17 +397,13 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                   })
                 }
                 <td className='border-left-10 border-right-10  '>
-                  <div className={`${utilidadBrutaTotal>0?'text-ISESAC':'text-change'} text-end`} >
-                    <NumberFormatMoney className='fs-1' amount={
-                      -(totalGastos1272)
-                      +(totalIngresos-totalGastos)
-                      }/></div>
+                  {/* TOTAL ULTIMA LINEA = TOTAL UTILIDAD / PERDIDA - TOTAL BONO GERENCIAS */}
+                  <div className={`${utilidadUltimaLineaTotal>0?'text-ISESAC':'text-change'} text-end`} >
+                    <NumberFormatMoney className='fs-1' amount={utilidadUltimaLineaTotal}/></div>
                 </td>
                 <td className='border-right-10'>
-                  <div className={`${utilidadBrutaTotal>0?'text-ISESAC':'text-change'} text-end`}>
-                    <NumberFormatMoney className='fs-1' amount={
-                      (-(totalGastos1272)
-                      +(totalIngresos-totalGastos))/divisorGastosMesCompleto}/>
+                  <div className={`${utilidadUltimaLineaTotal>0?'text-ISESAC':'text-change'} text-end`}>
+                    <NumberFormatMoney className='fs-1' amount={utilidadUltimaLineaTotal/divisorResultadoAnual}/>
                   </div>
                 </td>
               </tr>
@@ -420,13 +432,12 @@ export const ViewResumenTotal = ({fechas, id_enterprice, bgTotal, bgPastel, anio
                         )
                       })
                     }
-                      <td className={`text-end border-left-10 border-bottom-10 border-right-10`}><div className={`fs-1 ${(utilidadNetaTotal/ingresosAcumulados)>0?'text-ISESAC':'text-change'}`}>
-                      <NumberFormatMoney className='fs-1' amount={(((-(totalGastos1272)
-                          +(totalIngresos-totalGastos))*100)/totalIngresos)}/> %</div></td>
-                      <td className={`text-end border-right-10 border-bottom-10`}><div className={`fs-1 ${(utilidadNetaTotal&&ingresosAcumulados)&&(utilidadNetaTotal/ingresosAcumulados)>0?'text-ISESAC':'text-change'}`}><NumberFormatMoney className='fs-1' amount={(((-(totalGastos1272)
-                          +(totalIngresos-totalGastos))*100)/totalIngresos)}/> 
+                      {/* TOTAL % = TOTAL ULTIMA LINEA * 100 / TOTAL INGRESOS */}
+                      <td className={`text-end border-left-10 border-bottom-10 border-right-10`}><div className={`fs-1 ${porcentajeUltimaLineaTotal>0?'text-ISESAC':'text-change'}`}>
+                      <NumberFormatMoney className='fs-1' amount={porcentajeUltimaLineaTotal}/> %</div></td>
+                      <td className={`text-end border-right-10 border-bottom-10`}><div className={`fs-1 ${porcentajeUltimaLineaTotal>0?'text-ISESAC':'text-change'}`}><NumberFormatMoney className='fs-1' amount={porcentajeUltimaLineaTotal}/>
                         {/* (-(totalGastos1272)
-                          +(totalIngresos-totalGastos))/divisorGastosMesCompleto
+                          +(totalIngresos-totalGastos))/divisorResultadoAnual
                         */}
                         %</div></td>
                   </tr> 
@@ -856,107 +867,3 @@ function encontrarFechas(anio, a=0) {
 // }
 return 8;
 }
-
-
-const getQuotaParaMes = (monthIndex, year) => {
-  const y = year;
-  const m = monthIndex;
-  switch (`${m}-${y}`) {
-    case "8-2026":
-      return {
-        meta: 80000,
-      };
-    case "7-2026":
-      return {
-        meta: 80000,
-      };
-    case "6-2026":
-      return {
-        meta: 80000,
-      };
-    case "5-2026":
-      return {
-        meta: 80000,
-      };
-    case "4-2026":
-      return {
-        meta: 80000,
-      };
-    case "3-2026":
-      return {
-        meta: 100000,
-      };
-    case "2-2026":
-      return {
-        meta: 80000,
-      };
-    case "1-2026":
-      return {
-        meta: 110000,
-      };
-    case "12-2025":
-      return {
-        meta: 90000,
-      };
-
-    case "11-2025":
-      return {
-        meta: 90000,
-      };
-
-    case "10-2025":
-      return {
-        meta: 85000,
-      };
-
-    case "9-2025":
-      return {
-        meta: 75000,
-      };
-
-    case "8-2025":
-      return {
-        meta: 70000,
-      };
-
-    case "7-2025":
-      return {
-        meta: 60000,
-      };
-
-    case "6-2025":
-      return {
-        meta: 60000,
-      };
-
-    case "5-2025":
-      return {
-        meta: 60000,
-      };
-
-    case "4-2025":
-      return {
-        meta: 60000,
-      };
-
-    case "3-2025":
-      return {
-        meta: 60000,
-      };
-
-    case "2-2025":
-      return {
-        meta: 60000,
-      };
-
-    case "1-2025":
-      return {
-        meta: 60000,
-      };
-
-    default:
-      return {
-        meta: 0,
-      };
-  }
-};

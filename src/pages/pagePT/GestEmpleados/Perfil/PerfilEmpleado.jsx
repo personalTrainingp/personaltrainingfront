@@ -13,10 +13,7 @@ import { Image } from 'primereact/image';
 import { TabPanel, TabView } from 'primereact/tabview';
 import { ScrollPanel } from 'primereact/scrollpanel';
 import { ReporteAsistencia } from './ReporteAsistencia';
-import { PanelPermisos } from './PanelPermisos';
-import { PanelHorasExtras } from './PanelHorasExtras';
-import { PanelTardanzasJustificadas } from './PanelTardanzasJustificadas';
-import { PanelSalidasTempranas } from './PanelSalidasTempranas';
+import { PanelTiemposEspeciales } from './PanelTiemposEspeciales';
 import { App as AppParientes } from './Parientes/App';
 import { App as AppDocumentosAdjuntos } from './DocumentosAdjuntos/App';
 import { App as AppContratos } from './Contrato/AppContrato';
@@ -57,7 +54,8 @@ export const PerfilEmpleado = () => {
                             <div className='m-2 text-center'>
                                 <span className='fs-3 fw-bold'>
                                     <p className='mb-0 pb-0'>
-          <span className='fs-1 fw-bold'><p className='mb-0 pb-0'>{userEmpleado.nombre_empl} {userEmpleado.apPaterno_empl} {userEmpleado.apMaterno_empl}</p></span>
+                                    <span className='fs-1 fw-bold'>
+                                      <p className='mb-0 pb-0'>{userEmpleado.nombre_empl} <br/> <span className={'mx-2'}>{userEmpleado.apPaterno_empl}</span>  {userEmpleado.apMaterno_empl}</p></span>
                                     </p>
                                     </span>
                                 {/* <span className='text-center'>{proveedor.estado_prov? */}
@@ -111,16 +109,16 @@ export const PerfilEmpleado = () => {
                                 <ReporteAsistencia uid_empl={uid} avatarImage={avatarImage}/>
                                   </TabPanel>
                                   <TabPanel header={'PERMISOS'}>
-                                    <PanelPermisos/>
+                                    <PanelTiemposEspeciales entidad='permiso' id_colaborador={userEmpleado.id_empl} id_empresa={userEmpleado.id_empresa}/>
                                   </TabPanel>
                                   <TabPanel header={'TARDANZAS JUSTIFICADAS'}>
-                                    <PanelTardanzasJustificadas/>
+                                    <PanelTiemposEspeciales entidad='tardanza' id_colaborador={userEmpleado.id_empl} id_empresa={userEmpleado.id_empresa}/>
                                   </TabPanel>
                                   <TabPanel header={'HORAS EXTRAS'}>
-                                    <PanelHorasExtras/>
+                                    <PanelTiemposEspeciales entidad='hora-extra' id_colaborador={userEmpleado.id_empl} id_empresa={userEmpleado.id_empresa}/>
                                   </TabPanel>
                                   <TabPanel header={'SALIDAS TEMPRANAS'}>
-                                    <PanelSalidasTempranas/>
+                                    <PanelTiemposEspeciales entidad='salida-temprana' id_colaborador={userEmpleado.id_empl} id_empresa={userEmpleado.id_empresa}/>
                                   </TabPanel>
                                 </TabView>
                             </TabPanel>

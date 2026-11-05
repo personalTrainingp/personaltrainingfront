@@ -30,7 +30,7 @@ export const DataTableMetas = ({label, data, arrayFechas=[], corte, nombreCatego
         const dataMetaFiltradaMes =  dataCuotaMetaDelMes?.filter((f)=>f.mes===arr.mes && f.anio===arr.anio)
         const montoTotal = dataFiltradaMes?.reduce((total, item) => total + (item?.montoTotal || 0), 0)
         const montoCorte = dataCorte?.reduce((total, item) => total + (item?.montoTotal || 0), 0)
-        const montoMeta = dataMetaFiltradaMes?.reduce((total, item) => total + (item?.meta || 0), 0)
+        const montoMeta = dataMetaFiltradaMes?.reduce((total, item) => total + (item?.monto || 0), 0)
         return {
             ...arr,
             montoTotal,

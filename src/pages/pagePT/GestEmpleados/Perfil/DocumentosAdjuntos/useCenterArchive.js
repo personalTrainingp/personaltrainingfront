@@ -27,7 +27,25 @@ export const useCenterArchive = () => {
 			console.log(error);
 		}
 	};
+	const onUpdateArchivo = async (id, formState, uid_location) => {
+		try {
+			await PTApi.put(`/fils/interno/center/id/${id}`, formState);
+			await obtenerArchivCenterxUidLocation(uid_location);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const onDeleteArchivo = async (id, uid_location) => {
+		try {
+			await PTApi.put(`/fils/interno/center/delete/id/${id}`);
+			await obtenerArchivCenterxUidLocation(uid_location);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	return {
+		onUpdateArchivo,
+		onDeleteArchivo,
 		onPostArchivCenter,
 		obtenerArchivCenterxUidLocation,
 	};
