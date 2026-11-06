@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Card, Col, Dropdown, Modal, ProgressBar, Row, Spinner, Table } from 'react-bootstrap'
+import { Button, Card, Col, Dropdown, Modal, ProgressBar, Row, Spinner, Table } from 'react-bootstrap'
 import { TabPanel, TabView } from 'primereact/tabview'
 import { useSelector } from 'react-redux'
 import dayjs from 'dayjs'
@@ -110,6 +110,16 @@ export const ModalReporteTareas = ({show, onHide}) => {
   const [filtroTarea, setfiltroTarea] = useState(null)
   const [tabActivo, settabActivo] = useState(0)
   const [ordenColumna, setordenColumna] = useState(null)
+  // Boton HOY: la tabla muestra solo las tareas de hoy
+  const [soloHoy, setsoloHoy] = useState(false)
+  const onClickHoy = ()=>{
+    // hoy siempre pertenece al mes actual
+    if (!soloHoy) {
+      setmes(dayjs().month() + 1)
+      setanio(dayjs().year())
+    }
+    setsoloHoy(!soloHoy)
+  }
   const [mes, setmes] = useState(()=>dayjs().month() + 1)
   const [anio, setanio] = useState(()=>dayjs().year())
   const anios = Array.from({length: dayjs().year() - ANIO_INICIAL + 1}, (_, i)=>ANIO_INICIAL + i)
@@ -119,6 +129,7 @@ export const ModalReporteTareas = ({show, onHide}) => {
       setfiltroTarea(null)
       settabActivo(0)
       setordenColumna(null)
+      setsoloHoy(false)
       setmes(dayjs().month() + 1)
       setanio(dayjs().year())
     }
@@ -154,8 +165,8 @@ export const ModalReporteTareas = ({show, onHide}) => {
         </Modal.Header>
         <Modal.Body>
             <div className='d-flex align-items-center gap-3 flex-wrap mb-3'>
-                <SelectorTexto id='reporteTareasMes' valor={mes} onChange={setmes} opciones={MESES.map((nombre, i)=>({value: i + 1, label: nombre}))}/>
-                <SelectorTexto id='reporteTareasAnio' valor={anio} onChange={setanio} opciones={anios.map(a=>({value: a, label: a}))}/>
+                <SelectorTexto id='reporteTareasMes' valor={mes} onChange={(valor)=>{setmes(valor); setsoloHoy(false)}} opciones={MESES.map((nombre, i)=>({value: i + 1, label: nombre}))}/>
+                <SelectorTexto id='reporteTareasAnio' valor={anio} onChange={(valor)=>{setanio(valor); setsoloHoy(false)}} opciones={anios.map(a=>({value: a, label: a}))}/>
             </div>
             {
                 isLoadingTareasReporte ? (
@@ -167,7 +178,10 @@ export const ModalReporteTareas = ({show, onHide}) => {
                         {
                             asesores.map((a)=>{
                                 const tareasDelMes = filtrarPorMes(a.tareas, mes, anio)
-                                const tareasFiltradas = aplicarOrdenColumna(filtroTarea ? tareasDelMes.filter(t=>t.id_tarea===filtroTarea) : tareasDelMes, ordenColumna)
+                                const tareasFiltradas = aplicarOrdenColumna(
+                                    tareasDelMes.filter(t=>(!filtroTarea || t.id_tarea===filtroTarea) && (!soloHoy || diasDesdeHoy(t)===0)),
+                                    ordenColumna
+                                )
                                 const tipoFiltro = arrayTareasComercial.find(e=>e.value===filtroTarea)
                                 const ultimaMeta = dataUltimasMetas.find(m=>m.id_asesor===a.id_empl)
                                 const timing = ultimaMeta && calcularTiming(ultimaMeta)
@@ -245,9 +259,12 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                                 </div>
                                             )
                                         }
+                                        <div className='mb-2'>
+                                            <Button variant={soloHoy ? 'primary' : 'outline-primary'} className='fw-bold' aria-pressed={soloHoy} onClick={onClickHoy}>HOY</Button>
+                                        </div>
                                         {
                                             tareasFiltradas.length === 0 ? (
-                                                <div className='text-center text-muted py-4'>{tipoFiltro ? 'NO HAY TAREAS DE ESTE TIPO EN ESTE MES' : 'NO HAY TAREAS EN ESTE MES'}</div>
+                                                <div className='text-center text-muted py-4'>{`NO HAY TAREAS ${tipoFiltro ? 'DE ESTE TIPO ' : ''}${soloHoy ? 'PARA HOY' : 'EN ESTE MES'}`}</div>
                                             ) : (
                                                 <Table responsive striped hover size='sm' className='mb-0'>
                                                     <thead>
