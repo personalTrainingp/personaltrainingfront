@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Form, Table } from 'react-bootstrap'
+import { Button, Form, Table } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
@@ -10,6 +10,7 @@ import config from '@/config'
 import sinAvatar from '@/assets/images/sinPhoto.jpg'
 import { ModalReportAsistencia } from '../GestEmpleados/Perfil/ModalReportAsistencia'
 import { MESES } from '../reportes/resumenEjecutivo/hooks/useResumenUtils'
+import { exportarPlanillaExcel } from './exportarPlanillaExcel'
 dayjs.extend(utc)
 
 const formatFecha = (fecha)=> fecha ? dayjs.utc(fecha).format('DD/MM/YYYY') : '-'
@@ -78,6 +79,22 @@ const agruparPorConcepto = (data)=>{
     )
 }
 const sumar = (filas, valorDe)=> filas.reduce((total, c)=>total + (Number(valorDe(c)) || 0), 0)
+const nombreCompletoDe = (c)=> [c.nombre_empl, c.apPaterno_empl, c.apMaterno_empl].filter(Boolean).join(' ')
+// Valores de la fila en el Excel: lo mismo que muestra la tabla, con los montos como números
+const filaExcelDe = (c, numero)=>({
+    numero,
+    colaborador: nombreCompletoDe(c),
+    cargo: arrayCargoEmpl.find(f=>f.value===Number(c.cargo_empl))?.label,
+    honorario: c.sueldo!=null ? Number(c.sueldo) : null,
+    costoDia: c.sueldo!=null ? Number(c.sueldo) / DIAS_MES : null,
+    diasNoAsistio: diasNoAsistioDe(c) === null ? 'SIN HORARIO' : diasNoAsistioDe(c),
+    descuento: descuentoDe(c),
+    minutosTardanza: c.minutos_tardanza === null ? 'SIN HORARIO' : c.minutos_tardanza,
+    descuentoTardanza: descuentoTardanzaDe(c),
+    salidasSinGoce: c.minutos_salida_sin_goce > 0 ? descuentoSalidaDe(c) : null,
+    horasExtras: c.minutos_extra > 0 && c.sueldo!=null ? pagoHorasExtrasDe(c) : null,
+    neto: sueldoNetoDe(c),
+})
 // Fila de columnas: se repite debajo del título de cada concepto
 const CabeceraColumnas = ()=>(
     <tr>
@@ -130,6 +147,15 @@ export const TablePlanilla = () => {
         ...(inactivosVigentes.length > 0 ? [{concepto: INACTIVO_VIGENTE, filas: inactivosVigentes}] : []),
     ]
     const filasEnOrden = grupos.flatMap(g=>g.filas)
+    const onDescargarExcel = ()=>{
+        const gruposExcel = grupos.map(({concepto, filas})=>({
+            concepto,
+            filas: filas.map(c=>filaExcelDe(c, filasEnOrden.indexOf(c)+1)),
+        }))
+        const nombreMes = MESES[mes - 1].toUpperCase()
+        exportarPlanillaExcel(`PLANILLA - ${nombreMes} ${anio}`, gruposExcel, `PLANILLA_${nombreMes}_${anio}.xlsx`)
+            .catch((err)=>console.log(err))
+    }
 
   return (
     <div>
@@ -154,7 +180,7 @@ export const TablePlanilla = () => {
                 </div>
             )}
         </div> */}
-        <div className='d-flex gap-3 mb-3'>
+        <div className='d-flex align-items-end gap-3 mb-3'>
             <Form.Group controlId='planillaMes' style={{width: '220px'}}>
                 <Form.Label className='fw-bold fs-5'>MES</Form.Label>
                 <Form.Select value={mes} onChange={(e)=>setmes(Number(e.target.value))} className='fs-5 fw-bold'>
@@ -167,6 +193,9 @@ export const TablePlanilla = () => {
                     {anios.map(a=><option key={a} value={a}>{a}</option>)}
                 </Form.Select>
             </Form.Group>
+            <Button variant='success' className='fs-5 fw-bold' disabled={data.length === 0} onClick={onDescargarExcel}>
+                <i className='pi pi-file-excel me-1'></i>DESCARGAR EXCEL
+            </Button>
         </div>
         <Table className='bg-white mb-0' bordered responsive>
             <thead className='bg-change'>
@@ -188,7 +217,7 @@ export const TablePlanilla = () => {
                             <td className='fs-5'>{filasEnOrden.indexOf(c)+1}</td>
                             <td className='fs-5'>
                                 <Link to={`/perfil-colaborador/${c.uid_empleado}`} className='fw-bold' style={{textDecoration: 'underline'}}>
-                                    {[c.nombre_empl, c.apPaterno_empl, c.apMaterno_empl].filter(Boolean).join(' ')}
+                                    {nombreCompletoDe(c)}
                                 </Link>
                             </td>
                             <td className='fs-5'>{arrayCargoEmpl.find(f=>f.value===Number(c.cargo_empl))?.label ?? '-'}</td>
@@ -269,6 +298,10 @@ export const TablePlanilla = () => {
             onHide={()=>setcontratoAsistencia(null)}
             uid_empl={contratoAsistencia?.uid_empleado}
             id_planilla={contratoAsistencia?.id ?? 0}
+            mes={mes}
+            anio={anio}
+            permisos={contratoAsistencia?.permisos}
+            tardanzasRegistradas={contratoAsistencia?.tardanzas_registradas}
             avatarImage={contratoAsistencia?.avatar ? `${config.API_IMG.AVATAR_EMPL}${contratoAsistencia.avatar}` : sinAvatar}
         />
     </div>

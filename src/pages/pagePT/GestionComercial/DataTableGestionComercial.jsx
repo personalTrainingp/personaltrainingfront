@@ -7,9 +7,16 @@ import { arrayEstadoComercial, arrayNivelInteresComercial } from '@/types/type'
 import dayjs from 'dayjs'
 import 'dayjs/locale/es'
 
-// TIPO de fila: prospecto o socio de seguimiento (activo / inactivo)
-const tipoFila = (row)=>!row.esSocio ? 'PROSPECTO' : row.activo ? 'ACTIVO' : 'INACTIVO'
+// TIPO de fila: socio de seguimiento (activo / inactivo) o lead; el backend da el tipo del lead:
+// sin cliente PROSPECTO; con cliente ACTIVO si tiene membresia vigente hoy, si no INACTIVO
+const tipoFila = (row)=>row.esSocio ? (row.activo ? 'ACTIVO' : 'INACTIVO') : row.tipo ?? 'PROSPECTO'
 const colorTipo = { PROSPECTO: '#7b2cbf', ACTIVO: '#198754', INACTIVO: '#dc3545' }
+// Con cliente vinculado se muestran sus datos; si le falta alguno, el del lead.
+// Solo para mostrar: row.nombres / apellidos / celular no se cambian porque el modal EDITAR los guarda en el lead
+const limpio = (valor)=>String(valor ?? '').trim()
+const nombresDe = (row)=>limpio(row.cliente?.nombre_cli) || row.nombres
+const apellidosDe = (row)=>[row.cliente?.apPaterno_cli, row.cliente?.apMaterno_cli].map(limpio).filter(Boolean).join(' ') || row.apellidos
+const celularDe = (row)=>limpio(row.cliente?.tel_cli) || row.celular
 
 export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGestionComercial, onOpenModalTareas, onOpenModalMembresias, filtroEstado, filtroAsesor, filtroFecha, filtroTipo}) => {
   const { obtenerGestionComercial, validarEdicionLead, obtenerSociosActivosSinProspecto, dataSociosSinProspecto } = useGestionComercialStore()
@@ -25,10 +32,16 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
   }, [])
   // socios de seguimiento: se muestran todos, esten o no repetidos en prospectos
   const dataSocios = useMemo(() => {
+    // dataView viene del mas reciente al mas antiguo: si el cliente tiene varios leads, se muestra el ultimo
+    const prospectoxCliente = new Map()
+    ;(dataView ?? []).forEach(e=>{
+      if (e.id_cli && !prospectoxCliente.has(e.id_cli)) prospectoxCliente.set(e.id_cli, e.id)
+    })
     return dataSociosSinProspecto
       .map(c=>({
         esSocio: true,
-        codigo: `CLI${c.id_cli}`,
+        codigo_prospecto: prospectoxCliente.has(c.id_cli) ? `PROS${prospectoxCliente.get(c.id_cli)}` : '',
+        codigo_cliente: `CLI${c.id_cli}`,
         id_cli: c.id_cli,
         // fecha de la venta del seguimiento (ultima membresia)
         fecha_registro: c.fecha_venta,
@@ -42,15 +55,15 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
         // los comentarios del socio van en el cliente (tb_clientes.uid_comentario)
         uid_comentario: c.uid_comentario,
       }))
-  }, [dataSociosSinProspecto])
+  }, [dataSociosSinProspecto, dataView])
   const dataFiltrada = useMemo(() => {
     const prospectos = (dataView ?? []).filter(e=>
       (!filtroEstado || e.parametro_estado?.id_param===filtroEstado) &&
       (!filtroAsesor || (e.id_empl ?? e.empleado?.id_empl)===filtroAsesor) &&
       // filtroFecha: YYYY-MM-DD, comparado en hora local como la columna FECHA
       (!filtroFecha || (e.fecha_registro && dayjs(e.fecha_registro).format('YYYY-MM-DD')===filtroFecha))
-    // codigo: el buscador de la tabla busca en los datos de la fila, asi se puede buscar por PROS<id>
-    ).map(e=>({...e, codigo: `PROS${e.id}`}))
+    // codigos: el buscador de la tabla busca en los datos de la fila, asi se puede buscar por PROS<id> o CLI<id_cli>
+    ).map(e=>({...e, codigo_prospecto: `PROS${e.id}`, codigo_cliente: e.id_cli ? `CLI${e.id_cli}` : ''}))
     // los socios no tienen status/asesor/fecha de prospecto: solo se muestran sin filtros
     const hayFiltros = filtroEstado || filtroAsesor || filtroFecha
     // tipo en la fila para que el buscador encuentre ACTIVO / INACTIVO / PROSPECTO
@@ -60,10 +73,19 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
   }, [dataView, dataSocios, filtroEstado, filtroAsesor, filtroFecha, filtroTipo])
   const columns = [
     {
-      id: 0, header: 'ID', render:(row)=>{
+      id: 0, header: 'CODIGO PROSPECTO', render:(row)=>{
         return (
           <>
-          {row.codigo}
+          {row.codigo_prospecto || '-'}
+          </>
+        )
+      }
+    },
+    {
+      id: 17, header: 'CODIGO SOCIO', render:(row)=>{
+        return (
+          <>
+          {row.codigo_cliente || '-'}
           </>
         )
       }
@@ -98,7 +120,7 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
       id: 3, header: 'NOMBRES', render: (row)=>{
         return (
           <>
-          {row.nombres}
+          {nombresDe(row)}
           </>
         )
       }
@@ -107,7 +129,7 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
       id: 4 , header: 'APELLIDOS', render: (row)=>{
         return (
           <>
-          {row.apellidos}
+          {apellidosDe(row)}
           </>
         )
       }
@@ -127,7 +149,7 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
       id: 5, header: 'CELULAR', render: (row)=>{
         return (
           <>
-          {row.celular}
+          {celularDe(row)}
           </>
         )
       }
@@ -213,15 +235,15 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
   }
   // columnas del "Descargar Excel": DataTableCR solo exporta estas
   const columnsExports = [
-    { id: 'codigo', exportHeader: 'ID', exportValue: (row)=>row.codigo },
+    { id: 'codigo_prospecto', exportHeader: 'CODIGO PROSPECTO', width: 18, exportValue: (row)=>row.codigo_prospecto },
+    { id: 'codigo_cliente', exportHeader: 'CODIGO SOCIO', width: 18, exportValue: (row)=>row.codigo_cliente },
     { id: 'tipo', exportHeader: 'TIPO', width: 12, exportValue: (row)=>tipoFila(row) },
     { id: 'fecha_registro', exportHeader: 'FECHA DE REGISTRO', width: 14, exportValue: (row)=>row.fecha_registro ? dayjs(row.fecha_registro).format('DD/MM/YYYY') : '' },
     { id: 'asesor', exportHeader: 'ASESOR', width: 30, exportValue: (row)=>(row.esSocio ? row.vendedor : row.empleado?.nombres_apellidos_empl) ?? '' },
-    { id: 'nombres', exportHeader: 'NOMBRES', exportValue: (row)=>row.nombres ?? '' },
-    { id: 'apellidos', exportHeader: 'APELLIDOS', width: 25, exportValue: (row)=>row.apellidos ?? '' },
+    { id: 'nombres', exportHeader: 'NOMBRES', exportValue: (row)=>nombresDe(row) ?? '' },
+    { id: 'apellidos', exportHeader: 'APELLIDOS', width: 25, exportValue: (row)=>apellidosDe(row) ?? '' },
     { id: 'socio', exportHeader: 'SOCIO', width: 15, exportValue: (row)=>row.id_cli ? 'CON HISTORIAL' : 'SIN HISTORIAL' },
-    { id: 'id_cli', exportHeader: 'ID_CLI', width: 10, exportValue: (row)=>row.id_cli || '' },
-    { id: 'celular', exportHeader: 'CELULAR', width: 14, exportValue: (row)=>row.celular ?? '' },
+    { id: 'celular', exportHeader: 'CELULAR', width: 14, exportValue: (row)=>celularDe(row) ?? '' },
     { id: 'canal', exportHeader: 'CANAL', exportValue: (row)=>row.parametro_canal?.label_param ?? '' },
     { id: 'programa', exportHeader: 'PROGRAMA', width: 15, exportValue: (row)=>(row.esSocio ? row.name_pgm : [{label: 'CHANGE 45', value: 2}, {label: 'FS 45', value: 3}, {label: 'FISIO MUSCLE', value: 4}].find(e=>e.value===row.id_pgm)?.label) ?? '' },
     { id: 'status', exportHeader: 'STATUS', width: 25, exportValue: (row)=>row.esSocio ? (row.activo ? 'SOCIO ACTIVO' : 'SOCIO INACTIVO') : row.parametro_estado?.label_param ?? '' },

@@ -50,7 +50,10 @@ function restarMinutos(horaInicio, horaFin) {
 // return `${diferencia}`
 
 // }
-export const ModalReportAsistencia = ({show, onHide, uid_empl, id_planilla, avatarImage}) => {
+// mes y anio (opcionales): muestra solo ese mes, del día 1 al último (dentro de las fechas del contrato)
+// permisos (opcional): [{desde, hasta, conGoceSueldo}] en YYYY-MM-DD; en su rango la tardanza es 0
+// tardanzasRegistradas (opcional): [{fecha, minutos, conGoceSueldo}]; sin goce reemplaza los minutos del día y con goce los resta
+export const ModalReportAsistencia = ({show, onHide, uid_empl, id_planilla, avatarImage, mes, anio, permisos = [], tardanzasRegistradas = []}) => {
     const { postPlanillaxEMPL, obtenerAsistenciasxEmpl, obtenerPlanillaxID, obtenerJornadaxPlanilla, dataPlanilla, asistenciaxEmplxPlanilla } = usePlanillaStore()
     const { dataJornadaxEmpl, obtenerJornadaxEmpleado } = useJornadaStore()
     // Horario del contrato (editar jornada); si no tiene, se usa la jornada del colaborador
@@ -58,7 +61,18 @@ export const ModalReportAsistencia = ({show, onHide, uid_empl, id_planilla, avat
     const jornadas = jornadaPlanilla ?? dataJornadaxEmpl
     // sin fecha_hasta el periodo llega hasta hoy
     const fechaHasta = dataPlanilla.fecha_hasta ? dayjs.utc(dataPlanilla.fecha_hasta) : dayjs()
-    const arrayDeDiasxSemana = obtenerDiasPorRango(dayjs.utc(dataPlanilla.fecha_desde).format('DD/MM/YYYY'), fechaHasta.format('DD/MM/YYYY'), asistenciaxEmplxPlanilla, jornadas)
+    const conMes = Boolean(mes && anio)
+    const finMes = conMes ? dayjs(`${anio}-${String(mes).padStart(2, '0')}-01`).endOf('month') : null
+    // con mes: hasta el último día del mes, salvo que el contrato termine antes
+    const contratoTerminaAntes = conMes && dataPlanilla.fecha_hasta && fechaHasta.format('YYYY-MM-DD') < finMes.format('YYYY-MM-DD')
+    const fechaFinal = conMes && !contratoTerminaAntes ? finMes : fechaHasta
+    // Se genera desde el inicio del contrato para no alterar el ciclo de semanas, y luego se recorta al mes
+    const semanasDelContrato = obtenerDiasPorRango(dayjs.utc(dataPlanilla.fecha_desde).format('DD/MM/YYYY'), fechaFinal.format('DD/MM/YYYY'), asistenciaxEmplxPlanilla, jornadas)
+    const arrayDeDiasxSemana = conMes ? filtrarSemanasDelMes(semanasDelContrato, mes, anio) : semanasDelContrato
+    const diasVisibles = arrayDeDiasxSemana.flatMap(s=>s.items)
+    const periodoDesde = conMes ? (diasVisibles[0]?.fecha ?? '-') : dayjs.utc(dataPlanilla.fecha_desde).format('DD/MM/YYYY')
+    const periodoHasta = conMes ? (diasVisibles[diasVisibles.length - 1]?.fecha ?? '-') : fechaHasta.format('DD/MM/YYYY')
+    const hoy = dayjs().format('YYYY-MM-DD')
     useEffect(() => {
         if(id_planilla==0 || !show) return;
         setjornadaPlanilla(null)
@@ -78,8 +92,8 @@ export const ModalReportAsistencia = ({show, onHide, uid_empl, id_planilla, avat
             <div className='d-flex justify-content-center'>
                 <Image src={avatarImage} className='rounded-circle' indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="250" />
             </div>
-          <h4>PERIODO DESDE: {dayjs.utc(dataPlanilla.fecha_desde).format('DD/MM/YYYY')} </h4>
-          <h4>PERIODO HASTA: {fechaHasta.format('DD/MM/YYYY')} </h4>
+          <h4>PERIODO DESDE: {periodoDesde} </h4>
+          <h4>PERIODO HASTA: {periodoHasta} </h4>
           <div>
             <Row>
               <Col xxl={12}>
@@ -119,12 +133,25 @@ export const ModalReportAsistencia = ({show, onHide, uid_empl, id_planilla, avat
                                         const jornadaSalida = dayjs.utc(i.jornadaSalida, 'hh:mm').format('hh:mm A')
                                         const marcacionInicio = dayjs.utc(i.marcacionInicio).format('hh:mm A')
                                         const marcacionFin = dayjs.utc(i.marcacionFin).format('hh:mm A')
-                                        const tardanzas = (!isNaN(restarMinutos( jornadaEntrada, marcacionInicio))&&restarMinutos( jornadaEntrada, marcacionInicio)>0)&& `${restarMinutos( jornadaEntrada, marcacionInicio)} MIN`
+                                        const minutosMarcados = (!isNaN(restarMinutos( jornadaEntrada, marcacionInicio))&&restarMinutos( jornadaEntrada, marcacionInicio)>0)? restarMinutos( jornadaEntrada, marcacionInicio) : 0
                                         const salidasTempranas = (!isNaN(restarMinutos( jornadaSalida, marcacionFin))&&restarMinutos( jornadaSalida, marcacionFin)<0)&& `${-restarMinutos( jornadaSalida, marcacionFin)} MIN`
                                         const diaYfecha = dayjs.utc(i.fecha, 'DD/MM/YYYY').format('dddd DD')
                                         // la asistencia se muestra siempre; tardanza / NO ASISTIÓ solo si ese día tiene horario
                                         const tieneHorario = i.jornadaEntrada!='00:00'
                                         const marco = i.marcacionInicio!='00:00:00'
+                                        // hoy aún puede marcar y los días futuros todavía no llegan: no son falta
+                                        const fechaISO = dayjs.utc(i.fecha, 'DD/MM/YYYY').format('YYYY-MM-DD')
+                                        const pendiente = !marco && fechaISO >= hoy
+                                        const permisosDelDia = permisos.filter(p=>fechaISO >= p.desde && fechaISO <= p.hasta)
+                                        const sumarRegistradas = (conGoce)=> tardanzasRegistradas
+                                            .filter(t=>t.fecha === fechaISO && t.conGoceSueldo === conGoce)
+                                            .reduce((total, t)=>total + t.minutos, 0)
+                                        const minutosTarde = sumarRegistradas(false) || minutosMarcados
+                                        const minutosFinal = Math.max(0, minutosTarde - sumarRegistradas(true))
+                                        const resumenSinPermiso = !marco ? 'NO ASISTIÓ' : (minutosFinal > 0 ? `${minutosFinal} MIN` : '')
+                                        const resumenConPermiso = !marco
+                                            ? (permisosDelDia.some(p=>p.conGoceSueldo) ? 'PERMISO' : 'NO ASISTIÓ')
+                                            : (minutosTarde > 0 ? '0 MIN' : '')
                                         return(
                                                     <tr className=''>
                                                         <th>{diaYfecha}</th>
@@ -133,7 +160,7 @@ export const ModalReportAsistencia = ({show, onHide, uid_empl, id_planilla, avat
                                                         <td>{marco&&marcacionInicio}</td>
                                                         <td>{i.marcacionFin!='00:00:00'&&marcacionFin}</td>
                                                         <td>{i.jornadaEntrada!='00:00'&&restarTiempo(jornadaEntrada, jornadaSalida)}</td>
-                                                        <td>{!tieneHorario?'':!marco?'NO ASISTIÓ': tardanzas}</td>
+                                                        <td>{!tieneHorario||pendiente?'':permisosDelDia.length>0?resumenConPermiso:resumenSinPermiso}</td>
                                                         <td></td>
                                                         <td></td>
                                                         <td></td>
@@ -159,6 +186,15 @@ export const ModalReportAsistencia = ({show, onHide, uid_empl, id_planilla, avat
 
 
 
+
+// Deja solo los días del mes (fecha 'DD/MM/YYYY') y numera las semanas desde 1 dentro de ese mes
+function filtrarSemanasDelMes(semanas, mes, anio) {
+    const mesAnio = `${String(mes).padStart(2, '0')}/${anio}`;
+    return semanas
+        .map((s) => ({ ...s, items: s.items.filter((i) => i.fecha.slice(3) === mesAnio) }))
+        .filter((s) => s.items.length > 0)
+        .map((s, index) => ({ ...s, semana: index + 1 }));
+}
 
 function obtenerDiasPorRango(fechaDesde, fechaHasta, marcaciones, jornadas) {
     const fechaInicio = dayjs(fechaDesde, 'DD/MM/YYYY');

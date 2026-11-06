@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Card, Col, Modal, ProgressBar, Row, Spinner, Table } from 'react-bootstrap'
+import { Card, Col, Dropdown, Modal, ProgressBar, Row, Spinner, Table } from 'react-bootstrap'
 import { TabPanel, TabView } from 'primereact/tabview'
 import { useSelector } from 'react-redux'
 import dayjs from 'dayjs'
@@ -21,13 +21,72 @@ const ResumenItem = ({label, valor, icon, activo, exito, onClick})=>(
   </div>
 )
 
-// Timing: lo que deberia llevar acumulado a hoy = (meta / dias del mes) * dias transcurridos desde el dia 1 (incluye hoy)
+// Timing = cuota / numero del dia de hoy (ej. el dia 6 del mes: cuota / 6)
 const calcularTiming = (meta)=>{
-  const inicio = dayjs(new Date(meta.anio, meta.mes - 1, 1))
-  const diasMeta = inicio.daysInMonth()
-  const diasTranscurridos = Math.min(Math.max(dayjs().startOf('day').diff(inicio, 'day') + 1, 0), diasMeta)
-  return { timing: (meta.meta_asesor / diasMeta) * diasTranscurridos, diasMeta, diasTranscurridos }
+  const diaDelMes = dayjs().date()
+  return { timing: meta.meta_asesor / diaDelMes, diaDelMes }
 }
+
+// Orden del reporte: hoy, luego las proximas (de la mas cercana a la mas lejana) y al final las anteriores (de la mas reciente a la mas antigua)
+const ordenarTareas = (tareas)=>{
+  const hoy = dayjs().format('YYYY-MM-DD')
+  const grupoDe = (t)=>{
+    const fecha = dayjs(t.fecha).format('YYYY-MM-DD')
+    return fecha === hoy ? 0 : fecha > hoy ? 1 : 2
+  }
+  return [...tareas].sort((a, b)=>{
+    const grupoA = grupoDe(a)
+    const diferencia = dayjs(a.fecha).valueOf() - dayjs(b.fecha).valueOf()
+    return grupoA - grupoDe(b) || (grupoA === 2 ? -diferencia : diferencia)
+  })
+}
+
+// Columnas de la tabla: valor es lo que se compara al ordenar con las flechas
+const COLUMNAS_TAREAS = [
+  { key: 'fecha', titulo: 'FECHA', valor: (t)=>dayjs(t.fecha).valueOf() },
+  { key: 'prospecto', titulo: 'PROSPECTO', valor: (t)=>`${t.prospecto.nombres ?? ''} ${t.prospecto.apellidos ?? ''}`.trim() },
+  { key: 'celular', titulo: 'CELULAR', valor: (t)=>t.prospecto.celular },
+  { key: 'estatus', titulo: 'ESTATUS', valor: (t)=>t.prospecto.parametro_estado?.label_param },
+  { key: 'tarea', titulo: 'TAREA', valor: (t)=>arrayTareasComercial.find(e=>e.value===t.id_tarea)?.label ?? `Tarea ${t.id_tarea}` },
+  { key: 'observacion', titulo: 'OBSERVACION', valor: (t)=>t.observacion },
+]
+// orden: {key, direccion: 'asc' | 'desc'}; sin orden queda el predeterminado. Los vacios siempre van al final
+const aplicarOrdenColumna = (tareas, orden)=>{
+  const columna = COLUMNAS_TAREAS.find(c=>c.key === orden?.key)
+  if (!columna) return tareas
+  const signo = orden.direccion === 'asc' ? 1 : -1
+  const vacio = (v)=>v === null || v === undefined || String(v).trim() === ''
+  return [...tareas].sort((a, b)=>{
+    const va = columna.valor(a)
+    const vb = columna.valor(b)
+    if (vacio(va) || vacio(vb)) return vacio(va) - vacio(vb)
+    return signo * (typeof va === 'number' ? va - vb : String(va).localeCompare(String(vb), 'es', {numeric: true, sensitivity: 'base'}))
+  })
+}
+// Cada clic en una columna: ascendente, descendente y de vuelta al orden predeterminado
+const siguienteOrden = (orden, key)=>{
+  if (orden?.key !== key) return {key, direccion: 'asc'}
+  return orden.direccion === 'asc' ? {key, direccion: 'desc'} : null
+}
+
+const ANIO_INICIAL = 2024
+// mes de 1 a 12, en hora local como la columna FECHA
+const filtrarPorMes = (tareas, mes, anio)=>tareas.filter(t=>{
+  const fecha = dayjs(t.fecha)
+  return fecha.month() + 1 === mes && fecha.year() === anio
+})
+
+// Se ve como texto; al hacer click muestra las opciones. opciones: [{value, label}]
+const SelectorTexto = ({id, valor, opciones, onChange})=>(
+  <Dropdown onSelect={(key)=>onChange(Number(key))}>
+    <Dropdown.Toggle id={id} variant='link' className='fw-bold text-primary text-decoration-none p-0 border-0' style={{fontSize: '2.25rem'}}>
+      {opciones.find(o=>o.value===valor)?.label}
+    </Dropdown.Toggle>
+    <Dropdown.Menu>
+      {opciones.map(o=><Dropdown.Item key={o.value} eventKey={o.value} active={o.value===valor}>{o.label}</Dropdown.Item>)}
+    </Dropdown.Menu>
+  </Dropdown>
+)
 
 export const ModalReporteTareas = ({show, onHide}) => {
   const { obtenerTareasReporte, dataTareasReporte, isLoadingTareasReporte, obtenerUltimasMetasAsesores, dataUltimasMetas } = useGestionComercialStore()
@@ -35,12 +94,19 @@ export const ModalReporteTareas = ({show, onHide}) => {
   // Click en un card filtra la tabla por ese tipo de tarea; otro click lo quita
   const [filtroTarea, setfiltroTarea] = useState(null)
   const [tabActivo, settabActivo] = useState(0)
+  const [ordenColumna, setordenColumna] = useState(null)
+  const [mes, setmes] = useState(()=>dayjs().month() + 1)
+  const [anio, setanio] = useState(()=>dayjs().year())
+  const anios = Array.from({length: dayjs().year() - ANIO_INICIAL + 1}, (_, i)=>ANIO_INICIAL + i)
   useEffect(() => {
     if (show) {
       obtenerTareasReporte()
       obtenerUltimasMetasAsesores()
       setfiltroTarea(null)
       settabActivo(0)
+      setordenColumna(null)
+      setmes(dayjs().month() + 1)
+      setanio(dayjs().year())
     }
   }, [show])
 
@@ -58,7 +124,9 @@ export const ModalReporteTareas = ({show, onHide}) => {
       if (!prospecto || !grupos.has(prospecto.id_empl)) continue
       grupos.get(prospecto.id_empl).tareas.push({...t, prospecto})
     }
-    return [...grupos.values()].sort((a, b)=>b.prospectos.length - a.prospectos.length)
+    return [...grupos.values()]
+      .map(g=>({...g, tareas: ordenarTareas(g.tareas)}))
+      .sort((a, b)=>b.prospectos.length - a.prospectos.length)
   }, [dataView, dataTareasReporte])
 
   return (
@@ -67,6 +135,10 @@ export const ModalReporteTareas = ({show, onHide}) => {
             <Modal.Title>REPORTE DE TAREAS</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+            <div className='d-flex align-items-center gap-3 flex-wrap mb-3'>
+                <SelectorTexto id='reporteTareasMes' valor={mes} onChange={setmes} opciones={MESES.map((nombre, i)=>({value: i + 1, label: nombre}))}/>
+                <SelectorTexto id='reporteTareasAnio' valor={anio} onChange={setanio} opciones={anios.map(a=>({value: a, label: a}))}/>
+            </div>
             {
                 isLoadingTareasReporte ? (
                     <div className='text-center py-4'><Spinner animation='border'/></div>
@@ -76,7 +148,8 @@ export const ModalReporteTareas = ({show, onHide}) => {
                     <TabView scrollable activeIndex={tabActivo} onTabChange={(e)=>{settabActivo(e.index); setfiltroTarea(null)}}>
                         {
                             asesores.map((a)=>{
-                                const tareasFiltradas = filtroTarea ? a.tareas.filter(t=>t.id_tarea===filtroTarea) : a.tareas
+                                const tareasDelMes = filtrarPorMes(a.tareas, mes, anio)
+                                const tareasFiltradas = aplicarOrdenColumna(filtroTarea ? tareasDelMes.filter(t=>t.id_tarea===filtroTarea) : tareasDelMes, ordenColumna)
                                 const tipoFiltro = arrayTareasComercial.find(e=>e.value===filtroTarea)
                                 const ultimaMeta = dataUltimasMetas.find(m=>m.id_asesor===a.id_empl)
                                 const timing = ultimaMeta && calcularTiming(ultimaMeta)
@@ -86,12 +159,11 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                             <Col xs={12} sm={6} lg={4} xl={3}>
                                                 <Card className='shadow-sm h-100 mb-0'>
                                                     <Card.Body className='py-2'>
-                                                        <div className='small text-muted'>ÚLTIMA META</div>
+                                                        <div className='fs-2 text-muted'>CUOTA</div>
                                                         {
                                                             ultimaMeta ? (
                                                                 <>
                                                                     <div className='text-primary fw-bold fs-3'><NumberFormatMoney className='' amount={ultimaMeta.meta_asesor}/></div>
-                                                                    <div className='fs-4'>{ultimaMeta.nombre_meta ? `${ultimaMeta.nombre_meta}` : ''}</div>
                                                                 </>
                                                             ) : (
                                                                 <div className='text-muted py-2'>SIN META REGISTRADA</div>
@@ -105,9 +177,9 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                                     <Col xs={12} sm={6} lg={4} xl={3}>
                                                         <Card className='shadow-sm h-100 mb-0'>
                                                             <Card.Body className='py-2'>
-                                                                <div className='small text-muted'>TIMING</div>
+                                                                <div className='fs-2 text-muted'>TIMING</div>
                                                                 <div className='text-primary fw-bold fs-3'><NumberFormatMoney className='' amount={timing.timing}/></div>
-                                                                <div className='fs-4'>Día {timing.diasTranscurridos} de {timing.diasMeta}</div>
+                                                                <div className='fs-4'>Cuota / día {timing.diaDelMes}</div>
                                                             </Card.Body>
                                                         </Card>
                                                     </Col>
@@ -120,9 +192,9 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                                         <Col xs={12} sm={6} lg={4} xl={3}>
                                                             <Card className='shadow-sm h-100 mb-0'>
                                                                 <Card.Body className='py-2'>
-                                                                    <div className='small text-muted'>ALCANCE DE META</div>
+                                                                    <div className='fs-2 text-muted'>ALCANCE DE CUOTA</div>
                                                                     <div className={`fw-bold fs-3 ${alcance >= 100 ? 'text-success' : 'text-primary'}`}><NumberFormatMoney className='' amount={ultimaMeta.monto_vendido}/></div>
-                                                                    <div className='fs-4'>{alcance.toFixed(2)}% de la meta</div>
+                                                                    <div className='fs-4'>{alcance.toFixed(2)}% de la CUOTA</div>
                                                                     <ProgressBar now={Math.min(alcance, 100)} variant={alcance >= 90 ? 'success' : alcance >= 50 ? 'warning' : 'primary'} className='mt-1' style={{height: 6}}/>
                                                                 </Card.Body>
                                                             </Card>
@@ -135,7 +207,7 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                             {
                                                 arrayTareasComercial.map(tipo=>(
                                                     <Col xs={6} md={3} lg key={tipo.value}>
-                                                        <ResumenItem label={tipo.label.toUpperCase()} valor={a.tareas.filter(t=>t.id_tarea===tipo.value).length} icon={tipo.icon} exito={tipo.exito} activo={filtroTarea===tipo.value} onClick={()=>setfiltroTarea(filtroTarea===tipo.value ? null : tipo.value)}/>
+                                                        <ResumenItem label={tipo.label.toUpperCase()} valor={tareasDelMes.filter(t=>t.id_tarea===tipo.value).length} icon={tipo.icon} exito={tipo.exito} activo={filtroTarea===tipo.value} onClick={()=>setfiltroTarea(filtroTarea===tipo.value ? null : tipo.value)}/>
                                                     </Col>
                                                 ))
                                             }
@@ -150,17 +222,24 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                         }
                                         {
                                             tareasFiltradas.length === 0 ? (
-                                                <div className='text-center text-muted py-4'>{tipoFiltro ? 'NO HAY TAREAS DE ESTE TIPO' : 'ESTE ASESOR NO TIENE TAREAS REGISTRADAS'}</div>
+                                                <div className='text-center text-muted py-4'>{tipoFiltro ? 'NO HAY TAREAS DE ESTE TIPO EN ESTE MES' : 'NO HAY TAREAS EN ESTE MES'}</div>
                                             ) : (
                                                 <Table responsive striped hover size='sm' className='mb-0'>
                                                     <thead>
                                                         <tr>
-                                                            <th>FECHA</th>
-                                                            <th>PROSPECTO</th>
-                                                            <th>CELULAR</th>
-                                                            <th>ESTATUS</th>
-                                                            <th>TAREA</th>
-                                                            <th>OBSERVACION</th>
+                                                            {
+                                                                COLUMNAS_TAREAS.map(c=>(
+                                                                    <th
+                                                                        key={c.key}
+                                                                        className='cursor-pointer text-nowrap user-select-none'
+                                                                        title='Click para ordenar'
+                                                                        aria-sort={ordenColumna?.key === c.key ? (ordenColumna.direccion === 'asc' ? 'ascending' : 'descending') : 'none'}
+                                                                        onClick={()=>setordenColumna(siguienteOrden(ordenColumna, c.key))}
+                                                                    >
+                                                                        {c.titulo} <small>{ordenColumna?.key === c.key ? (ordenColumna.direccion === 'asc' ? '▲' : '▼') : '▲▼'}</small>
+                                                                    </th>
+                                                                ))
+                                                            }
                                                         </tr>
                                                     </thead>
                                                     <tbody>

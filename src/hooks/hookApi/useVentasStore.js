@@ -289,16 +289,16 @@ export const useVentasStore = () => {
 			}
 
 			// Contrato de la membresia: se genera y se manda por wsp con o sin firma
-			const membresia = formState.dataVenta.detalle_venta_programa[0];
-			if (membresia) {
-				try {
-					await enviarContratoVenta(data, formState, membresia.firmaCli);
-				} catch (error) {
-					// la venta ya se registro: solo se avisa que fallo el envio del contrato
-					console.log(error);
-					funToast('warn', 'Contrato', 'La venta se registro, pero no se pudo enviar el contrato por WhatsApp', 'warn', 8000);
-				}
-			}
+			// const membresia = formState.dataVenta.detalle_venta_programa[0];
+			// if (membresia) {
+			// 	try {
+			// 		await enviarContratoVenta(data, formState, membresia.firmaCli);
+			// 	} catch (error) {
+			// 		// la venta ya se registro: solo se avisa que fallo el envio del contrato
+			// 		console.log(error);
+			// 		funToast('warn', 'Contrato', 'La venta se registro, pero no se pudo enviar el contrato por WhatsApp', 'warn', 8000);
+			// 	}
+			// }
 			setloadingVenta(false);
 			funToast('success', 'Venta', 'Venta agregada con exitos', 'success', 5000);
 		} catch (error) {
