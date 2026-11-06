@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Button, Card, Col, Dropdown, Modal, ProgressBar, Row, Spinner, Table } from 'react-bootstrap'
+import { Button, Card, Col, Dropdown, Form, Modal, ProgressBar, Row, Spinner, Table } from 'react-bootstrap'
 import { TabPanel, TabView } from 'primereact/tabview'
 import { useSelector } from 'react-redux'
 import dayjs from 'dayjs'
@@ -91,6 +91,12 @@ const filtrarPorMes = (tareas, mes, anio)=>tareas.filter(t=>{
   return fecha.month() + 1 === mes && fecha.year() === anio
 })
 
+// Rango de fechas (YYYY-MM-DD, ambos incluidos); un extremo vacio no limita
+const filtrarPorRango = (tareas, desde, hasta)=>tareas.filter(t=>{
+  const fecha = dayjs(t.fecha).format('YYYY-MM-DD')
+  return (!desde || fecha >= desde) && (!hasta || fecha <= hasta)
+})
+
 // Se ve como texto; al hacer click muestra las opciones. opciones: [{value, label}]
 const SelectorTexto = ({id, valor, opciones, onChange})=>(
   <Dropdown onSelect={(key)=>onChange(Number(key))}>
@@ -110,18 +116,18 @@ export const ModalReporteTareas = ({show, onHide}) => {
   const [filtroTarea, setfiltroTarea] = useState(null)
   const [tabActivo, settabActivo] = useState(0)
   const [ordenColumna, setordenColumna] = useState(null)
-  // Boton HOY: la tabla muestra solo las tareas de hoy
-  const [soloHoy, setsoloHoy] = useState(false)
-  const onClickHoy = ()=>{
-    // hoy siempre pertenece al mes actual
-    if (!soloHoy) {
-      setmes(dayjs().month() + 1)
-      setanio(dayjs().year())
-    }
-    setsoloHoy(!soloHoy)
+  // Rango de la tabla, dentro del mes elegido; vacio muestra todo el mes
+  const [fechaDesde, setfechaDesde] = useState('')
+  const [fechaHasta, setfechaHasta] = useState('')
+  const hayRango = Boolean(fechaDesde || fechaHasta)
+  const quitarRango = ()=>{
+    setfechaDesde('')
+    setfechaHasta('')
   }
   const [mes, setmes] = useState(()=>dayjs().month() + 1)
   const [anio, setanio] = useState(()=>dayjs().year())
+  const inicioMes = dayjs(new Date(anio, mes - 1, 1)).format('YYYY-MM-DD')
+  const finMes = dayjs(new Date(anio, mes - 1, 1)).endOf('month').format('YYYY-MM-DD')
   const anios = Array.from({length: dayjs().year() - ANIO_INICIAL + 1}, (_, i)=>ANIO_INICIAL + i)
   useEffect(() => {
     if (show) {
@@ -129,7 +135,7 @@ export const ModalReporteTareas = ({show, onHide}) => {
       setfiltroTarea(null)
       settabActivo(0)
       setordenColumna(null)
-      setsoloHoy(false)
+      quitarRango()
       setmes(dayjs().month() + 1)
       setanio(dayjs().year())
     }
@@ -165,8 +171,8 @@ export const ModalReporteTareas = ({show, onHide}) => {
         </Modal.Header>
         <Modal.Body>
             <div className='d-flex align-items-center gap-3 flex-wrap mb-3'>
-                <SelectorTexto id='reporteTareasMes' valor={mes} onChange={(valor)=>{setmes(valor); setsoloHoy(false)}} opciones={MESES.map((nombre, i)=>({value: i + 1, label: nombre}))}/>
-                <SelectorTexto id='reporteTareasAnio' valor={anio} onChange={(valor)=>{setanio(valor); setsoloHoy(false)}} opciones={anios.map(a=>({value: a, label: a}))}/>
+                <SelectorTexto id='reporteTareasMes' valor={mes} onChange={(valor)=>{setmes(valor); quitarRango()}} opciones={MESES.map((nombre, i)=>({value: i + 1, label: nombre}))}/>
+                <SelectorTexto id='reporteTareasAnio' valor={anio} onChange={(valor)=>{setanio(valor); quitarRango()}} opciones={anios.map(a=>({value: a, label: a}))}/>
             </div>
             {
                 isLoadingTareasReporte ? (
@@ -179,7 +185,7 @@ export const ModalReporteTareas = ({show, onHide}) => {
                             asesores.map((a)=>{
                                 const tareasDelMes = filtrarPorMes(a.tareas, mes, anio)
                                 const tareasFiltradas = aplicarOrdenColumna(
-                                    tareasDelMes.filter(t=>(!filtroTarea || t.id_tarea===filtroTarea) && (!soloHoy || diasDesdeHoy(t)===0)),
+                                    filtrarPorRango(tareasDelMes, fechaDesde, fechaHasta).filter(t=>!filtroTarea || t.id_tarea===filtroTarea),
                                     ordenColumna
                                 )
                                 const tipoFiltro = arrayTareasComercial.find(e=>e.value===filtroTarea)
@@ -259,12 +265,20 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                                 </div>
                                             )
                                         }
-                                        <div className='mb-2'>
-                                            <Button variant={soloHoy ? 'primary' : 'outline-primary'} className='fw-bold' aria-pressed={soloHoy} onClick={onClickHoy}>HOY</Button>
+                                        <div className='d-flex align-items-end gap-2 flex-wrap mb-2'>
+                                            <Form.Group controlId={`reporteTareasDesde${a.id_empl}`}>
+                                                <Form.Label className='fw-bold mb-1'>DESDE</Form.Label>
+                                                <Form.Control type='date' value={fechaDesde} min={inicioMes} max={fechaHasta || finMes} onChange={(e)=>setfechaDesde(e.target.value)}/>
+                                            </Form.Group>
+                                            <Form.Group controlId={`reporteTareasHasta${a.id_empl}`}>
+                                                <Form.Label className='fw-bold mb-1'>HASTA</Form.Label>
+                                                <Form.Control type='date' value={fechaHasta} min={fechaDesde || inicioMes} max={finMes} onChange={(e)=>setfechaHasta(e.target.value)}/>
+                                            </Form.Group>
+                                            {hayRango && <Button variant='link' onClick={quitarRango}>Quitar fechas</Button>}
                                         </div>
                                         {
                                             tareasFiltradas.length === 0 ? (
-                                                <div className='text-center text-muted py-4'>{`NO HAY TAREAS ${tipoFiltro ? 'DE ESTE TIPO ' : ''}${soloHoy ? 'PARA HOY' : 'EN ESTE MES'}`}</div>
+                                                <div className='text-center text-muted py-4'>{`NO HAY TAREAS ${tipoFiltro ? 'DE ESTE TIPO ' : ''}${hayRango ? 'EN ESTE RANGO DE FECHAS' : 'EN ESTE MES'}`}</div>
                                             ) : (
                                                 <Table responsive striped hover size='sm' className='mb-0'>
                                                     <thead>
