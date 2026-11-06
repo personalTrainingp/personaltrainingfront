@@ -7,6 +7,7 @@ import { arrayTareasComercial } from '@/types/type'
 import { NumberFormatMoney } from '@/components/CurrencyMask'
 import { MESES } from '../GestionMetas/meses'
 import { useGestionComercialStore } from './useGestionComercialStore'
+import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles'
 
 // El numero va debajo del card (fuera), para que todos queden alineados aunque el texto ocupe 2 lineas
 const ResumenItem = ({label, valor, icon, activo, exito, onClick})=>(
@@ -21,10 +22,14 @@ const ResumenItem = ({label, valor, icon, activo, exito, onClick})=>(
   </div>
 )
 
-// Timing = cuota / numero del dia de hoy (ej. el dia 6 del mes: cuota / 6)
-const calcularTiming = (meta)=>{
-  const diaDelMes = dayjs().date()
-  return { timing: meta.meta_asesor / diaDelMes, diaDelMes }
+// Timing = (cuota / ultimo dia del mes de la cuota) * dias transcurridos de ese mes.
+// Mes de la cuota ya cerrado: transcurrieron todos sus dias. Mes futuro: aun no hay timing (null)
+const calcularTiming = (meta, hoy = dayjs())=>{
+  const mesCuota = dayjs(new Date(meta.anio, meta.mes - 1, 1))
+  if (mesCuota.isAfter(hoy, 'month')) return null
+  const diasDelMes = mesCuota.daysInMonth()
+  const diasTranscurridos = mesCuota.isSame(hoy, 'month') ? hoy.date() : diasDelMes
+  return { timing: (meta.meta_asesor / diasDelMes) * diasTranscurridos, diasDelMes, diasTranscurridos }
 }
 
 // Orden del reporte: hoy, luego las proximas (de la mas cercana a la mas lejana) y al final las anteriores (de la mas reciente a la mas antigua)
@@ -41,12 +46,22 @@ const ordenarTareas = (tareas)=>{
   })
 }
 
+// Columna TIEMPO: nombre del dia si esta cerca de hoy; si no, HACE [n] DIAS o DENTRO DE [n] DIAS
+const ETIQUETAS_TIEMPO = { '-2': 'ANTEAYER', '-1': 'AYER', 0: 'HOY', 1: 'MAÑANA', 2: 'PASADO MAÑANA' }
+const diasDesdeHoy = (t)=>dayjs(t.fecha).startOf('day').diff(dayjs().startOf('day'), 'day')
+const etiquetaTiempo = (t)=>{
+  const dias = diasDesdeHoy(t)
+  return ETIQUETAS_TIEMPO[dias] ?? (dias < 0 ? `HACE ${-dias} DÍAS` : `DENTRO DE ${dias} DÍAS`)
+}
+
 // Columnas de la tabla: valor es lo que se compara al ordenar con las flechas
 const COLUMNAS_TAREAS = [
   { key: 'fecha', titulo: 'FECHA', valor: (t)=>dayjs(t.fecha).valueOf() },
+  // ordena por dias, no por el texto: de lo mas antiguo a lo mas lejano
+  { key: 'tiempo', titulo: 'TIEMPO', valor: (t)=>diasDesdeHoy(t) },
   { key: 'prospecto', titulo: 'PROSPECTO', valor: (t)=>`${t.prospecto.nombres ?? ''} ${t.prospecto.apellidos ?? ''}`.trim() },
   { key: 'celular', titulo: 'CELULAR', valor: (t)=>t.prospecto.celular },
-  { key: 'estatus', titulo: 'ESTATUS', valor: (t)=>t.prospecto.parametro_estado?.label_param },
+  { key: 'status', titulo: 'STATUS', valor: (t)=>t.prospecto.parametro_estado?.label_param },
   { key: 'tarea', titulo: 'TAREA', valor: (t)=>arrayTareasComercial.find(e=>e.value===t.id_tarea)?.label ?? `Tarea ${t.id_tarea}` },
   { key: 'observacion', titulo: 'OBSERVACION', valor: (t)=>t.observacion },
 ]
@@ -101,7 +116,6 @@ export const ModalReporteTareas = ({show, onHide}) => {
   useEffect(() => {
     if (show) {
       obtenerTareasReporte()
-      obtenerUltimasMetasAsesores()
       setfiltroTarea(null)
       settabActivo(0)
       setordenColumna(null)
@@ -109,6 +123,10 @@ export const ModalReporteTareas = ({show, onHide}) => {
       setanio(dayjs().year())
     }
   }, [show])
+  // Cuota, timing y alcance son los del mes elegido
+  useEffect(() => {
+    if (show) obtenerUltimasMetasAsesores(mes, anio)
+  }, [show, mes, anio])
 
   // Un tab por asesor que tiene prospectos; cada tarea se asigna al asesor de su prospecto
   const asesores = useMemo(() => {
@@ -159,14 +177,14 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                             <Col xs={12} sm={6} lg={4} xl={3}>
                                                 <Card className='shadow-sm h-100 mb-0'>
                                                     <Card.Body className='py-2'>
-                                                        <div className='fs-2 text-muted'>CUOTA</div>
+                                                        <div className='fs-2 text-muted'>CUOTA MES</div>
                                                         {
                                                             ultimaMeta ? (
                                                                 <>
-                                                                    <div className='text-primary fw-bold fs-3'><NumberFormatMoney className='' amount={ultimaMeta.meta_asesor}/></div>
+                                                                    <div className='text-primary fw-bold fs-3'><SymbolSoles classN={'text-ISESAC'} numero={<NumberFormatMoney className='text-ISESAC fs-2' amount={ultimaMeta.meta_asesor}/>}/> </div>
                                                                 </>
                                                             ) : (
-                                                                <div className='text-muted py-2'>SIN META REGISTRADA</div>
+                                                                <div className='text-muted py-2'>SIN CUOTA EN ESTE MES</div>
                                                             )
                                                         }
                                                     </Card.Body>
@@ -177,9 +195,16 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                                     <Col xs={12} sm={6} lg={4} xl={3}>
                                                         <Card className='shadow-sm h-100 mb-0'>
                                                             <Card.Body className='py-2'>
-                                                                <div className='fs-2 text-muted'>TIMING</div>
-                                                                <div className='text-primary fw-bold fs-3'><NumberFormatMoney className='' amount={timing.timing}/></div>
-                                                                <div className='fs-4'>Cuota / día {timing.diaDelMes}</div>
+                                                                <div className='fs-2 text-muted'>AVANCE FECHA</div>
+                                                                <div className='text-primary fw-bold fs-3'></div>
+                                                                <div className='text-black fw-bold fs-3'>VAS: <span className='mr-2'><SymbolSoles classN={'text-ISESAC'} numero={<NumberFormatMoney className='text-ISESAC fs-3' amount={ultimaMeta.monto_vendido}/>}/></span></div>
+                                                                {
+                                                                    ultimaMeta.monto_vendido >= ultimaMeta.meta_asesor ? (
+                                                                        <div className='fs-3 text-change'>¡CUOTA CUMPLIDA!</div>
+                                                                    ) : (
+                                                                        <div className='fs-3'>FALTAN: <SymbolSoles classN={'text-change'} numero={<NumberFormatMoney className='text-change fs-3' amount={timing.timing-ultimaMeta.monto_vendido}/>}/></div>
+                                                                    )
+                                                                }
                                                             </Card.Body>
                                                         </Card>
                                                     </Col>
@@ -192,8 +217,8 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                                         <Col xs={12} sm={6} lg={4} xl={3}>
                                                             <Card className='shadow-sm h-100 mb-0'>
                                                                 <Card.Body className='py-2'>
-                                                                    <div className='fs-2 text-muted'>ALCANCE DE CUOTA</div>
-                                                                    <div className={`fw-bold fs-3 ${alcance >= 100 ? 'text-success' : 'text-primary'}`}><NumberFormatMoney className='' amount={ultimaMeta.monto_vendido}/></div>
+                                                                    <div className='fs-2 text-muted'>AVANCE CUOTA</div>
+                                                                    <div className={`fw-bold fs-3 ${alcance >= 100 ? 'text-ISESAC' : 'text-primary'}`}><SymbolSoles numero={<NumberFormatMoney className='fs-2' amount={ultimaMeta.monto_vendido}/>}/></div>
                                                                     <div className='fs-4'>{alcance.toFixed(2)}% de la CUOTA</div>
                                                                     <ProgressBar now={Math.min(alcance, 100)} variant={alcance >= 90 ? 'success' : alcance >= 50 ? 'warning' : 'primary'} className='mt-1' style={{height: 6}}/>
                                                                 </Card.Body>
@@ -249,6 +274,7 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                                                 return (
                                                                     <tr key={t.id}>
                                                                         <td className='text-nowrap'>{dayjs(t.fecha).format('dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A')}</td>
+                                                                        <td className='text-nowrap fw-bold'>{etiquetaTiempo(t)}</td>
                                                                         <td>{`${t.prospecto.nombres ?? ''} ${t.prospecto.apellidos ?? ''}`}</td>
                                                                         <td>{t.prospecto.celular}</td>
                                                                         <td>{t.prospecto.parametro_estado?.label_param}</td>

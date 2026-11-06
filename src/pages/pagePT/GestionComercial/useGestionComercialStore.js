@@ -1,5 +1,5 @@
 import { PTApi } from '@/common';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { onSetDataViewComercial } from './dataComercialSlice';
 import Swal from 'sweetalert2';
@@ -24,6 +24,7 @@ export const useGestionComercialStore = () => {
 	const [dataTareasReporte, setdataTareasReporte] = useState([]);
 	const [isLoadingTareasReporte, setisLoadingTareasReporte] = useState(false);
 	const [dataUltimasMetas, setdataUltimasMetas] = useState([]);
+	const solicitudMetas = useRef(0);
 	const [isLoadingMembresias, setisLoadingMembresias] = useState(false);
 	const [prospectosHastaAyer, setprospectosHastaAyer] = useState(null);
 	const [dataProspectosMes, setdataProspectosMes] = useState([]);
@@ -282,14 +283,16 @@ export const useGestionComercialStore = () => {
 			setisLoadingTareasReporte(false);
 		}
 	};
-	// Ultima meta registrada de cada asesor (gestion de metas)
-	const obtenerUltimasMetasAsesores = async () => {
+	// Cuota de cada asesor en el mes elegido (gestion de metas); si se cambia de mes, se ignora la respuesta anterior
+	const obtenerUltimasMetasAsesores = async (mes, anio) => {
+		const solicitud = ++solicitudMetas.current;
+		setdataUltimasMetas([]);
 		try {
-			const { data } = await PTApi.get('/meta/meta_asesor/ultimas');
-			setdataUltimasMetas(data.ultimasMetas);
+			const { data } = await PTApi.get('/meta/meta_asesor/ultimas', { params: { mes, anio } });
+			if (solicitud === solicitudMetas.current) setdataUltimasMetas(data.ultimasMetas);
 		} catch (error) {
 			console.log(error);
-			setdataUltimasMetas([]);
+			if (solicitud === solicitudMetas.current) setdataUltimasMetas([]);
 		}
 	};
 	const obtenerMembresiasxCliente = async (id_cli) => {
