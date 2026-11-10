@@ -142,6 +142,39 @@ export const useGestionComercialStore = () => {
 			console.log(error);
 		}
 	};
+	// PINs del huellero (= DNI) con al menos una huella. null mientras se consulta o si la consulta falla
+	const [pinesConHuella, setpinesConHuella] = useState(null);
+	const obtenerPinesConHuella = async () => {
+		try {
+			setpinesConHuella(null);
+			const { data } = await PTApi.get('/eventos-asistencia/personas/con-huella');
+			setpinesConHuella(new Set((data.pines || []).map(Number)));
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	// id_cli de los clientes con foto. null mientras se consulta o si la consulta falla
+	const [clientesConFoto, setclientesConFoto] = useState(null);
+	const obtenerClientesConFoto = async () => {
+		try {
+			setclientesConFoto(null);
+			const { data } = await PTApi.get('/venta/obtener-contratos-clientes/598');
+			setclientesConFoto(mapearClientesConFoto(data.datacontratosConMembresias));
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	// id_cli -> contrato de su ultima membresia. null mientras se consulta o si la consulta falla
+	const [contratosPorCliente, setcontratosPorCliente] = useState(null);
+	const obtenerContratosPorCliente = async () => {
+		try {
+			setcontratosPorCliente(null);
+			const { data } = await PTApi.get('/seguimiento/');
+			setcontratosPorCliente(mapearContratosPorCliente(data.dataSeguimiento));
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const obtenerClientes = async () => {
 		try {
 			const { data } = await PTApi.get('/parametros/get_params/clientes/598');
@@ -378,12 +411,32 @@ export const useGestionComercialStore = () => {
 		dataNivelInteres,
 		obtenerClientes,
 		dataClientes,
+		obtenerPinesConHuella,
+		pinesConHuella,
+		obtenerContratosPorCliente,
+		contratosPorCliente,
+		obtenerClientesConFoto,
+		clientesConFoto,
 		dataMedioComunicacion,
 		dataEmpleados,
 		dataCanales,
 	};
 };
 
+// Misma regla que la pantalla de Contratos: el cliente tiene foto si tiene alguna imagen
+const mapearClientesConFoto = (ventas) =>
+	new Set((ventas ?? []).filter((v) => v.tb_cliente?.tb_images?.length > 0).map((v) => v.id_cli));
+// Misma regla que Seguimiento: ultima membresia firmada, sin firmar, o canje (monto 0)
+const mapearContratosPorCliente = (clientes) => {
+	const contratos = new Map();
+	for (const c of clientes) {
+		const ultima = [...(c.cli_seguimiento ?? [])].sort((a, b) => b.id_membresia - a.id_membresia)[0];
+		const venta = ultima?.venta;
+		if (!venta) continue;
+		contratos.set(c.id_cli, Number(venta.tarifa_monto) === 0 ? 'CANJE' : venta.firma_cli ? 'CON CONTRATO' : 'SIN CONTRATO');
+	}
+	return contratos;
+};
 // Ordena segun arrayEstadoComercial; los estados no listados van al final
 export const ordenarEstadosComerciales = (estados) => {
 	const orden = (value) => {

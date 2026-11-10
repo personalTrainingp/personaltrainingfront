@@ -142,15 +142,17 @@ export const DataTablePagosVentas = ({onOpenModalCustomPagos}) => {
     {id: 9, header: 'IGV', render:(row)=>{
       return (
         <>
-        <NumberFormatMoney amount=
-        {row.pago?.parcial_monto*(row.porcentaje/100)*1.18-row.pago?.parcial_monto*(row.porcentaje/100)}
-        />
+        <div className='text-change'>
+          <NumberFormatMoney amount=
+          {row.pago?.parcial_monto*(row.porcentaje/100)*1.18-row.pago?.parcial_monto*(row.porcentaje/100)}
+          />
+        </div>
         </>
       )
     }},
     {id: 10, header: <>COMISION <br/> TOTAL</>, render:(row)=>{
       return (
-        <div className='text-change'>
+        <div className=''>
         <NumberFormatMoney className='fs-2' amount=
         {(row.pago?.parcial_monto*(row.porcentaje/100))*1.18}
         />

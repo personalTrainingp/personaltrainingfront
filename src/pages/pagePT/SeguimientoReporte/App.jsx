@@ -152,8 +152,7 @@ export const App = () => {
                             { col: 'label', texto: g.titulo, className: 'ps-3' },
                             { col: 'cantidad', texto: 'SOCIOS', className: 'text-end' },
                             // % sale de la cantidad de socios
-                            { col: 'cantidad', texto: '%', className: 'text-end', key: 'pct' },
-                            { col: 'monto', texto: 'MONTO S/.', className: 'text-end pe-3' },
+                            { col: 'cantidad', texto: '%', className: 'text-end pe-3', key: 'pct' },
                           ].map((h) => (
                             <th
                               key={h.key ?? h.col}
@@ -181,8 +180,7 @@ export const App = () => {
                             >
                               <td className='ps-3'>{f.label}</td>
                               <td className='text-end'>{f.cantidad}</td>
-                              <td className='text-end'>{pct(f.cantidad, g.total)}</td>
-                              <td className='text-end pe-3'><NumberFormatMoney amount={f.monto}/></td>
+                              <td className='text-end pe-3'>{pct(f.cantidad, g.total)}</td>
                             </tr>
                           )
                         })

@@ -130,20 +130,29 @@ export const FechaRange = ({rangoFechas, showHasta=true, className}) => {
     // Your implementation here
     const dispatch = useDispatch()
     
-    const [dateRange, setdateRange] = useState({
-        fec_desde: rangoFechas[0],
-        fec_hasta: rangoFechas[1]
-    })
-    // console.log(rangeDate[0]);
-    const onClickFechaRange = ()=>{
-        // if(dateRange.fec_desde)
-        
-        dispatch(onSetRangeDate([dateRange.fec_desde, dateRange.fec_hasta]))
+    // RANGE_DATE puede venir como Date, string ISO o algo invalido ('AL') segun la pagina que lo seteo;
+    // el Calendar de primereact solo acepta Date, asi que se normaliza
+    const aDate = (v, fallback) => {
+        const d = v instanceof Date ? v : new Date(v)
+        return v && !isNaN(d.getTime()) ? d : fallback
     }
+    const normalizar = (r) => ({
+        fec_desde: aDate(r?.[0], dayjs().startOf('month').toDate()),
+        fec_hasta: aDate(r?.[1], new Date())
+    })
+    const [dateRange, setdateRange] = useState(() => normalizar(rangoFechas))
+    // si otra pagina cambia RANGE_DATE, el DESDE/HASTA se mantiene sincronizado
     useEffect(() => {
-        // dispatch()
-		// dispatch(onSetRangeDate([dateRange.fec_desde, dateRange.fec_hasta]))
-    }, [dateRange])
+        setdateRange(normalizar(rangoFechas))
+    }, [rangoFechas])
+    const onClickFechaRange = ()=>{
+        if(!dateRange.fec_desde || !dateRange.fec_hasta) return
+        // DESDE al inicio del dia y HASTA al final, para incluir las ventas del ultimo dia
+        dispatch(onSetRangeDate([
+            dayjs(dateRange.fec_desde).startOf('day').toDate(),
+            dayjs(dateRange.fec_hasta).endOf('day').toDate()
+        ]))
+    }
     
   return (
     <div className='d-flex flex-row aling-items-center z-4 w-100 bg-white p-1'>
@@ -152,7 +161,7 @@ export const FechaRange = ({rangoFechas, showHasta=true, className}) => {
                 <label className='' style={{fontSize: '28px'}}>
                     {showHasta?'DESDE':'hasta'}
                 </label>
-                <Calendar className={`${2} `}  value={dateRange.fec_desde} locale='es'  maxDate={dateRange.fec_hasta} name='fec_desde' onChange={(e)=>setdateRange({fec_desde: e.value, fec_hasta: dateRange.fec_hasta})} />
+                <Calendar className={`${2} `}  value={dateRange.fec_desde} locale='es'  maxDate={dateRange.fec_hasta} name='fec_desde' onChange={(e)=>setdateRange(prev => ({...prev, fec_desde: e.value}))} />
             </Col>
             {
               showHasta && (
@@ -160,7 +169,7 @@ export const FechaRange = ({rangoFechas, showHasta=true, className}) => {
                     <label className='' style={{fontSize: '28px'}}>
                         HASTA
                     </label>
-                    <Calendar className={`${2}`} value={dateRange.fec_hasta} locale='es' minDate={dateRange.fec_desde} name='fec_hasta' onChange={(e)=>setdateRange({fec_desde: dateRange.fec_desde, fec_hasta: e.value})} />
+                    <Calendar className={`${2}`} value={dateRange.fec_hasta} locale='es' minDate={dateRange.fec_desde} name='fec_hasta' onChange={(e)=>setdateRange(prev => ({...prev, fec_hasta: e.value}))} />
                 </Col>
               )
             }

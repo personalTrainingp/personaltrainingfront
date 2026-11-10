@@ -76,7 +76,7 @@ export const DataTableVentas = ({id_empresa, vistaCliente}) => {
             }
         },
         {
-            id: 7, header: 'OBSERVACION', accessor: 'observacion', render:(row)=>{
+            id: 7, header: 'OBSERV. / TARJETA', accessor: 'observacion', render:(row)=>{
                 return (
                     <>
                     {row.observacion}

@@ -19,24 +19,28 @@ const rangos = [
 export const useResumenComparativoStore = () => {
 	const [dataVentas, setdataVentas] = useState([]);
 	const obtenerVentas = async (arrayDate) => {
+		// fechas invalidas (ej. RANGE_DATE seteado como 'AL' en otra pagina) rompen la consulta
+		if (!arrayDate?.every((d) => d instanceof Date && !isNaN(d.getTime()))) {
+			console.error('[ResumenComparativo] rango de fechas invalido', arrayDate);
+			return;
+		}
 		try {
 			const { data } = await PTApi.get('/venta/get-ventas-x-fecha/membresias/598', {
 				params: {
 					arrayDate,
 				},
 			});
-			const dataV = data.ventas
+			const dataV = (data?.ventas ?? [])
+				// sin detalle de membresia no se puede agrupar (rompia los reduce de monto)
+				.filter((m) => m.detalle_ventaMembresia?.[0])
 				.map((m) => {
-					const pgm = m.detalle_ventaMembresia[0].tb_ProgramaTraining.name_pgm;
+					const pgm = m.detalle_ventaMembresia[0].tb_ProgramaTraining?.name_pgm;
 					return {
 						...m,
 						pgm,
 						cat: `${m.id_origen === 691 ? 'RENOVACION' : m.id_origen === 692 ? 'REINSCRIPCIONES' : 'NUEVO'}`,
-						fecha_nacimiento: m.tb_cliente.fecha_nacimiento,
-						edad: calcularEdadReal(
-							new Date(m.tb_cliente.fecha_nacimiento),
-							new Date(m.fecha_venta)
-						),
+						fecha_nacimiento: m.tb_cliente?.fecha_nacimiento,
+						edad: calcularEdadReal(m.tb_cliente?.fecha_nacimiento, m.fecha_venta),
 					};
 				})
 				.map((item) => {
@@ -44,15 +48,16 @@ export const useResumenComparativoStore = () => {
 					const rangoEncontrado = rangos.find((r) => edad >= r.min && edad <= r.max);
 					return {
 						...item,
-						rango_edad:
-							`${rangoEncontrado?.min} - ${rangoEncontrado.max === Infinity ? 'A MAS' : rangoEncontrado.max}` ||
-							'Sin rango',
+						// edad -1 / NaN (sin fecha de nacimiento o invalida) no cae en ningun rango
+						rango_edad: rangoEncontrado
+							? `${rangoEncontrado.min} - ${rangoEncontrado.max === Infinity ? 'A MAS' : rangoEncontrado.max}`
+							: 'SIN DATO',
 					};
 				});
 
 			setdataVentas(dataV);
 		} catch (error) {
-			console.log(error);
+			console.error('[ResumenComparativo] error al cargar ventas', error);
 		}
 	};
 	return {
@@ -65,6 +70,7 @@ export const useResumenComparativoStore = () => {
 const calcularEdadReal = (fechaNacimiento, fechaVenta) => {
 	if (!fechaNacimiento) return -1;
 	const nacimiento = new Date(fechaNacimiento);
+	if (isNaN(nacimiento.getTime())) return -1;
 	const venta = fechaVenta ? new Date(fechaVenta) : new Date();
 	let edad = venta.getFullYear() - nacimiento.getFullYear();
 	if (

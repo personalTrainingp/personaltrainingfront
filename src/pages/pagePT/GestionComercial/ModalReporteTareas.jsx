@@ -8,17 +8,18 @@ import { NumberFormatMoney } from '@/components/CurrencyMask'
 import { MESES } from '../GestionMetas/meses'
 import { useGestionComercialStore } from './useGestionComercialStore'
 import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles'
+import { dniTieneHuella } from '../GestionEventosAsistencia/pinHuellero'
 
-// El numero va debajo del card (fuera), para que todos queden alineados aunque el texto ocupe 2 lineas
+// Las tareas de exito van en verde ISESAC con texto blanco; el card que esta filtrando la tabla se distingue en azul
 const ResumenItem = ({label, valor, icon, activo, exito, onClick})=>(
   <div className='d-flex flex-column h-100 cursor-pointer' onClick={onClick}>
-    <Card className={`shadow-sm flex-grow-1 mb-1 ${activo ? 'bg-primary text-white' : ''}`}>
+    <Card className={`shadow-sm flex-grow-1 mb-1 ${activo ? 'bg-primary text-white' : exito ? 'bg-greenISESAC text-white' : ''}`}>
       <Card.Body className='py-2 text-center d-flex flex-column justify-content-center'>
-        {icon && <i className={`${icon} fs-4 mb-1`}></i>}
-        <div className={`small ${activo ? '' : 'text-muted'}`}>{label}</div>
+        {icon && <i className={`${icon} fs-3 mb-1`}></i>}
+        <div className={`fs-3 ${activo || exito ? '' : 'text-muted'}`}>{label}</div>
+        <div className='fw-bold fs-3 text-center'>{valor}</div>
       </Card.Body>
     </Card>
-    <div className={`fw-bold fs-3 text-center ${exito ? 'text-ISESAC' : ''}`}>{valor}</div>
   </div>
 )
 
@@ -85,11 +86,38 @@ const siguienteOrden = (orden, key)=>{
 }
 
 const ANIO_INICIAL = 2024
+const ID_ESTADO_CONVERTIDO = 1673
 // mes de 1 a 12, en hora local como la columna FECHA
-const filtrarPorMes = (tareas, mes, anio)=>tareas.filter(t=>{
-  const fecha = dayjs(t.fecha)
+const filtrarPorMes = (registros, mes, anio, campoFecha = 'fecha')=>registros.filter(r=>{
+  const fecha = dayjs(r[campoFecha])
   return fecha.month() + 1 === mes && fecha.year() === anio
 })
+// Leads registrados en el mes y cuantos de ellos hoy tienen status CONVERTIDO; un mes sin leads da 0.0%
+const resumenConversion = (prospectos, mes, anio)=>{
+  const leadsDelMes = filtrarPorMes(prospectos, mes, anio, 'fecha_registro')
+  const convertidos = leadsDelMes.filter(p=>p.parametro_estado?.id_param === ID_ESTADO_CONVERTIDO)
+  const porcentaje = leadsDelMes.length === 0 ? '0.0' : ((convertidos.length / leadsDelMes.length) * 100).toFixed(1)
+  return { prospectos: leadsDelMes.length, convertidos: convertidos.length, porcentaje, leadsConvertidos: convertidos }
+}
+// id_cli -> DNI. El DNI sale del label de los clientes: "DNI | NOMBRE"
+const mapearDniPorCliente = (clientes)=>new Map(clientes.map(c=>[c.value, String(c.label ?? '').split('|')[0].trim()]))
+// Un lead sin cliente vinculado o sin DNI no se puede buscar en el huellero: cuenta como sin huella
+const contarHuellas = (leads, dniPorCliente, pines)=>{
+  const conHuella = leads.filter(l=>{
+    const dni = dniPorCliente.get(l.id_cli)
+    return Boolean(dni) && dniTieneHuella(pines, dni)
+  }).length
+  return { conHuella, sinHuella: leads.length - conHuella }
+}
+// Un lead sin cliente vinculado o sin membresia no tiene contrato firmado: cuenta como sin contrato
+const contarContratos = (leads, contratosPorCliente)=>{
+  const contarTipo = (tipo)=>leads.filter(l=>contratosPorCliente.get(l.id_cli) === tipo).length
+  const conContrato = contarTipo('CON CONTRATO')
+  const canje = contarTipo('CANJE')
+  return { conContrato, canje, sinContrato: leads.length - conContrato - canje }
+}
+// Un lead sin cliente vinculado o sin ventas no se puede verificar: cuenta como sin foto
+const contarSinFoto = (leads, clientesConFoto)=>leads.filter(l=>!clientesConFoto.has(l.id_cli)).length
 
 // Rango de fechas (YYYY-MM-DD, ambos incluidos); un extremo vacio no limita
 const filtrarPorRango = (tareas, desde, hasta)=>tareas.filter(t=>{
@@ -98,7 +126,7 @@ const filtrarPorRango = (tareas, desde, hasta)=>tareas.filter(t=>{
 })
 
 // Se ve como texto; al hacer click muestra las opciones. opciones: [{value, label}]
-const SelectorTexto = ({id, valor, opciones, onChange})=>(
+export const SelectorTexto = ({id, valor, opciones, onChange})=>(
   <Dropdown onSelect={(key)=>onChange(Number(key))}>
     <Dropdown.Toggle id={id} variant='link' className='fw-bold text-primary text-decoration-none p-0 border-0' style={{fontSize: '2.25rem'}}>
       {opciones.find(o=>o.value===valor)?.label}
@@ -110,8 +138,10 @@ const SelectorTexto = ({id, valor, opciones, onChange})=>(
 )
 
 export const ModalReporteTareas = ({show, onHide}) => {
-  const { obtenerTareasReporte, dataTareasReporte, isLoadingTareasReporte, obtenerUltimasMetasAsesores, dataUltimasMetas } = useGestionComercialStore()
+  const { obtenerTareasReporte, dataTareasReporte, isLoadingTareasReporte, obtenerUltimasMetasAsesores, dataUltimasMetas, obtenerPinesConHuella, pinesConHuella, obtenerClientes, dataClientes, obtenerContratosPorCliente, contratosPorCliente, obtenerClientesConFoto, clientesConFoto } = useGestionComercialStore()
   const {dataView} = useSelector(e=>e.COMERCIAL)
+  const dniPorCliente = useMemo(()=>mapearDniPorCliente(dataClientes), [dataClientes])
+  const huellasListas = pinesConHuella !== null && dataClientes.length > 0
   // Click en un card filtra la tabla por ese tipo de tarea; otro click lo quita
   const [filtroTarea, setfiltroTarea] = useState(null)
   const [tabActivo, settabActivo] = useState(0)
@@ -132,6 +162,10 @@ export const ModalReporteTareas = ({show, onHide}) => {
   useEffect(() => {
     if (show) {
       obtenerTareasReporte()
+      obtenerPinesConHuella()
+      obtenerClientes()
+      obtenerContratosPorCliente()
+      obtenerClientesConFoto()
       setfiltroTarea(null)
       settabActivo(0)
       setordenColumna(null)
@@ -182,7 +216,7 @@ export const ModalReporteTareas = ({show, onHide}) => {
                 ) : (
                     <TabView scrollable activeIndex={tabActivo} onTabChange={(e)=>{settabActivo(e.index); setfiltroTarea(null)}}>
                         {
-                            asesores.map((a)=>{
+                            asesores.map((a, indice)=>{
                                 const tareasDelMes = filtrarPorMes(a.tareas, mes, anio)
                                 const tareasFiltradas = aplicarOrdenColumna(
                                     filtrarPorRango(tareasDelMes, fechaDesde, fechaHasta).filter(t=>!filtroTarea || t.id_tarea===filtroTarea),
@@ -191,20 +225,24 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                 const tipoFiltro = arrayTareasComercial.find(e=>e.value===filtroTarea)
                                 const ultimaMeta = dataUltimasMetas.find(m=>m.id_asesor===a.id_empl)
                                 const timing = ultimaMeta && calcularTiming(ultimaMeta)
+                                const conversion = resumenConversion(a.prospectos, mes, anio)
+                                const huellas = huellasListas ? contarHuellas(conversion.leadsConvertidos, dniPorCliente, pinesConHuella) : null
+                                const contratos = contratosPorCliente ? contarContratos(conversion.leadsConvertidos, contratosPorCliente) : null
+                                const sinFoto = clientesConFoto ? contarSinFoto(conversion.leadsConvertidos, clientesConFoto) : null
                                 return (
-                                    <TabPanel key={a.id_empl} header={`${a.nombre.trim().split(' ')[0]} (${a.prospectos.length})`}>
+                                    <TabPanel key={a.id_empl} header={<span className={indice === tabActivo ? '' : 'text-black'}>{`${a.nombre.trim().split(' ')[0]} (${conversion.porcentaje}%)`}</span>}>
                                         <Row className='g-2 mb-3'>
-                                            <Col xs={12} sm={6} lg={4} xl={3}>
-                                                <Card className='shadow-sm h-100 mb-0'>
+                                            <Col xs={12} sm={6} lg={4} xl={2}>
+                                                <Card className='shadow-sm h-100 mb-0 p-0 m-0'>
                                                     <Card.Body className='py-2'>
-                                                        <div className='fs-2 text-muted'>CUOTA MES</div>
+                                                        <div className='fs-2 text-black'>CUOTA MES</div>
                                                         {
                                                             ultimaMeta ? (
                                                                 <>
                                                                     <div className='text-primary fw-bold fs-3'><SymbolSoles classN={'text-ISESAC'} numero={<NumberFormatMoney className='text-ISESAC fs-2' amount={ultimaMeta.meta_asesor}/>}/> </div>
                                                                 </>
                                                             ) : (
-                                                                <div className='text-muted py-2'>SIN CUOTA EN ESTE MES</div>
+                                                                <div className='text-black py-2'>SIN CUOTA EN ESTE MES</div>
                                                             )
                                                         }
                                                     </Card.Body>
@@ -212,15 +250,15 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                             </Col>
                                             {
                                                 timing && (
-                                                    <Col xs={12} sm={6} lg={4} xl={3}>
+                                                    <Col xs={12} sm={6} lg={4} xl={2}>
                                                         <Card className='shadow-sm h-100 mb-0'>
                                                             <Card.Body className='py-2'>
-                                                                <div className='fs-2 text-muted'>AVANCE FECHA</div>
+                                                                <div className='fs-2 text-black'>AVANCE FECHA</div>
                                                                 <div className='text-primary fw-bold fs-3'></div>
                                                                 <div className='text-black fw-bold fs-3'>VAS: <span className='mr-2'><SymbolSoles classN={'text-ISESAC'} numero={<NumberFormatMoney className='text-ISESAC fs-3' amount={ultimaMeta.monto_vendido}/>}/></span></div>
                                                                 {
                                                                     ultimaMeta.monto_vendido >= ultimaMeta.meta_asesor ? (
-                                                                        <div className='fs-3 text-change'>¡CUOTA CUMPLIDA!</div>
+                                                                        <div className='fs-3 text-ISESAC'>¡CUOTA CUMPLIDA!</div>
                                                                     ) : (
                                                                         <div className='fs-3'>FALTAN: <SymbolSoles classN={'text-change'} numero={<NumberFormatMoney className='text-change fs-3' amount={timing.timing-ultimaMeta.monto_vendido}/>}/></div>
                                                                     )
@@ -234,10 +272,10 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                                 ultimaMeta && (()=>{
                                                     const alcance = (ultimaMeta.monto_vendido / ultimaMeta.meta_asesor) * 100
                                                     return (
-                                                        <Col xs={12} sm={6} lg={4} xl={3}>
+                                                        <Col xs={12} sm={6} lg={4} xl={2}>
                                                             <Card className='shadow-sm h-100 mb-0'>
                                                                 <Card.Body className='py-2'>
-                                                                    <div className='fs-2 text-muted'>AVANCE CUOTA</div>
+                                                                    <div className='fs-2 text-black'>AVANCE CUOTA</div>
                                                                     <div className={`fw-bold fs-3 ${alcance >= 100 ? 'text-ISESAC' : 'text-primary'}`}><SymbolSoles numero={<NumberFormatMoney className='fs-2' amount={ultimaMeta.monto_vendido}/>}/></div>
                                                                     <div className='fs-4'>{alcance.toFixed(2)}% de la CUOTA</div>
                                                                     <ProgressBar now={Math.min(alcance, 100)} variant={alcance >= 90 ? 'success' : alcance >= 50 ? 'warning' : 'primary'} className='mt-1' style={{height: 6}}/>
@@ -247,11 +285,41 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                                     )
                                                 })()
                                             }
+                                            <Col xs={12} sm={6} lg={4} xl={2}>
+                                                <Card className='shadow-sm h-100 mb-0'>
+                                                    <Card.Body className='py-2'>
+                                                        <div className='fs-2 text-black'>LEADS DEL MES</div>
+                                                        <div className='fw-bold fs-3'>PROSPECTOS: <span className='text-primary'>{conversion.prospectos}</span></div>
+                                                        <div className='fw-bold fs-3'>CONVERTIDOS: <span className='text-ISESAC'>{conversion.convertidos}</span></div>
+                                                    </Card.Body>
+                                                </Card>
+                                            </Col>
+                                            {/* <Col xs={12} sm={6} lg={4} xl={2}>
+                                                <Card className='shadow-sm h-100 mb-0'>
+                                                    <Card.Body className='py-2'>
+                                                        <div className='fs-2 text-muted'>HUELLAS</div>
+                                                        <div className='fw-bold fs-3'>CON HUELLA: <span className='text-ISESAC'>{huellas?.conHuella ?? '...'}</span></div>
+                                                        <div className='fw-bold fs-3'>SIN HUELLA: <span className='text-change'>{huellas?.sinHuella ?? '...'}</span></div>
+                                                    </Card.Body>
+                                                </Card>
+                                            </Col> */}
+                                            <Col xs={12} sm={6} lg={4} xl={2}>
+                                                <Card className='shadow-sm h-100 mb-0'>
+                                                    <Card.Body className='py-2'>
+                                                        <div className='fs-2 text-black'>CONTRATO</div>
+                                                        <div className='fw-bold fs-3'>SIN: <span className='text-change'>{contratos?.sinContrato ?? '...'}</span></div>
+                                                        <div className='fs-2 text-black'>HUELLA</div>
+                                                        <div className='fw-bold fs-3'>SIN: <span className='text-change'>{huellas?.sinHuella ?? '...'}</span></div>
+                                                        <div className='fs-2 text-black'>FOTO</div>
+                                                        <div className='fw-bold fs-3'>SIN: <span className='text-change'>{sinFoto ?? '...'}</span></div>
+                                                    </Card.Body>
+                                                </Card>
+                                            </Col>
                                         </Row>
                                         <Row className='g-2 mb-3'>
                                             {
                                                 arrayTareasComercial.map(tipo=>(
-                                                    <Col xs={6} md={3} lg key={tipo.value}>
+                                                    <Col xs={6} md={3} lg xl={2} key={tipo.value}>
                                                         <ResumenItem label={tipo.label.toUpperCase()} valor={tareasDelMes.filter(t=>t.id_tarea===tipo.value).length} icon={tipo.icon} exito={tipo.exito} activo={filtroTarea===tipo.value} onClick={()=>setfiltroTarea(filtroTarea===tipo.value ? null : tipo.value)}/>
                                                     </Col>
                                                 ))
@@ -274,7 +342,7 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                                 <Form.Label className='fw-bold mb-1'>HASTA</Form.Label>
                                                 <Form.Control type='date' value={fechaHasta} min={fechaDesde || inicioMes} max={finMes} onChange={(e)=>setfechaHasta(e.target.value)}/>
                                             </Form.Group>
-                                            {hayRango && <Button variant='link' onClick={quitarRango}>Quitar fechas</Button>}
+                                            {hayRango && <Button variant='link' onClick={quitarRango}>Toda las tareas</Button>}
                                         </div>
                                         {
                                             tareasFiltradas.length === 0 ? (
@@ -287,7 +355,7 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                                                 COLUMNAS_TAREAS.map(c=>(
                                                                     <th
                                                                         key={c.key}
-                                                                        className='cursor-pointer text-nowrap user-select-none'
+                                                                        className='bg-change text-white cursor-pointer text-nowrap user-select-none'
                                                                         title='Click para ordenar'
                                                                         aria-sort={ordenColumna?.key === c.key ? (ordenColumna.direccion === 'asc' ? 'ascending' : 'descending') : 'none'}
                                                                         onClick={()=>setordenColumna(siguienteOrden(ordenColumna, c.key))}

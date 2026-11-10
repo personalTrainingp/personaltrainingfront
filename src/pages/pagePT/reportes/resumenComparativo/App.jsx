@@ -109,7 +109,7 @@ function agruparPorOrigen(data) {
       ...m,
       propiedad: `${arrayOrigenDeCliente.find(f=>f.value ===Number(m.id_origen))?.label}`,
       len: m.items.length,
-      monto: m.items.reduce((total, item)=>total+item.detalle_ventaMembresia[0].tarifa_monto, 0)
+      monto: m.items.reduce((total, item)=>total+(item.detalle_ventaMembresia?.[0]?.tarifa_monto || 0), 0)
     }
   });
 }
@@ -119,11 +119,11 @@ function agruparPorEmpl(data) {
   const grupos = {};
 
   data?.forEach(item => {
-    const propiedad = `${item?.tb_empleado.nombres_apellidos_empl}` || 0;
+    const propiedad = `${item?.tb_empleado?.nombres_apellidos_empl ?? "SIN ASESOR"}` || 0;
     if (!grupos[propiedad]) {
       grupos[propiedad] = {
         propiedad,
-        nombres_empl: item?.tb_empleado.nombres_apellidos_empl,
+        nombres_empl: item?.tb_empleado?.nombres_apellidos_empl ?? "SIN ASESOR",
         items: []
       };
     }
@@ -132,9 +132,9 @@ function agruparPorEmpl(data) {
   return Object.values(grupos).map(m=>{
     return {
       ...m,
-      propiedad: `${m.nombres_empl.split(' ')[0]}`,
+      propiedad: `${String(m.nombres_empl).split(' ')[0]}`,
       len: m.items.length,
-      monto: m.items.reduce((total, item)=>total+item.detalle_ventaMembresia[0].tarifa_monto, 0)
+      monto: m.items.reduce((total, item)=>total+(item.detalle_ventaMembresia?.[0]?.tarifa_monto || 0), 0)
     }
   }).filter(f=>f.monto!==0);
 }
@@ -159,7 +159,7 @@ function agruparPorCat(data) {
       ...m,
       propiedad: `${m.cat}`,
       len: m.items.length,
-      monto: m.items.reduce((total, item)=>total+item.detalle_ventaMembresia[0].tarifa_monto, 0)
+      monto: m.items.reduce((total, item)=>total+(item.detalle_ventaMembresia?.[0]?.tarifa_monto || 0), 0)
     }
   }).filter(f=>f.monto!==0);
 }
@@ -169,11 +169,11 @@ function agruparPorGenero(data) {
   const grupos = {};
 
   data?.forEach(item => {
-    const prop = `${item?.tb_cliente.sexo_cli}` || 0;
+    const prop = `${item?.tb_cliente?.sexo_cli}` || 0;
     if (!grupos[prop]) {
       grupos[prop] = {
         prop,
-        id_sexo: item?.tb_cliente.sexo_cli,
+        id_sexo: item?.tb_cliente?.sexo_cli,
         items: []
       };
     }
@@ -184,7 +184,7 @@ function agruparPorGenero(data) {
       ...m,
       propiedad: arraySexo.find(f=>f.value===Number(m.prop))?.label,
       len: m.items.length,
-      monto: m.items.reduce((total, item)=>total+item.detalle_ventaMembresia[0].tarifa_monto, 0)
+      monto: m.items.reduce((total, item)=>total+(item.detalle_ventaMembresia?.[0]?.tarifa_monto || 0), 0)
     }
   });
 }
@@ -194,11 +194,11 @@ function agruparPorEstCivil(data) {
   const grupos = {};
 
   data?.forEach(item => {
-    const prop = `${item?.tb_cliente.estCivil_cli}` || 0;
+    const prop = `${item?.tb_cliente?.estCivil_cli}` || 0;
     if (!grupos[prop]) {
       grupos[prop] = {
         prop,
-        id_estado_civil: item?.tb_cliente.estCivil_cli,
+        id_estado_civil: item?.tb_cliente?.estCivil_cli,
         items: []
       };
     }
@@ -209,7 +209,7 @@ function agruparPorEstCivil(data) {
       ...m,
       propiedad: arrayEstadoCivil.find(f=>f.value===Number(m.id_estado_civil))?.label,
       len: m.items.length,
-      monto: m.items.reduce((total, item)=>total+item.detalle_ventaMembresia[0].tarifa_monto, 0)
+      monto: m.items.reduce((total, item)=>total+(item.detalle_ventaMembresia?.[0]?.tarifa_monto || 0), 0)
     }
   });
 }
@@ -234,7 +234,7 @@ function agruparPorEdad(data) {
       ...m,
       propiedad: m.rango_edad,
       len: m.items.length,
-      monto: m.items.reduce((total, item)=>total+item.detalle_ventaMembresia[0].tarifa_monto, 0),
+      monto: m.items.reduce((total, item)=>total+(item.detalle_ventaMembresia?.[0]?.tarifa_monto || 0), 0),
       genero: agruparPorGenero(m.items)
     }
   });
@@ -245,12 +245,12 @@ function agruparPorSemanas(data) {
   const grupos = {};
 
   data?.forEach(item => {
-    const propiedad = `${item.detalle_ventaMembresia[0].tb_semana_training.semanas_st}|${item.detalle_ventaMembresia[0].tb_semana_training.sesiones}` || 0;
+    const propiedad = `${item.detalle_ventaMembresia[0].tb_semana_training?.semanas_st}|${item.detalle_ventaMembresia[0].tb_semana_training?.sesiones}` || 0;
     if (!grupos[propiedad]) {
       grupos[propiedad] = {
         propiedad,
-        semanas: item.detalle_ventaMembresia[0].tb_semana_training.semanas_st,
-        sesiones: item.detalle_ventaMembresia[0].tb_semana_training.sesiones,
+        semanas: item.detalle_ventaMembresia[0].tb_semana_training?.semanas_st,
+        sesiones: item.detalle_ventaMembresia[0].tb_semana_training?.sesiones,
         items: []
       };
     }
@@ -261,7 +261,7 @@ function agruparPorSemanas(data) {
       ...m,
       propiedad: `${m.semanas} (${m.sesiones} SESIONES)`,
       len: m.items.length,
-      monto: m.items.reduce((total, item)=>total+item.detalle_ventaMembresia[0].tarifa_monto, 0)
+      monto: m.items.reduce((total, item)=>total+(item.detalle_ventaMembresia?.[0]?.tarifa_monto || 0), 0)
     }
   });
 }
@@ -286,7 +286,7 @@ function agruparxPgm(data) {
       ...m,
       propiedad: m.pgm,
       len: m.items.length,
-      monto: m.items.reduce((total, item)=>total+item.detalle_ventaMembresia[0].tarifa_monto, 0)
+      monto: m.items.reduce((total, item)=>total+(item.detalle_ventaMembresia?.[0]?.tarifa_monto || 0), 0)
     }
   });
 }

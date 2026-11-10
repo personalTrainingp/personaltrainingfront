@@ -126,6 +126,7 @@ const Error404Alt = lazy(() => import('../pages/otherpages/Error404Alt'));
 const ConstructorCruces = lazy(() => import('../pages/pagePT/ConstructorCruces/index.jsx'));
 const ReporteProveedores = lazy(() => import('../pages/pagePT/ReporteProveedores'));
 const ReporteCuentasBalance = lazy(() => import('../pages/pagePT/ReporteDetalleCuentasBalance'));
+const StatusInfluencer = lazy(() => import('../pages/pagePT/StatusInfluencer/Index.jsx'));
 // const Dashboard = lazy(() => import('../pages/pagePT/Dashboard/index.jsx'));
 
 export default function ProtectedRoutes() {
@@ -175,6 +176,7 @@ export default function ProtectedRoutes() {
 					<>
 						<Route path="/*" element={<Layout />}>
 							<Route index element={<Navigate to='home' replace />} />
+							<Route path='status-influencer' element={<StatusInfluencer />} />
 							{
 								sections.find(e => e.url === '/pagos-ventas') &&
 								<Route path='gestion-pagos-ventas' element={< GestionOperadoresPagos/>} />
