@@ -129,40 +129,8 @@ const Topbar = ({ topbarDark, toggleMenu, navOpen }) => {
 								{RANGE_DATE[1] instanceof Date?dayjs(RANGE_DATE[1]).format('dddd DD [DE] MMMM [DEL] YYYY'):RANGE_DATE[1]}
 							</div> 
 						</h3>
-						{}
 				</div>	
 				<ul className=" d-flex align-items-center gap-3">
-					<li>
-						<Dropdown>
-							<Dropdown.Toggle
-								as="div"
-								style={{ cursor: 'pointer' }}
-								id="dropdown-logo"
-							>
-								<img
-									src={selectedLogo.src}
-									alt="logo seleccionado"
-									style={{ width: 200 }}
-								/>
-							</Dropdown.Toggle>
-							<Dropdown.Menu>
-								{options.map((opt, idx) => (
-									<Dropdown.Item
-										key={idx}
-										onClick={() => handleSelect(opt)}
-									>
-										<img
-											src={opt.src}
-											alt={`logo opción ${idx}`}
-											width={150}
-											style={{ height: 'auto' }}
-										/>
-									</Dropdown.Item>
-								))}
-							</Dropdown.Menu>
-						</Dropdown>
-					</li>
-
 					<li className="dropdown">
 						<ProfileDropdown
 							userImage={userImage}

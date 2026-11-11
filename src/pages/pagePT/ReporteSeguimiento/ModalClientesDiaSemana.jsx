@@ -7,7 +7,7 @@ const fechaCorta = (f) => (f ? f.split('-').reverse().join('/') : '');
 // Detalle de una card de día de la semana: un cliente por fecha (total, a.m. o p.m.)
 export const ModalClientesDiaSemana = ({ titulo, filas = [], onHide }) => {
 	const columns = [
-		{ id: 'cliente', header: 'Cliente', accessor: 'cliente', sortable: true, width: 260, headerAlign: 'left', cellAlign: 'left' },
+		{ id: 'cliente', header: 'Socio', accessor: 'cliente', sortable: true, width: 260, headerAlign: 'left', cellAlign: 'left' },
 		{
 			id: 'fecha',
 			header: 'Fecha',
@@ -34,7 +34,7 @@ export const ModalClientesDiaSemana = ({ titulo, filas = [], onHide }) => {
 		<Modal show={Boolean(titulo)} onHide={onHide} size="lg" centered scrollable>
 			<Modal.Header closeButton>
 				<Modal.Title>
-					{titulo} · {filas.length} {filas.length === 1 ? 'cliente' : 'clientes'}
+					{titulo} · {filas.length} {filas.length === 1 ? 'socio' : 'socios'}
 				</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
@@ -48,8 +48,8 @@ export const ModalClientesDiaSemana = ({ titulo, filas = [], onHide }) => {
 					responsive
 					verticalBorders
 					rowKey="id"
-					emptyMessage="Sin clientes"
-					exportFileName={`clientes-${titulo || ''}`}
+					emptyMessage="Sin socios"
+					exportFileName={`socios-${titulo || ''}`}
 				/>
 			</Modal.Body>
 		</Modal>

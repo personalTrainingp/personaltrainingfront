@@ -3,12 +3,12 @@ import { useSelector } from 'react-redux';
 
 // Secciones visibles para todos los usuarios, al final del sidebar (no dependen del rol)
 const SECCIONES_PARA_TODOS = [
-	{
-		key: 'todos-centro-archivos',
-		label: 'Centro de archivos',
-		url: '/centro-archivos-general',
-		icon: 'uil-folder',
-	},
+	// {
+	// 	key: 'todos-centro-archivos',
+	// 	label: 'Centro de archivos',
+	// 	url: '/centro-archivos-general',
+	// 	icon: 'uil-folder',
+	// },
 	{
 		key: 'todos-status-influencer',
 		label: 'Status influencer',

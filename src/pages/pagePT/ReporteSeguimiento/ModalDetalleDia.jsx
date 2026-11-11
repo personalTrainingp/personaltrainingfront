@@ -20,7 +20,7 @@ export const ModalDetalleDia = ({ fecha, personas = [], onHide }) => {
 		},
 		{
 			id: 'cliente',
-			header: 'Cliente',
+			header: 'Socio',
 			accessor: (row) => row.cliente || row.nombreHuellero,
 			sortable: true,
 			width: 240,
@@ -31,7 +31,7 @@ export const ModalDetalleDia = ({ fecha, personas = [], onHide }) => {
 					row.cliente
 				) : (
 					<span>
-						{row.nombreHuellero} <Badge bg="secondary">No es cliente</Badge>
+						{row.nombreHuellero} <Badge bg="secondary">No es socio</Badge>
 					</span>
 				),
 		},
@@ -69,7 +69,7 @@ export const ModalDetalleDia = ({ fecha, personas = [], onHide }) => {
 		<Modal show={Boolean(fecha)} onHide={onHide} size="xl" centered scrollable>
 			<Modal.Header closeButton>
 				<Modal.Title>
-					Asistencia del {fechaCorta(fecha)} · {personas.length} {personas.length === 1 ? 'cliente' : 'clientes'}
+					Asistencia del {fechaCorta(fecha)} · {personas.length} {personas.length === 1 ? 'socio' : 'socios'}
 				</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>

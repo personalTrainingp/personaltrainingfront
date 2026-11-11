@@ -1,4 +1,5 @@
-import { Modal, Row, Col } from 'react-bootstrap';
+import { Modal, Row, Col, Spinner, Badge } from 'react-bootstrap';
+import { PTApi } from '@/common';
 import { Form, SelectInput, TextInput } from '@/components';
 import { useAddEditEvent } from './hooks';
 import { useForm } from '@/hooks/useForm';
@@ -25,6 +26,65 @@ const registerCita = {
 	id_cita_adquirida: 0,
 	id_empl: 0
 }
+// Cita anterior del socio: la mas reciente antes del horario elegido (el backend las da de la mas reciente a la mas antigua)
+// onResultado: 'cargando' | 'si' (tiene cita anterior) | 'no' | 'error', para fijar la duracion de la cita
+const CitaAnteriorSocio = ({ id_cli, tipo_serv, inicioCita, onResultado }) => {
+	const [estado, setestado] = useState({ cargando: true, anterior: null, total: 0, error: false })
+	useEffect(() => {
+		// si se cambia de socio antes de que responda, se ignora la respuesta del socio anterior
+		let vigente = true
+		setestado({ cargando: true, anterior: null, total: 0, error: false })
+		onResultado('cargando')
+		PTApi.post(`/cita/get-citas-filter/${tipo_serv}`, { id_cli })
+			.then(({ data }) => {
+				if (!vigente) return
+				const anteriores = (data.citas || []).filter((c) => new Date(c.fecha_init).getTime() < inicioCita)
+				setestado({ cargando: false, anterior: anteriores[0] ?? null, total: anteriores.length, error: false })
+				onResultado(anteriores.length ? 'si' : 'no')
+			})
+			.catch((error) => {
+				console.log(error)
+				if (!vigente) return
+				setestado({ cargando: false, anterior: null, total: 0, error: true })
+				onResultado('error')
+			})
+		return () => { vigente = false }
+	}, [id_cli, tipo_serv, inicioCita])
+
+	const { cargando, anterior, total, error } = estado
+	const estadoCita = arrayEstadosCitas.find((e) => e.value === String(anterior?.status_cita))?.label
+	const color = cargando ? '#adb5bd' : error ? '#dc3545' : anterior ? '#0d6efd' : '#198754'
+	return (
+		<div className='m-2 p-3 rounded-3 bg-light shadow-sm' style={{ borderLeft: `6px solid ${color}` }}>
+			<div className='fw-bold text-uppercase text-muted mb-2' style={{ fontSize: '0.8rem', letterSpacing: '0.05em' }}>
+				<i className='pi pi-history me-2' />Cita anterior del socio
+			</div>
+			{cargando ? (
+				<div className='d-flex align-items-center gap-2 text-muted'>
+					<Spinner animation='border' size='sm' /> Buscando citas anteriores...
+				</div>
+			) : error ? (
+				<span className='text-danger'>No se pudo consultar las citas anteriores</span>
+			) : !anterior ? (
+				<span className='fw-semibold' style={{ color }}>Sin citas anteriores: sería su primera cita</span>
+			) : (
+				<>
+					<div className='fs-5 fw-semibold'>
+						{FormatoDateMask(new Date(anterior.fecha_init), 'dddd D [de] MMMM [del] YYYY [a las] h:mm A')}
+					</div>
+					<div className='d-flex flex-wrap align-items-center gap-3 mt-1'>
+						<span>Nutricionista: <b>{anterior.tb_empleado?.nombres_apellidos_empl ?? '—'}</b></span>
+						<span>Estado: <Badge bg='primary'>{estadoCita ?? '—'}</Badge></span>
+					</div>
+					<div className='text-muted mt-1' style={{ fontSize: '0.85rem' }}>
+						{total} {total === 1 ? 'cita anterior' : 'citas anteriores'} en total
+					</div>
+				</>
+			)}
+		</div>
+	)
+}
+
 const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 	const dispatch = useDispatch()
 	const { obtenerCitasxClientexServicio, DataCitaxCLIENTE, onPostCita, obtenerCitasNutricionalesxCliente, dataCitaxCliente, loading } =  useCitaStore()
@@ -38,6 +98,14 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
         { name: 'CITA DE 30 MIN', key: 'B', value: 30 },
     ];
 	const [selectedCategory, setSelectedCategory] = useState(catXMin[0]);
+	// Al crear: primera cita del socio = 30 min, con cita anterior = 20 min, sin poder cambiarlo.
+	// Si falla la consulta de citas anteriores se deja elegir
+	const [citaAnterior, setcitaAnterior] = useState(null) // null | 'cargando' | 'si' | 'no' | 'error'
+	const duracionBloqueada = dataCita==null && id_cli != 0 && citaAnterior !== 'error'
+	useEffect(() => {
+		if (citaAnterior === 'si') setSelectedCategory(catXMin[0])
+		if (citaAnterior === 'no') setSelectedCategory(catXMin[1])
+	}, [citaAnterior])
 	useEffect(() => {
 		obtenerParametrosClientes()
 		obtenerEmpleadosPorDepartamentoNutricion()
@@ -63,6 +131,8 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 	}
 	const cancelModal = ()=>{
         onResetForm()
+        setcitaAnterior(null)
+        setSelectedCategory(catXMin[0])
         onHide()
     }
 	const editarEvento = ()=>{
@@ -89,7 +159,7 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 					<Button label="Salir" severity="info" outlined className='border border-2 border-success m-1 text-success' icon="pi pi-times" onClick={cancelModal} />
 					{
 						dataCita==null?
-						<Button label="Guardar"  icon="pi pi-check" className='bg-success border border-2 m-1' onClick={onSubmitEv} />
+						<Button label="Guardar"  icon="pi pi-check" className='bg-success border border-2 m-1' onClick={onSubmitEv} disabled={citaAnterior === 'cargando'} />
 						:
 						<>
 							<Button label="Eliminar" icon="pi pi-check" className='bg-primary border border-2 m-1' onClick={eliminarEvento} />
@@ -168,6 +238,13 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 										/>
 									</div>
 								</Col>
+								{
+									dataCita==null && id_cli != 0 && (
+										<Col sm={12}>
+											<CitaAnteriorSocio id_cli={id_cli} tipo_serv={tipo_serv} inicioCita={new Date(selectDATE?.start).getTime()} onResultado={setcitaAnterior}/>
+										</Col>
+									)
+								}
 								{/* <Col sm={12}>
 									<div className='m-2'>
 										<label>Sesiones disponibles:</label>
@@ -222,12 +299,19 @@ const AddEditEvent = ({show, onHide, selectDATE, tipo_serv, dataCita}) => {
 										{catXMin.map((citaxmin) => {
 											return (
 												<div key={citaxmin.key} className="flex align-items-center">
-													<RadioButton inputId={citaxmin.key} name="citaxmin" value={citaxmin} onChange={(e) => setSelectedCategory(e.value)} checked={selectedCategory.key === citaxmin.key} />
+													<RadioButton inputId={citaxmin.key} name="citaxmin" value={citaxmin} onChange={(e) => setSelectedCategory(e.value)} checked={selectedCategory.key === citaxmin.key} disabled={duracionBloqueada} />
 													<label htmlFor={citaxmin.key} className="ml-2">{citaxmin.name}</label>
 												</div>
 											);
 										})}
 									</div>
+									{
+										duracionBloqueada && citaAnterior !== 'cargando' && (
+											<div className='text-muted mt-1' style={{ fontSize: '0.85rem' }}>
+												{citaAnterior === 'no' ? 'Primera cita del socio: 30 min' : 'El socio ya tuvo una cita: 20 min'}
+											</div>
+										)
+									}
 								</div>
 								</Col>
 	

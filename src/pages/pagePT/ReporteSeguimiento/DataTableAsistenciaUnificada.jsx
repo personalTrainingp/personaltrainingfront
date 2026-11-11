@@ -3,11 +3,10 @@ import React from 'react';
 import { Badge } from 'react-bootstrap';
 
 export const ESTADOS_PERSONA = {
-	cliente_en_huellero: { label: 'Cliente en el huellero', bg: 'success' },
-	cliente_sin_huellero: { label: 'Cliente sin huella', bg: 'warning', text: 'dark' },
-	huellero_sin_cliente: { label: 'En huellero, sin cliente', bg: 'secondary' },
-	// Empleado activo (tb_empleados): no cuenta como cliente aunque también esté en tb_clientes
-	empleado: { label: 'Empleado', bg: 'dark' },
+	cliente_en_huellero: { label: 'Socio en el huellero', bg: 'success' },
+	cliente_sin_huellero: { label: 'Socio sin huella', bg: 'warning', text: 'dark' },
+	huellero_sin_cliente: { label: 'En huellero, sin socio', bg: 'secondary' },
+	// Los empleados (estado 'empleado' del backend) no se muestran: App.jsx los quita de la tabla
 };
 
 const vacio = <span className="text-muted">—</span>;
@@ -19,7 +18,7 @@ export const DataTableAsistenciaUnificada = ({ list, loading }) => {
 		{ id: 'dni', header: 'DNI', accessor: 'dni', sortable: true, width: 95, headerAlign: 'left', cellAlign: 'left' },
 		{
 			id: 'cliente',
-			header: 'Cliente',
+			header: 'Socio',
 			accessor: 'cliente',
 			sortable: true,
 			width: 220,
@@ -28,7 +27,7 @@ export const DataTableAsistenciaUnificada = ({ list, loading }) => {
 			render: (row) =>
 				row.cliente || (
 					<span className="text-muted">
-						({row.estado === 'empleado' ? 'empleado' : 'sin cliente'}) {row.nombreHuellero}
+						(sin socio) {row.nombreHuellero}
 					</span>
 				),
 		},

@@ -99,9 +99,14 @@ export const App = () => {
 		() =>
 			(dataReporte?.personas || []).filter(
 				(p) =>
+					// los empleados no se cuentan en el reporte (el backend ya los saca de los totales)
+					p.estado !== 'empleado' &&
 					(!filtroEstado || p.estado === filtroEstado) &&
 					(!filtroPrograma || (filtroPrograma === '__sin__' ? !p.programa : p.programa === filtroPrograma))
-			),
+			)
+			// el buscador de la tabla busca en los datos de la fila, no en lo que se ve: con esto
+			// "sin socio" / "sin socios" encuentra a las personas del huellero que no son socios
+			.map((p) => (p.estado === 'huellero_sin_cliente' ? { ...p, busqueda: 'sin socios' } : p)),
 		[dataReporte, filtroEstado, filtroPrograma]
 	);
 	const programas = (dataReporte?.categorias || []).filter((c) => !['Sin membresía vigente', 'No es cliente'].includes(c));
@@ -136,19 +141,19 @@ export const App = () => {
 			{resumen && (
 				<Row className="g-2 mb-3">
 					<Col xs={6} md>
-						<Indicador titulo="Clientes que asistieron" valor={resumen.personasDistintas} />
+						<Indicador titulo="Socios que asistieron" valor={resumen.personasDistintas} />
 					</Col>
 					<Col xs={6} md>
-						<Indicador titulo="Promedio diario" valor={resumen.promedioDiario} detalle="clientes por día" />
+						<Indicador titulo="Promedio diario" valor={resumen.promedioDiario} detalle="socios por día" />
 					</Col>
 					<Col xs={6} md>
 						<Indicador titulo="Marcaciones" valor={resumen.marcaciones} />
 					</Col>
 					<Col xs={6} md>
-						<Indicador titulo="Clientes vigentes sin huella" valor={resumen.clientesVigentesSinHuellero} />
+						<Indicador titulo="Socios vigentes sin huella" valor={resumen.clientesVigentesSinHuellero} />
 					</Col>
 					<Col xs={6} md>
-						<Indicador titulo="En huellero sin cliente" valor={resumen.huelleroSinCliente} />
+						<Indicador titulo="En huellero sin socio" valor={resumen.huelleroSinCliente} />
 					</Col>
 				</Row>
 			)}
@@ -176,7 +181,7 @@ export const App = () => {
 				<Card.Body>
 					<h5 className="mt-0 mb-1">Curva de asistencia diaria</h5>
 					<p className="text-muted small mb-2">
-						Clientes distintos que marcaron cada día (con o sin membresía), según el programa de su membresía vigente ese día.
+						Socios distintos que marcaron cada día (con o sin membresía), según el programa de su membresía vigente ese día.
 					</p>
 					{dataReporte && (
 						<>
@@ -198,9 +203,9 @@ export const App = () => {
 
 			<Card>
 				<Card.Body>
-					<h5 className="mt-0 mb-1">Clientes y personas del huellero</h5>
+					<h5 className="mt-0 mb-1">Socios y personas del huellero</h5>
 					<p className="text-muted small mb-2">
-						Unidos por DNI (documento del cliente = DNI en el huellero). Incluye los clientes con membresía vigente en el
+						Unidos por DNI (documento del socio = DNI en el huellero). Incluye los socios con membresía vigente en el
 						rango y todas las personas del huellero.
 					</p>
 					<Row className="g-2 mb-2">

@@ -38,7 +38,7 @@ export const CurvaAsistencia = ({ serieDiaria = [], categorias = [] }) => {
 	const [vista, setvista] = useState('programa'); // 'programa' | 'total'
 
 	const series = useMemo(() => {
-		if (vista === 'total') return [{ name: 'Clientes que asistieron', data: serieDiaria.map((d) => d.personas) }];
+		if (vista === 'total') return [{ name: 'Socios que asistieron', data: serieDiaria.map((d) => d.personas) }];
 		return categorias.map((c) => ({ name: c, data: serieDiaria.map((d) => d.porCategoria[c] || 0) }));
 	}, [vista, serieDiaria, categorias]);
 
@@ -71,7 +71,7 @@ export const CurvaAsistencia = ({ serieDiaria = [], categorias = [] }) => {
 			min: 0,
 			forceNiceScale: true,
 			decimalsInFloat: 0,
-			title: { text: 'Clientes', style: { color: TINTA[tema].texto, fontWeight: 400 } },
+			title: { text: 'Socios', style: { color: TINTA[tema].texto, fontWeight: 400 } },
 			labels: { style: { colors: TINTA[tema].texto } },
 		},
 		legend: {
@@ -88,10 +88,10 @@ export const CurvaAsistencia = ({ serieDiaria = [], categorias = [] }) => {
 			x: {
 				formatter: (_, { dataPointIndex }) => {
 					const d = serieDiaria[dataPointIndex];
-					return d ? `${etiquetaDia(d.fecha)} · ${d.personas} clientes · ${d.marcaciones} marcaciones` : '';
+					return d ? `${etiquetaDia(d.fecha)} · ${d.personas} socios · ${d.marcaciones} marcaciones` : '';
 				},
 			},
-			y: { formatter: (v) => `${v} ${v === 1 ? 'cliente' : 'clientes'}` },
+			y: { formatter: (v) => `${v} ${v === 1 ? 'socio' : 'socios'}` },
 		},
 	};
 
@@ -126,7 +126,7 @@ export const TablaPorDia = ({ serieDiaria = [], categorias = [], detallePorDia =
 								{c}
 							</th>
 						))}
-						<th className="text-end">Clientes</th>
+						<th className="text-end">Socios</th>
 						<th className="text-end">Marcaciones</th>
 						<th className="text-center">Detalle</th>
 					</tr>

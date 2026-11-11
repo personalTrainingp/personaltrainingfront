@@ -234,8 +234,9 @@ export const TableSeguimientos = ({desde, hasta, title='SEG', dataSeguimientoxFe
             )
         }
         <DataTableCR
-            exportExtraColumns={columnsExports}
-            exportFileName={nombreExcel}
+            exportable={false}
+            // exportExtraColumns={columnsExports}
+            // exportFileName={nombreExcel}
             columns={columns}
             data={dataTabla}
         />
