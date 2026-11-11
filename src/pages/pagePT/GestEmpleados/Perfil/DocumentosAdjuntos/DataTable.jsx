@@ -48,8 +48,8 @@ export const DataTable = ({uid_location, onEditar}) => {
                       {index+1}
                     </td>
                     <td>
-                      <a href={`${config.API_IMG.FILES_COLABORADORES}${d.tb_image?.name_image}`} target='_blank'>
-                        <i className='pi pi-file-pdf'></i>
+                      <a href={`${config.API_IMG.FILES_COLABORADORES}${encodeURIComponent(d.tb_image?.name_image ?? '')}`} target='_blank' rel='noreferrer' title={d.tb_image?.name_image}>
+                        <i className={/\.(jpe?g|png|gif|webp)$/i.test(d.tb_image?.name_image ?? '') ? 'pi pi-image' : /\.pdf$/i.test(d.tb_image?.name_image ?? '') ? 'pi pi-file-pdf' : 'pi pi-file'}></i>
                       </a>
                     </td>
                     <td>

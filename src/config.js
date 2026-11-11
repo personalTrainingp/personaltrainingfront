@@ -22,6 +22,8 @@ const config = {
 		FILES_COLABORADORES: 'https://archivosluroga.blob.core.windows.net/docs-empleados/',
 		DOC_GENERAL: 'https://archivosluroga.blob.core.windows.net/docs-general/',
 		CHECKLIST_ITEM: 'https://archivosluroga.blob.core.windows.net/checklist-items/',
+		CALENDARIO_MARKETING: 'https://archivosluroga.blob.core.windows.net/calendario-marketing/',
+		ACTAS: 'https://archivosluroga.blob.core.windows.net/actas/',
 	},
 };
 

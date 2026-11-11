@@ -73,7 +73,8 @@ export const DataTableCR = ({
   exportExtraColumns =[],
   exportAllRaw = false,
   defaultSearch='',
-  tfoot=''
+  tfoot='',
+  tituloSuperior = null, // texto de una fila encima de la cabecera
 }) => {
   const [search, setSearch] = useState(defaultSearch);
   const [page, setPage] = useState(1);
@@ -359,6 +360,8 @@ const filtered = useMemo(() => {
   if (tokens.length === 0) return data;
 
   return data.filter((row) => {
+    // filas de grupo (row.__grupo): separadores, se mantienen siempre
+    if (row?.__grupo) return true;
     const text = buildSearchText(row);
     // console.log({asdf: text});
     
@@ -795,6 +798,14 @@ const filtered = useMemo(() => {
           backgroundColor: stickyHeader ? 'var(--dtrb-header-bg, #fff)' : '#E9ECF1',
         }}
       >
+        {/* fila de título opcional encima de la cabecera */}
+        {tituloSuperior && (
+          <tr>
+            <th colSpan={(selectableRows ? 1 : 0) + columns.length} className={`${bgHeader} text-center text-white fw-bold py-2`}>
+              {tituloSuperior}
+            </th>
+          </tr>
+        )}
         <tr>
           {selectableRows && (
             <th
@@ -874,7 +885,14 @@ const filtered = useMemo(() => {
           </tr>
         )}
 
-        {pageRows.map((row, ri) => (
+        {pageRows.map((row, ri) => row?.__grupo ? (
+          // fila de grupo: ocupa todo el ancho y muestra solo su texto
+          <tr key={`grupo-${ri}`}>
+            <td colSpan={(selectableRows ? 1 : 0) + columns.length} className={`${bgHeader} text-center text-white fw-bold py-2`} style={{ boxShadow: 'none' }}>
+              {row.__grupo}
+            </td>
+          </tr>
+        ) : (
           <tr
             key={(selectableRows ? getRowKey(row, ri) : undefined) ?? ri}
             onClick={() => onRowClick?.(row, startIdx + ri)}
@@ -960,6 +978,9 @@ const filtered = useMemo(() => {
       )}
 
       {pageRows.map((row, ri) => {
+        if (row?.__grupo) {
+          return <div key={`grupo-${ri}`} className={`${bgHeader} text-white fw-bold mt-2 p-2 rounded text-center`}>{row.__grupo}</div>;
+        }
         const key = (selectableRows ? getRowKey(row, ri) : undefined) ?? ri;
         const checked = selectableRows ? selectedSet.has(getRowKey(row, ri)) : false;
 

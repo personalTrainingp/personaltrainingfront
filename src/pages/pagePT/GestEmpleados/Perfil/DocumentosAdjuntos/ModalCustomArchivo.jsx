@@ -84,7 +84,7 @@ export const ModalCustomArchivo = ({uid_location, show, onHide, doc}) => {
                     </div>
                     <p>Haga clic para cargar el documento</p>
                     <input 
-                    accept={".pdf,.doc"}
+                    accept={"image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt"}
                     name='file'
                     onChange={onChangeFile}
                     type="file" 

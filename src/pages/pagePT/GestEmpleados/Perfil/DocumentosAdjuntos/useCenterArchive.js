@@ -2,6 +2,7 @@ import { PTApi } from '@/common';
 import { onSetDataView } from '@/store/data/dataSlice';
 import React from 'react';
 import { useDispatch } from 'react-redux';
+import Swal from 'sweetalert2';
 
 export const useCenterArchive = () => {
 	const dispatch = useDispatch();
@@ -16,6 +17,11 @@ export const useCenterArchive = () => {
 			await obtenerArchivCenterxUidLocation(uid_location);
 		} catch (error) {
 			console.log(error);
+			Swal.fire({
+				icon: 'error',
+				title: 'No se pudo subir el documento',
+				text: error?.response?.data?.error ?? error.message,
+			});
 		}
 	};
 	const obtenerArchivCenterxUidLocation = async (uid_location) => {

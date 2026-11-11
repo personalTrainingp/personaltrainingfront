@@ -47,7 +47,7 @@ const ModuloDropdown = () => {
 				onClick={toggleDropdown}
 				className="nav-link dropdown-toggle arrow-none d-flex align-items-center"
 			>	
-				<span className='px-2 py-1 bg-change text-white rounded-3 mr-2 fs-4'>
+				<span className={`px-2 py-1 ${modulos[moduloSelect]?.name.split('')[0] === 'I' ? 'bg-greenISESAC' : 'bg-change'} text-white rounded-3 mr-2 fs-4`}>
 					{modulos[moduloSelect]?.name.split('')[0]}
 				</span>
 				<span className="align-middle d-sm-inline-block font-bold font-20">

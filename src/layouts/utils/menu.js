@@ -9,12 +9,12 @@ const SECCIONES_PARA_TODOS = [
 	// 	url: '/centro-archivos-general',
 	// 	icon: 'uil-folder',
 	// },
-	{
-		key: 'todos-status-influencer',
-		label: 'Status influencer',
-		url: '/status-influencer',
-		icon: 'uil-star',
-	},
+	// {
+	// 	key: 'todos-status-influencer',
+	// 	label: 'Status influencer',
+	// 	url: '/status-influencer',
+	// 	icon: 'uil-star',
+	// },
 ];
 
 const getMenuItems = () => {

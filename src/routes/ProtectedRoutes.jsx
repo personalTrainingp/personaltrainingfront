@@ -103,6 +103,7 @@ const GestionEventosAsistencia = lazy(() => import('../pages/pagePT/GestionEvent
 const GestionMetas = lazy(() => import('../pages/pagePT/GestionMetas/index.jsx'))
 const GestionMensajesWsp = lazy(() => import('../pages/pagePT/GestionMensajesWsp/index.jsx'))
 const ReporteAsistenciaHuellero = lazy(() => import('../pages/pagePT/ReporteSeguimiento/index.jsx'))
+const InformeGerencial = lazy(() => import('../pages/pagePT/InformeGerencial/index.jsx'))
 const GestionHorasExtras = lazy(() => import('../pages/pagePT/GestionHorasExtras/index.jsx'))
 const GestionSalidasTempranas = lazy(() => import('../pages/pagePT/GestionSalidasTempranas/index.jsx'))
 const ResumenGerencialPorRenovaciones = lazy(() => import('../pages/pagePT/ResumenGerencialPorRenovaciones/Index.jsx'))
@@ -114,6 +115,8 @@ const ResumenGerencialPorReinscripcionesxDia = lazy(() => import('../pages/pageP
 const FlujoCajaBalanceCuentas = lazy(() => import('../pages/pagePT/FlujoCuentasBalance'))
 const GestionTc = lazy(() => import('../pages/pagePT/GestionTc'))
 const GestionLead = lazy(() => import('../pages/pagePT/GestionLead/Index.jsx'))
+const CalendarioMarketing = lazy(() => import('../pages/pagePT/CalendarioMarketing/index.jsx'))
+const CanjeStatus = lazy(() => import('../pages/pagePT/CanjeStatus/index.jsx'))
 const ReportePlanilla = lazy(() => import('../pages/pagePT/ReportePlanilla/Index.jsx'))
 const SeguimientoOficial = lazy(() => import('../pages/pagePT/Seguimientoficial/index.jsx'))
 const ReporteMonketFit = lazy(() => import('../pages/pagePT/ReporteMonkeyFit/Index.jsx'))
@@ -127,6 +130,7 @@ const ConstructorCruces = lazy(() => import('../pages/pagePT/ConstructorCruces/i
 const ReporteProveedores = lazy(() => import('../pages/pagePT/ReporteProveedores'));
 const ReporteCuentasBalance = lazy(() => import('../pages/pagePT/ReporteDetalleCuentasBalance'));
 const StatusInfluencer = lazy(() => import('../pages/pagePT/StatusInfluencer/Index.jsx'));
+const ReporteActas = lazy(() => import('../pages/pagePT/ReporteActas/index.jsx'));
 // const Dashboard = lazy(() => import('../pages/pagePT/Dashboard/index.jsx'));
 
 export default function ProtectedRoutes() {
@@ -176,7 +180,22 @@ export default function ProtectedRoutes() {
 					<>
 						<Route path="/*" element={<Layout />}>
 							<Route index element={<Navigate to='home' replace />} />
-							<Route path='status-influencer' element={<StatusInfluencer />} />
+							{
+								sections.find(e => e.url === '/calendario-marketing') &&
+								<Route path='calendario-marketing' element={<CalendarioMarketing />} />
+							}
+							{
+								sections.find(e => e.url === '/status-influencer') &&
+								<Route path='status-influencer' element={<StatusInfluencer />} />
+							}
+							{
+								sections.find(e => e.url === '/actas') &&
+								<Route path='actas' element={<ReporteActas />} />
+							}
+							{
+								sections.find(e => e.url === '/resumen-general') &&
+								<Route path='reporte/informe-gerencial' element={<InformeGerencial />} />
+							}
 							{
 								sections.find(e => e.url === '/pagos-ventas') &&
 								<Route path='gestion-pagos-ventas' element={< GestionOperadoresPagos/>} />
@@ -533,6 +552,14 @@ export default function ProtectedRoutes() {
 								<Route path='gestion-lead' element={<GestionLead />} />
 							}
 							{
+								sections.find(e => e.url === '/marketing') &&
+								<Route path='calendario-marketing' element={<CalendarioMarketing />} />
+							}
+							{
+								sections.find(e => e.url === '/marketing') &&
+								<Route path='canje-status' element={<CanjeStatus />} />
+							}
+							{
 								sections.find(e => e.url === '/colaborador') &&
 								<>
 									<Route path='gestion-empleados-activo' element={<GestionEmpleados idEstado={1} />} />
@@ -606,6 +633,10 @@ export default function ProtectedRoutes() {
 							{
 								sections.find(e => e.url === '/reporte') &&
 								<Route path='reporte/venta-semana' element={<ReporteVentasporSemana />} />
+							}
+							{
+								sections.find(e => e.url === '/resultados-asesores') &&
+								<Route path='resultados-asesores' element={<RankingAsesorDiariaPage />} />
 							}
 							{
 								sections.find(e => e.url === '/reportes-asesores') &&
