@@ -185,8 +185,8 @@ export default function ProtectedRoutes() {
 								<Route path='calendario-marketing' element={<CalendarioMarketing />} />
 							}
 							{
-								sections.find(e => e.url === '/status-influencer') &&
-								<Route path='status-influencer' element={<StatusInfluencer />} />
+								sections.find(e => e.url === '/status-influencer-canjes') &&
+								<Route path='status-influencer-canjes' element={<StatusInfluencer />} />
 							}
 							{
 								sections.find(e => e.url === '/actas') &&

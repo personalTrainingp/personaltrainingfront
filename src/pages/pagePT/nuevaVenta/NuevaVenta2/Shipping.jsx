@@ -100,12 +100,19 @@ const Shipping = ({ dataVenta, datos_pagos, detalle_cli_modelo, funToast }) => {
 		)
 	}
 	const onSubmitFormVentaANDnew = async()=>{
-		if(sumarPagos(datos_pagos)!==sumarTarifas(dataVenta)){
+		// Saldo pendiente en céntimos (evita errores de punto flotante)
+		const totalVentaCent = Math.round(Number(sumarTarifas(dataVenta)) * 100)
+		const totalPagosCent = Math.round(Number(sumarPagos(datos_pagos)) * 100)
+		const saldoPendienteCent = totalVentaCent - totalPagosCent
+		if(Number.isNaN(saldoPendienteCent) || saldoPendienteCent !== 0){
+			const saldo = Number.isNaN(saldoPendienteCent) ? 'inválido' : `S/ ${(Math.abs(saldoPendienteCent)/100).toFixed(2)}`
 			return Swal.fire({
 				icon: 'error',
-				title: `EL PAGO DEBE DE SER IGUAL AL SALDO PENDIENTE ${sumarPagos(datos_pagos)} NO ES LO MISMO QUE ${sumarTarifas(dataVenta)}`,
-				showConfirmButton: false,
-				timer: 2000,
+				title: 'EL SALDO PENDIENTE DEBE SER CERO',
+				text: saldoPendienteCent < 0
+					? `Los pagos exceden el total de la venta. Vuelto: ${saldo}`
+					: `Saldo pendiente: ${saldo} (Venta: S/ ${sumarTarifas(dataVenta)} | Pagos: S/ ${sumarPagos(datos_pagos)})`,
+				showConfirmButton: true,
 			});
 		}
 		if(detalle_cli_modelo.id_tipo_transaccion==0 || detalle_cli_modelo.id_empl==0){
