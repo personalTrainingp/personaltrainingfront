@@ -172,7 +172,7 @@ export const CalendarioMesDia = ({ eventos = [], dataTipos = [], mes, dia, onCha
       {vista === 'mes' && <div style={{ overflowX: 'auto' }}>
         <div style={{ minWidth: 700 }}>
           <div className='bg-change text-white fw-bold text-center' style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)' }}>
-            {DIAS_SEMANA.map((d) => <div key={d} className='py-2 small'>{d}</div>)}
+            {DIAS_SEMANA.map((d) => <div key={d} className='py-2 fs-3'>{d}</div>)}
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)' }}>
             {celdas.map((n, i) => {

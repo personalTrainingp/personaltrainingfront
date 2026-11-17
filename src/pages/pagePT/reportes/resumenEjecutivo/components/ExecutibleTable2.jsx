@@ -13,7 +13,7 @@ export const ExecutiveTable2 = (props) => {
     orderedMFPrograms,
   } = buildExecutiveTableData(props);
 
-  const { cutDay } = props;
+  const { cutDay, soloRedes = false } = props;
 
   const fmtUsd = (n) =>
     new Intl.NumberFormat("es-US", {
@@ -489,6 +489,7 @@ export const ExecutiveTable2 = (props) => {
 
   return (
     <div style={sWrap}>
+      {!soloRedes && (<>
       {/* === MONKEYFIT POR PROGRAMA === */}
       <TitleChip style={{ marginTop: 32, background: "black" }}>
         MONKEYFIT
@@ -555,6 +556,7 @@ export const ExecutiveTable2 = (props) => {
       <ResumenCuotaTable />
 
       <div style={{ height: 32 }} />
+      </>)}
 
       {/* === MARKETING: INVERSIÓN VS LEADS === */}
       <TitleChip style={{ fontSize: 28, padding: "8px 18px" }}>

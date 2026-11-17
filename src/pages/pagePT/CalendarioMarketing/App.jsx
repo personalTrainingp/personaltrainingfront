@@ -1,23 +1,25 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { CalendarioMesDia, MESES, diasDelEvento, eventoEnMesDia, BadgeTipo, labelTipoEvento } from './CalendarioMesDia'
 import { Button } from 'primereact/button'
 import { Table } from 'react-bootstrap'
 import { confirmDialog } from 'primereact/confirmdialog'
 import dayjs from 'dayjs'
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore'
-import { useCalendarioMarketing, urlArchivo, archivosDelEvento } from './useCalendarioMarketing'
+import { useCalendarioMarketing, urlArchivo, archivosDelEvento, tipoArchivo, iconoArchivo } from './useCalendarioMarketing'
 import { ModalCalendarioMarketing } from './ModalCalendarioMarketing'
+import { VisorVideo } from './VisorVideo'
 
 export const ENTIDAD_TIPO = 'calendario-marketing'
 export const GRUPO_TIPO = 'tipo'
 
-const esImagen = (ext = '') => ['.jpg', '.jpeg', '.png', '.gif', '.webp'].includes(ext.toLowerCase())
 const formatFecha = (f) => (f ? dayjs(f).format('DD/MM/YYYY') : '')
 
 export const App = ({ id_empresa }) => {
   const [modal, setModal] = useState({ isOpen: false, item: null })
   const [mes, setMes] = useState(dayjs().month() + 1)
   const [dia, setDia] = useState(null)
+  const [videoAbierto, setVideoAbierto] = useState(null)
+  const cerrarVideo = useCallback(() => setVideoAbierto(null), [])
   const {
     dataCalendario,
     isLoading,
@@ -83,6 +85,7 @@ export const App = ({ id_empresa }) => {
         onGuardar={onGuardar}
         onDeleteArchivo={(id_image) => deleteArchivo(id_image, id_empresa)}
       />
+      <VisorVideo video={videoAbierto} onClose={cerrarVideo} />
       <CalendarioMesDia eventos={eventos} dataTipos={dataTipos} mes={mes} dia={dia} onChangeMes={setMes} onChangeDia={setDia} />
       <h5 className='mt-3'>
         {dia ? `${dia} DE ${MESES[mes - 1]}` : MESES[mes - 1]} ({eventosFiltrados.length})
@@ -117,15 +120,34 @@ export const App = ({ id_empresa }) => {
               <td style={{ whiteSpace: 'pre-wrap' }}>{d.observacion}</td>
               <td>
                 <div className='d-flex flex-wrap gap-2'>
-                  {archivosDelEvento(d).map((img) => (
-                    <a key={img.id} href={urlArchivo(img)} target='_blank' rel='noreferrer' title={img.name_image}>
-                      {esImagen(img.extension_image) ? (
-                        <img src={urlArchivo(img)} alt={img.name_image} style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 4 }} />
-                      ) : (
-                        <i className='pi pi-file' style={{ fontSize: '1.6rem' }}></i>
-                      )}
-                    </a>
-                  ))}
+                  {archivosDelEvento(d).map((img) => {
+                    const ext = img.extension_image || img.name_image
+                    const tipo = tipoArchivo(ext)
+                    if (tipo === 'video') {
+                      return (
+                        <button
+                          key={img.id}
+                          type='button'
+                          title={img.name_image}
+                          onClick={() => setVideoAbierto({ src: urlArchivo(img), titulo: img.name_image })}
+                          className='position-relative d-inline-block p-0 border-0 bg-transparent'
+                          style={{ width: 40, height: 40, cursor: 'pointer' }}
+                        >
+                          <video src={`${urlArchivo(img)}#t=0.5`} muted preload='metadata' style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 4, background: '#000', pointerEvents: 'none' }} />
+                          <i className='pi pi-play position-absolute top-50 start-50 translate-middle text-white' style={{ fontSize: '0.9rem' }}></i>
+                        </button>
+                      )
+                    }
+                    return (
+                      <a key={img.id} href={urlArchivo(img)} target='_blank' rel='noreferrer' title={img.name_image}>
+                        {tipo === 'imagen' ? (
+                          <img src={urlArchivo(img)} alt={img.name_image} style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 4 }} />
+                        ) : (
+                          <i className={iconoArchivo(ext)} style={{ fontSize: '1.6rem' }}></i>
+                        )}
+                      </a>
+                    )
+                  })}
                 </div>
               </td>
               <td className='text-nowrap'>

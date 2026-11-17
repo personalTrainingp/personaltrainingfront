@@ -5,6 +5,7 @@ import { confirmDialog } from 'primereact/confirmdialog'
 import { ProgressSpinner } from 'primereact/progressspinner'
 import { DataTableCR } from '@/components/DataView/DataTableCR'
 import dayjs from 'dayjs'
+import 'dayjs/locale/es'
 import { useActas } from './useActas'
 import { ModalActa } from './ModalActa'
 import { ArchivosActa } from './ArchivosActa'
@@ -29,7 +30,7 @@ export const AppReporteActas = () => {
   }
 
   const columns = [
-    { id: 'fecha', header: 'FECHA', render: (row) => <span className='text-nowrap'>{dayjs(row.createdAt).format('DD/MM/YYYY hh:mm A')}</span> },
+    { id: 'fecha', header: 'FECHA', render: (row) => <span className='text-nowrap'>{dayjs(row.createdAt).locale('es').format('dddd D [de] MMMM [del] YYYY')}</span> },
     { id: 'titulo', header: 'TITULO', render: (row) => <span className='fw-bold'>{row.titulo}</span> },
     {
       id: 'observacion', header: 'OBSERVACION', render: (row) => (

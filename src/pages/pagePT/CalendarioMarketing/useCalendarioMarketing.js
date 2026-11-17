@@ -5,7 +5,22 @@ import config from '@/config';
 const CONTAINER = 'calendario-marketing';
 export const soloFecha = (f) => (f ? String(f).slice(0, 10) : f);
 const esArchivoImagen = (file) => (file?.type ?? '').startsWith('image/');
-// fotos (uid_images) y documentos (uid_file) del evento en una sola lista
+
+const EXT_IMAGEN = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.svg'];
+const EXT_VIDEO = ['.mp4', '.mov', '.webm', '.avi', '.mkv', '.m4v', '.3gp', '.wmv'];
+// 'imagen' | 'video' | 'documento' segun la extension (".mp4") o el nombre del archivo
+export const tipoArchivo = (extOrName = '') => {
+	const s = String(extOrName).toLowerCase();
+	const ext = s.includes('.') ? s.slice(s.lastIndexOf('.')) : `.${s}`;
+	if (EXT_IMAGEN.includes(ext)) return 'imagen';
+	if (EXT_VIDEO.includes(ext)) return 'video';
+	return 'documento';
+};
+export const iconoArchivo = (extOrName) =>
+	({ imagen: 'pi pi-image', video: 'pi pi-video', documento: 'pi pi-file' })[tipoArchivo(extOrName)];
+export const ACCEPT_ARCHIVOS = 'image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv';
+
+// fotos (uid_images) y videos/documentos (uid_file) del evento en una sola lista
 export const archivosDelEvento = (ev) => [...(ev?.imagenes ?? []), ...(ev?.archivos ?? [])];
 export const urlArchivo = (img) => `${config.API_IMG.CALENDARIO_MARKETING}${img.name_image}`;
 
@@ -33,7 +48,7 @@ export const useCalendarioMarketing = () => {
 		}
 	};
 
-	// fotos -> tb_image con uid_location = uid_images; documentos -> uid_location = uid_file
+	// fotos -> tb_image con uid_location = uid_images; videos y documentos -> uid_location = uid_file
 	const subirArchivos = async ({ uid_file, uid_images }, files = []) => {
 		for (const file of files) {
 			const formData = new FormData();

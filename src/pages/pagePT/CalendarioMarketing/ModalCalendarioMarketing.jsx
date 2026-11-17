@@ -4,7 +4,10 @@ import { Button } from 'primereact/button'
 import { Col, Row } from 'react-bootstrap'
 import Select from 'react-select'
 import Swal from 'sweetalert2'
-import { urlArchivo, archivosDelEvento } from './useCalendarioMarketing'
+import { urlArchivo, archivosDelEvento, iconoArchivo, ACCEPT_ARCHIVOS } from './useCalendarioMarketing'
+
+const formatTamano = (bytes = 0) =>
+  bytes >= 1024 * 1024 ? `${(bytes / (1024 * 1024)).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1024))} KB`
 import { colorTipo } from './CalendarioMesDia'
 
 const formVacio = {
@@ -112,20 +115,21 @@ export const ModalCalendarioMarketing = ({ show, onHide, item, dataTipos = [], o
           </Col>
           <Col md={12}>
             <div className='mb-2'>
-              <label className='form-label'>FOTOS / DOCUMENTOS:</label>
+              <label className='form-label'>FOTOS / VIDEOS / DOCUMENTOS:</label>
               <input
                 type='file'
                 className='form-control'
                 multiple
-                accept='image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt'
+                accept={ACCEPT_ARCHIVOS}
                 onChange={onChangeFiles}
               />
               {files.length > 0 && (
                 <ul className='list-unstyled mt-2 mb-0'>
                   {files.map((f, i) => (
                     <li key={`${f.name}-${i}`} className='d-flex align-items-center gap-2'>
-                      <i className='pi pi-upload'></i>
+                      <i className={iconoArchivo(f.name)}></i>
                       <span className='text-truncate'>{f.name}</span>
+                      <small className='text-muted text-nowrap'>{formatTamano(f.size)}</small>
                       <Button type='button' icon='pi pi-times' rounded text severity='danger' size='small' onClick={() => quitarFile(i)} />
                     </li>
                   ))}
@@ -140,7 +144,7 @@ export const ModalCalendarioMarketing = ({ show, onHide, item, dataTipos = [], o
                 <ul className='list-unstyled mb-0'>
                   {archivosExistentes.map((img) => (
                     <li key={img.id} className='d-flex align-items-center gap-2'>
-                      <i className='pi pi-paperclip'></i>
+                      <i className={iconoArchivo(img.extension_image || img.name_image)}></i>
                       <a href={urlArchivo(img)} target='_blank' rel='noreferrer' className='text-truncate'>{img.name_image}</a>
                       <Button type='button' icon='pi pi-trash' rounded text severity='danger' size='small' onClick={() => onDeleteArchivo(img.id)} />
                     </li>

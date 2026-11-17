@@ -85,6 +85,9 @@ const ViewReinscripcion = lazy(() => import('../pages/pagePT/reportes/lineaMkt/r
 const CitasxNutricionista = lazy(() => import('../pages/pagePT/reportes/citasxEstados'))
 const ArticulosNuevos = lazy(() => import('../pages/pagePT/GestArticulosChorrillos'))
 const ResumenEjecutivo = lazy(() => import('../pages/pagePT/reportes/resumenEjecutivo/Index.jsx'))
+const ReporteRedesSociales = lazy(() => import('../pages/pagePT/reportes/reporteRedesSociales/Index.jsx'))
+const ResultadosPorCanal = lazy(() => import('../pages/pagePT/reportes/resultadosPorCanal/Index.jsx'))
+const SeguidoresRedes = lazy(() => import('../pages/pagePT/reportes/seguidoresRedes/Index.jsx'))
 const GestionCentroDeArchivos = lazy(() => import('../pages/pagePT/GestCentroArchivo/Index.jsx'))
 const CentroDeArchivosSoloLectura = lazy(() => import('../pages/pagePT/GestCentroArchivo/AppSoloLectura.jsx'))
 const CvColaboradores = lazy(() => import('../pages/pagePT/GestEmpleados/Perfil/cv'))
@@ -381,6 +384,18 @@ export default function ProtectedRoutes() {
 							{
 								findSectionDeep('/resumen-ejecutivo') &&
 								<Route path='resumen-ejecutivo' element={<ResumenEjecutivo />} />
+							}
+							{
+								findSectionDeep('/pauta-digital') &&
+								<Route path='pauta-digital' element={<ReporteRedesSociales />} />
+							}
+							{
+								(findSectionDeep('/reporte-redes-sociales') ) &&
+								<Route path='reporte-redes-sociales' element={<SeguidoresRedes />} />
+							}
+							{
+								findSectionDeep('/resultados-por-canal') &&
+								<Route path='resultados-por-canal' element={<ResultadosPorCanal />} />
 							}
 							{
 								sections.find(e => e.url === '/ventas') &&
