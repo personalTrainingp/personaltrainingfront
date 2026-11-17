@@ -9,6 +9,8 @@ import { MESES } from '../GestionMetas/meses'
 import { useGestionComercialStore } from './useGestionComercialStore'
 import { SymbolSoles } from '@/components/componentesReutilizables/SymbolSoles'
 import { dniTieneHuella } from '../GestionEventosAsistencia/pinHuellero'
+import { Button as BotonIcono } from 'primereact/button'
+import { ModalComentario } from './ModalComentario'
 
 // Las tareas de exito van en verde ISESAC con texto blanco; el card que esta filtrando la tabla se distingue en azul
 const ResumenItem = ({label, valor, icon, activo, exito, onClick})=>(
@@ -31,6 +33,14 @@ const calcularTiming = (meta, hoy = dayjs())=>{
   const diasDelMes = mesCuota.daysInMonth()
   const diasTranscurridos = mesCuota.isSame(hoy, 'month') ? hoy.date() : diasDelMes
   return { timing: (meta.meta_asesor / diasDelMes) * diasTranscurridos, diasDelMes, diasTranscurridos }
+}
+
+// Dias que faltan del mes de la cuota, contando hoy. Mes cerrado: 0. Mes futuro: todos sus dias
+const diasFaltanMes = (meta, hoy = dayjs())=>{
+  const mesCuota = dayjs(new Date(meta.anio, meta.mes - 1, 1))
+  if (mesCuota.isBefore(hoy, 'month')) return 0
+  if (mesCuota.isAfter(hoy, 'month')) return mesCuota.daysInMonth()
+  return mesCuota.daysInMonth() - hoy.date() + 1
 }
 
 // Orden del reporte: hoy, luego las proximas (de la mas cercana a la mas lejana) y al final las anteriores (de la mas reciente a la mas antigua)
@@ -57,13 +67,13 @@ const etiquetaTiempo = (t)=>{
 
 // Columnas de la tabla: valor es lo que se compara al ordenar con las flechas
 const COLUMNAS_TAREAS = [
-  { key: 'fecha', titulo: 'FECHA', valor: (t)=>dayjs(t.fecha).valueOf() },
+  { key: 'fecha', titulo: 'FECHA', valor: (t)=>t.fecha ? dayjs(t.fecha).valueOf() : null },
   // ordena por dias, no por el texto: de lo mas antiguo a lo mas lejano
-  { key: 'tiempo', titulo: 'TIEMPO', valor: (t)=>diasDesdeHoy(t) },
+  { key: 'tiempo', titulo: 'TIEMPO', valor: (t)=>t.fecha ? diasDesdeHoy(t) : null },
   { key: 'prospecto', titulo: 'PROSPECTO', valor: (t)=>`${t.prospecto.nombres ?? ''} ${t.prospecto.apellidos ?? ''}`.trim() },
   { key: 'celular', titulo: 'CELULAR', valor: (t)=>t.prospecto.celular },
   { key: 'status', titulo: 'STATUS', valor: (t)=>t.prospecto.parametro_estado?.label_param },
-  { key: 'tarea', titulo: 'TAREA', valor: (t)=>arrayTareasComercial.find(e=>e.value===t.id_tarea)?.label ?? `Tarea ${t.id_tarea}` },
+  { key: 'tarea', titulo: 'TAREA', valor: (t)=>t.id_tarea === null ? null : arrayTareasComercial.find(e=>e.value===t.id_tarea)?.label ?? `Tarea ${t.id_tarea}` },
   { key: 'observacion', titulo: 'OBSERVACION', valor: (t)=>t.observacion },
 ]
 // orden: {key, direccion: 'asc' | 'desc'}; sin orden queda el predeterminado. Los vacios siempre van al final
@@ -92,32 +102,50 @@ const filtrarPorMes = (registros, mes, anio, campoFecha = 'fecha')=>registros.fi
   const fecha = dayjs(r[campoFecha])
   return fecha.month() + 1 === mes && fecha.year() === anio
 })
-// Leads registrados en el mes y cuantos de ellos hoy tienen status CONVERTIDO; un mes sin leads da 0.0%
+// Un mismo cliente puede estar registrado como varios prospectos: queda uno por cliente (y uno por id).
+// Se prefiere el CONVERTIDO y, entre iguales, el registro mas reciente. Sin cliente vinculado no se puede agrupar
+const unicosPorCliente = (leads)=>{
+  const convertido = (p)=>p.parametro_estado?.id_param === ID_ESTADO_CONVERTIDO
+  const mejor = (a, b)=>convertido(a) !== convertido(b) ? (convertido(a) ? a : b) : (dayjs(a.fecha_registro).isBefore(b.fecha_registro) ? b : a)
+  const elegidos = new Map()
+  for (const p of leads) {
+    const clave = p.id_cli ? `cli-${p.id_cli}` : `id-${p.id}`
+    const previo = elegidos.get(clave)
+    elegidos.set(clave, previo ? mejor(previo, p) : p)
+  }
+  return [...elegidos.values()]
+}
+// Leads registrados en el mes (sin repetir cliente) y cuantos de ellos hoy tienen status CONVERTIDO; un mes sin leads da 0.0%
 const resumenConversion = (prospectos, mes, anio)=>{
-  const leadsDelMes = filtrarPorMes(prospectos, mes, anio, 'fecha_registro')
+  const leadsDelMes = unicosPorCliente(filtrarPorMes(prospectos, mes, anio, 'fecha_registro'))
   const convertidos = leadsDelMes.filter(p=>p.parametro_estado?.id_param === ID_ESTADO_CONVERTIDO)
   const porcentaje = leadsDelMes.length === 0 ? '0.0' : ((convertidos.length / leadsDelMes.length) * 100).toFixed(1)
-  return { prospectos: leadsDelMes.length, convertidos: convertidos.length, porcentaje, leadsConvertidos: convertidos }
+  return { prospectos: leadsDelMes.length, convertidos: convertidos.length, porcentaje, leadsDelMes, leadsConvertidos: convertidos }
 }
 // id_cli -> DNI. El DNI sale del label de los clientes: "DNI | NOMBRE"
 const mapearDniPorCliente = (clientes)=>new Map(clientes.map(c=>[c.value, String(c.label ?? '').split('|')[0].trim()]))
 // Un lead sin cliente vinculado o sin DNI no se puede buscar en el huellero: cuenta como sin huella
-const contarHuellas = (leads, dniPorCliente, pines)=>{
-  const conHuella = leads.filter(l=>{
-    const dni = dniPorCliente.get(l.id_cli)
-    return Boolean(dni) && dniTieneHuella(pines, dni)
-  }).length
-  return { conHuella, sinHuella: leads.length - conHuella }
-}
-// Un lead sin cliente vinculado o sin membresia no tiene contrato firmado: cuenta como sin contrato
-const contarContratos = (leads, contratosPorCliente)=>{
-  const contarTipo = (tipo)=>leads.filter(l=>contratosPorCliente.get(l.id_cli) === tipo).length
-  const conContrato = contarTipo('CON CONTRATO')
-  const canje = contarTipo('CANJE')
-  return { conContrato, canje, sinContrato: leads.length - conContrato - canje }
-}
+const leadsSinHuella = (leads, dniPorCliente, pines)=>leads.filter(l=>{
+  const dni = dniPorCliente.get(l.id_cli)
+  return !(Boolean(dni) && dniTieneHuella(pines, dni))
+})
+// Un lead sin cliente vinculado o sin membresia no tiene contrato firmado: cuenta como sin contrato (CANJE no cuenta)
+const leadsSinContrato = (leads, contratosPorCliente)=>leads.filter(l=>!['CON CONTRATO', 'CANJE'].includes(contratosPorCliente.get(l.id_cli)))
 // Un lead sin cliente vinculado o sin ventas no se puede verificar: cuenta como sin foto
-const contarSinFoto = (leads, clientesConFoto)=>leads.filter(l=>!clientesConFoto.has(l.id_cli)).length
+const leadsSinFoto = (leads, clientesConFoto)=>leads.filter(l=>!clientesConFoto.has(l.id_cli))
+
+// Al ver leads en la tabla, cada lead es una fila con su ultima tarea (cualquier fecha); sin tareas, las columnas de tarea quedan vacias
+const filasDeLeads = (leads, tareas)=>{
+  const ultimaTarea = new Map()
+  for (const t of tareas) {
+    const previa = ultimaTarea.get(t.id_prospecto)
+    if (!previa || dayjs(t.fecha).isAfter(previa.fecha)) ultimaTarea.set(t.id_prospecto, t)
+  }
+  return leads.map(p=>{
+    const t = ultimaTarea.get(p.id)
+    return { id: `lead-${p.id}`, fecha: t?.fecha ?? null, id_tarea: t?.id_tarea ?? null, observacion: t?.observacion ?? '', prospecto: p }
+  })
+}
 
 // Rango de fechas (YYYY-MM-DD, ambos incluidos); un extremo vacio no limita
 const filtrarPorRango = (tareas, desde, hasta)=>tareas.filter(t=>{
@@ -144,7 +172,14 @@ export const ModalReporteTareas = ({show, onHide}) => {
   const huellasListas = pinesConHuella !== null && dataClientes.length > 0
   // Click en un card filtra la tabla por ese tipo de tarea; otro click lo quita
   const [filtroTarea, setfiltroTarea] = useState(null)
+  // Click en un numero de leads (prospectos, convertidos, sin contrato/huella/foto) muestra esos leads en la tabla; otro click lo quita
+  const [filtroLeads, setfiltroLeads] = useState(null)
+  const elegirFiltroTarea = (valor)=>{ setfiltroTarea(valor); setfiltroLeads(null) }
+  const elegirFiltroLeads = (key)=>{ setfiltroLeads(filtroLeads === key ? null : key); setfiltroTarea(null) }
+  const quitarFiltros = ()=>{ setfiltroTarea(null); setfiltroLeads(null) }
   const [tabActivo, settabActivo] = useState(0)
+  // Comentarios del prospecto de la fila (y los del cliente vinculado), como en la tabla principal
+  const [comentario, setcomentario] = useState({show: false, uid: '', id_cli: null})
   const [ordenColumna, setordenColumna] = useState(null)
   // Rango de la tabla, dentro del mes elegido; vacio muestra todo el mes
   const [fechaDesde, setfechaDesde] = useState('')
@@ -166,7 +201,7 @@ export const ModalReporteTareas = ({show, onHide}) => {
       obtenerClientes()
       obtenerContratosPorCliente()
       obtenerClientesConFoto()
-      setfiltroTarea(null)
+      quitarFiltros()
       settabActivo(0)
       setordenColumna(null)
       quitarRango()
@@ -205,8 +240,8 @@ export const ModalReporteTareas = ({show, onHide}) => {
         </Modal.Header>
         <Modal.Body>
             <div className='d-flex align-items-center gap-3 flex-wrap mb-3'>
-                <SelectorTexto id='reporteTareasMes' valor={mes} onChange={(valor)=>{setmes(valor); quitarRango()}} opciones={MESES.map((nombre, i)=>({value: i + 1, label: nombre}))}/>
-                <SelectorTexto id='reporteTareasAnio' valor={anio} onChange={(valor)=>{setanio(valor); quitarRango()}} opciones={anios.map(a=>({value: a, label: a}))}/>
+                <SelectorTexto id='reporteTareasMes' valor={mes} onChange={(valor)=>{setmes(valor); quitarRango(); setfiltroLeads(null)}} opciones={MESES.map((nombre, i)=>({value: i + 1, label: nombre}))}/>
+                <SelectorTexto id='reporteTareasAnio' valor={anio} onChange={(valor)=>{setanio(valor); quitarRango(); setfiltroLeads(null)}} opciones={anios.map(a=>({value: a, label: a}))}/>
             </div>
             {
                 isLoadingTareasReporte ? (
@@ -214,21 +249,40 @@ export const ModalReporteTareas = ({show, onHide}) => {
                 ) : asesores.length === 0 ? (
                     <div className='text-center text-muted py-4'>NO HAY ASESORES CON PROSPECTOS</div>
                 ) : (
-                    <TabView scrollable activeIndex={tabActivo} onTabChange={(e)=>{settabActivo(e.index); setfiltroTarea(null)}}>
+                    <TabView scrollable activeIndex={tabActivo} onTabChange={(e)=>{settabActivo(e.index); quitarFiltros()}}>
                         {
                             asesores.map((a, indice)=>{
                                 const tareasDelMes = filtrarPorMes(a.tareas, mes, anio)
-                                const tareasFiltradas = aplicarOrdenColumna(
-                                    filtrarPorRango(tareasDelMes, fechaDesde, fechaHasta).filter(t=>!filtroTarea || t.id_tarea===filtroTarea),
-                                    ordenColumna
-                                )
                                 const tipoFiltro = arrayTareasComercial.find(e=>e.value===filtroTarea)
                                 const ultimaMeta = dataUltimasMetas.find(m=>m.id_asesor===a.id_empl)
                                 const timing = ultimaMeta && calcularTiming(ultimaMeta)
                                 const conversion = resumenConversion(a.prospectos, mes, anio)
-                                const huellas = huellasListas ? contarHuellas(conversion.leadsConvertidos, dniPorCliente, pinesConHuella) : null
-                                const contratos = contratosPorCliente ? contarContratos(conversion.leadsConvertidos, contratosPorCliente) : null
-                                const sinFoto = clientesConFoto ? contarSinFoto(conversion.leadsConvertidos, clientesConFoto) : null
+                                const sinHuella = huellasListas ? leadsSinHuella(conversion.leadsConvertidos, dniPorCliente, pinesConHuella) : null
+                                const sinContrato = contratosPorCliente ? leadsSinContrato(conversion.leadsConvertidos, contratosPorCliente) : null
+                                const sinFoto = clientesConFoto ? leadsSinFoto(conversion.leadsConvertidos, clientesConFoto) : null
+                                // Grupos de leads que se pueden ver en la tabla al hacer click en su numero
+                                const gruposLeads = {
+                                    prospectos: { titulo: 'PROSPECTOS DEL MES', leads: conversion.leadsDelMes },
+                                    convertidos: { titulo: 'CONVERTIDOS', leads: conversion.leadsConvertidos },
+                                    sinContrato: { titulo: 'CONVERTIDOS SIN CONTRATO', leads: sinContrato },
+                                    sinHuella: { titulo: 'CONVERTIDOS SIN HUELLA', leads: sinHuella },
+                                    sinFoto: { titulo: 'CONVERTIDOS SIN FOTO', leads: sinFoto },
+                                }
+                                const grupoLeads = filtroLeads && gruposLeads[filtroLeads]
+                                const filasTabla = grupoLeads
+                                    ? filasDeLeads(grupoLeads.leads ?? [], a.tareas)
+                                    : filtrarPorRango(tareasDelMes, fechaDesde, fechaHasta).filter(t=>!filtroTarea || t.id_tarea===filtroTarea)
+                                const tareasFiltradas = aplicarOrdenColumna(filasTabla, ordenColumna)
+                                // Numero clickeable; subrayado cuando es el que esta mostrando la tabla
+                                const NumeroLeads = ({grupo, className})=>(
+                                    <span
+                                        className={`${className} cursor-pointer ${filtroLeads === grupo ? 'text-decoration-underline' : ''}`}
+                                        title='Click para ver en la tabla'
+                                        onClick={()=>gruposLeads[grupo].leads && elegirFiltroLeads(grupo)}
+                                    >
+                                        {gruposLeads[grupo].leads?.length ?? '...'}
+                                    </span>
+                                )
                                 return (
                                     <TabPanel key={a.id_empl} header={<span className={indice === tabActivo ? '' : 'text-black'}>{`${a.nombre.trim().split(' ')[0]} (${conversion.porcentaje}%)`}</span>}>
                                         <Row className='g-2 mb-3'>
@@ -271,17 +325,46 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                             {
                                                 ultimaMeta && (()=>{
                                                     const alcance = (ultimaMeta.monto_vendido / ultimaMeta.meta_asesor) * 100
+                                                    const diasFaltan = diasFaltanMes(ultimaMeta)
                                                     return (
+                                                        <>
                                                         <Col xs={12} sm={6} lg={4} xl={2}>
                                                             <Card className='shadow-sm h-100 mb-0'>
                                                                 <Card.Body className='py-2'>
                                                                     <div className='fs-2 text-black'>AVANCE CUOTA</div>
-                                                                    <div className={`fw-bold fs-3 ${alcance >= 100 ? 'text-ISESAC' : 'text-primary'}`}><SymbolSoles numero={<NumberFormatMoney className='fs-2' amount={ultimaMeta.monto_vendido}/>}/></div>
+                                                                    <div className='text-black fw-bold fs-3'>VAS: <SymbolSoles classN={'text-ISESAC'} numero={<NumberFormatMoney className='text-ISESAC fs-3' amount={ultimaMeta.monto_vendido}/>}/></div>
+                                                                    {
+                                                                        alcance >= 100 ? (
+                                                                            <div className='fs-3 text-ISESAC'>¡CUOTA CUMPLIDA!</div>
+                                                                        ) : (
+                                                                            <div className='fs-3'>FALTAN: <SymbolSoles classN={'text-change'} numero={<NumberFormatMoney className='text-change fs-3' amount={ultimaMeta.meta_asesor - ultimaMeta.monto_vendido}/>}/></div>
+                                                                        )
+                                                                    }
                                                                     <div className='fs-4'>{alcance.toFixed(2)}% de la CUOTA</div>
                                                                     <ProgressBar now={Math.min(alcance, 100)} variant={alcance >= 90 ? 'success' : alcance >= 50 ? 'warning' : 'primary'} className='mt-1' style={{height: 6}}/>
                                                                 </Card.Body>
                                                             </Card>
                                                         </Col>
+                                                        <Col xs={12} sm={6} lg={4} xl={2}>
+                                                            <Card className='shadow-sm h-100 mb-0'>
+                                                                <Card.Body className='py-2'>
+                                                                    <div className='fs-2 text-black'>VENTA DIARIA APROXIMADA</div>
+                                                                    {
+                                                                        alcance >= 100 ? (
+                                                                            <div className='fs-3 text-ISESAC'>¡CUOTA CUMPLIDA!</div>
+                                                                        ) : diasFaltan === 0 ? (
+                                                                            <div className='fs-3 text-black'>MES CERRADO</div>
+                                                                        ) : (
+                                                                            <>
+                                                                                <div className='fw-bold fs-3'><SymbolSoles classN={'text-orange'} numero={<NumberFormatMoney className='text-orange fs-2' amount={(ultimaMeta.meta_asesor - ultimaMeta.monto_vendido) / diasFaltan}/>}/></div>
+                                                                                <div className='fs-4'>POR DÍA, FALTAN {diasFaltan} {diasFaltan === 1 ? 'DÍA' : 'DÍAS'}</div>
+                                                                            </>
+                                                                        )
+                                                                    }
+                                                                </Card.Body>
+                                                            </Card>
+                                                        </Col>
+                                                        </>
                                                     )
                                                 })()
                                             }
@@ -289,8 +372,8 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                                 <Card className='shadow-sm h-100 mb-0'>
                                                     <Card.Body className='py-2'>
                                                         <div className='fs-2 text-black'>LEADS DEL MES</div>
-                                                        <div className='fw-bold fs-3'>PROSPECTOS: <span className='text-primary'>{conversion.prospectos}</span></div>
-                                                        <div className='fw-bold fs-3'>CONVERTIDOS: <span className='text-ISESAC'>{conversion.convertidos}</span></div>
+                                                        <div className='fw-bold fs-3'>PROSPECTOS: <NumeroLeads grupo='prospectos' className='text-primary'/></div>
+                                                        <div className='fw-bold fs-3'>CONVERTIDOS: <NumeroLeads grupo='convertidos' className='text-ISESAC'/></div>
                                                     </Card.Body>
                                                 </Card>
                                             </Col>
@@ -307,11 +390,11 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                                 <Card className='shadow-sm h-100 mb-0'>
                                                     <Card.Body className='py-2'>
                                                         <div className='fs-2 text-black'>CONTRATO</div>
-                                                        <div className='fw-bold fs-3'>SIN: <span className='text-change'>{contratos?.sinContrato ?? '...'}</span></div>
+                                                        <div className='fw-bold fs-3'>SIN: <NumeroLeads grupo='sinContrato' className='text-change'/></div>
                                                         <div className='fs-2 text-black'>HUELLA</div>
-                                                        <div className='fw-bold fs-3'>SIN: <span className='text-change'>{huellas?.sinHuella ?? '...'}</span></div>
+                                                        <div className='fw-bold fs-3'>SIN: <NumeroLeads grupo='sinHuella' className='text-change'/></div>
                                                         <div className='fs-2 text-black'>FOTO</div>
-                                                        <div className='fw-bold fs-3'>SIN: <span className='text-change'>{sinFoto ?? '...'}</span></div>
+                                                        <div className='fw-bold fs-3'>SIN: <NumeroLeads grupo='sinFoto' className='text-change'/></div>
                                                     </Card.Body>
                                                 </Card>
                                             </Col>
@@ -320,20 +403,20 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                             {
                                                 arrayTareasComercial.map(tipo=>(
                                                     <Col xs={6} md={3} lg xl={2} key={tipo.value}>
-                                                        <ResumenItem label={tipo.label.toUpperCase()} valor={tareasDelMes.filter(t=>t.id_tarea===tipo.value).length} icon={tipo.icon} exito={tipo.exito} activo={filtroTarea===tipo.value} onClick={()=>setfiltroTarea(filtroTarea===tipo.value ? null : tipo.value)}/>
+                                                        <ResumenItem label={tipo.label.toUpperCase()} valor={tareasDelMes.filter(t=>t.id_tarea===tipo.value).length} icon={tipo.icon} exito={tipo.exito} activo={filtroTarea===tipo.value} onClick={()=>elegirFiltroTarea(filtroTarea===tipo.value ? null : tipo.value)}/>
                                                     </Col>
                                                 ))
                                             }
                                         </Row>
                                         {
-                                            tipoFiltro && (
+                                            (tipoFiltro || grupoLeads) && (
                                                 <div className='mb-2'>
-                                                    FILTRANDO POR: <strong>{tipoFiltro.label.toUpperCase()}</strong>
-                                                    <span className='ms-2 text-primary text-decoration-underline cursor-pointer' onClick={()=>setfiltroTarea(null)}>VER TODAS</span>
+                                                    {grupoLeads ? 'VIENDO: ' : 'FILTRANDO POR: '}<strong>{grupoLeads ? `${grupoLeads.titulo} (ÚLTIMA TAREA DE CADA UNO)` : tipoFiltro.label.toUpperCase()}</strong>
+                                                    <span className='ms-2 text-primary text-decoration-underline cursor-pointer' onClick={quitarFiltros}>VER TODAS LAS TAREAS</span>
                                                 </div>
                                             )
                                         }
-                                        <div className='d-flex align-items-end gap-2 flex-wrap mb-2'>
+                                        <div className={`d-flex align-items-end gap-2 flex-wrap mb-2 ${grupoLeads ? 'd-none' : ''}`}>
                                             <Form.Group controlId={`reporteTareasDesde${a.id_empl}`}>
                                                 <Form.Label className='fw-bold mb-1'>DESDE</Form.Label>
                                                 <Form.Control type='date' value={fechaDesde} min={inicioMes} max={fechaHasta || finMes} onChange={(e)=>setfechaDesde(e.target.value)}/>
@@ -346,7 +429,7 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                         </div>
                                         {
                                             tareasFiltradas.length === 0 ? (
-                                                <div className='text-center text-muted py-4'>{`NO HAY TAREAS ${tipoFiltro ? 'DE ESTE TIPO ' : ''}${hayRango ? 'EN ESTE RANGO DE FECHAS' : 'EN ESTE MES'}`}</div>
+                                                <div className='text-center text-muted py-4'>{grupoLeads ? 'NO HAY LEADS EN ESTE GRUPO' : `NO HAY TAREAS ${tipoFiltro ? 'DE ESTE TIPO ' : ''}${hayRango ? 'EN ESTE RANGO DE FECHAS' : 'EN ESTE MES'}`}</div>
                                             ) : (
                                                 <Table responsive striped hover size='sm' className='mb-0'>
                                                     <thead>
@@ -364,6 +447,7 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                                                     </th>
                                                                 ))
                                                             }
+                                                            <th className='bg-change text-white text-nowrap'>COMENTARIOS</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -372,13 +456,16 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                                                 const tipo = arrayTareasComercial.find(e=>e.value===t.id_tarea)
                                                                 return (
                                                                     <tr key={t.id}>
-                                                                        <td className='text-nowrap'>{dayjs(t.fecha).format('dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A')}</td>
-                                                                        <td className='text-nowrap fw-bold'>{etiquetaTiempo(t)}</td>
+                                                                        <td className='text-nowrap'>{t.fecha ? dayjs(t.fecha).format('dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A') : ''}</td>
+                                                                        <td className='text-nowrap fw-bold'>{t.fecha ? etiquetaTiempo(t) : ''}</td>
                                                                         <td>{`${t.prospecto.nombres ?? ''} ${t.prospecto.apellidos ?? ''}`}</td>
                                                                         <td>{t.prospecto.celular}</td>
                                                                         <td>{t.prospecto.parametro_estado?.label_param}</td>
-                                                                        <td className='text-nowrap'>{tipo && <i className={`${tipo.icon} me-1`}></i>}{tipo?.label ?? `Tarea ${t.id_tarea}`}</td>
-                                                                        <td>{t.observacion}</td>
+                                                                        <td className='text-nowrap'><div className={`${tipo.exito&&'text-ISESAC'}`}>{t.id_tarea === null ? <span className='text-muted'>SIN TAREAS</span> : <>{tipo && <i className={`${tipo.icon} me-1`}></i>}{tipo?.label ?? `Tarea ${t.id_tarea}`}</>}</div></td>
+                                                                        <td> <div className='' style={{width: '180px'}}>{t.observacion}</div></td>
+                                                                        <td className='text-center'>
+                                                                            <BotonIcono icon='pi pi-comment' rounded outlined severity='danger' onClick={()=>setcomentario({show: true, uid: t.prospecto.uid_comentario ?? '', id_cli: t.prospecto.id_cli ?? null})}/>
+                                                                        </td>
                                                                     </tr>
                                                                 )
                                                             })
@@ -395,6 +482,7 @@ export const ModalReporteTareas = ({show, onHide}) => {
                 )
             }
         </Modal.Body>
+        <ModalComentario show={comentario.show} onHide={()=>setcomentario({show: false, uid: '', id_cli: null})} uid_comentario={comentario.uid} id_cli={comentario.id_cli} encima/>
     </Modal>
   )
 }

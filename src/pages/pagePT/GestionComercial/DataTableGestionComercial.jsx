@@ -19,7 +19,7 @@ const apellidosDe = (row)=>[row.cliente?.apPaterno_cli, row.cliente?.apMaterno_c
 const celularDe = (row)=>limpio(row.cliente?.tel_cli) || row.celular
 
 export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGestionComercial, onOpenModalTareas, onOpenModalMembresias, filtroEstado, filtroAsesor, filtroFecha, filtroTipo}) => {
-  const { obtenerGestionComercial, validarEdicionLead, obtenerSociosActivosSinProspecto, dataSociosSinProspecto } = useGestionComercialStore()
+  const { obtenerGestionComercial, validarEdicionLead } = useGestionComercialStore()
   const {dataView} = useSelector(e=>e.COMERCIAL)
   const onClickEditar = async(row)=>{
     if (await validarEdicionLead(row.id)) {
@@ -28,34 +28,8 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
   }
   useEffect(() => {
     obtenerGestionComercial()
-    obtenerSociosActivosSinProspecto()
   }, [])
-  // socios de seguimiento: se muestran todos, esten o no repetidos en prospectos
-  const dataSocios = useMemo(() => {
-    // dataView viene del mas reciente al mas antiguo: si el cliente tiene varios leads, se muestra el ultimo
-    const prospectoxCliente = new Map()
-    ;(dataView ?? []).forEach(e=>{
-      if (e.id_cli && !prospectoxCliente.has(e.id_cli)) prospectoxCliente.set(e.id_cli, e.id)
-    })
-    return dataSociosSinProspecto
-      .map(c=>({
-        esSocio: true,
-        codigo_prospecto: prospectoxCliente.has(c.id_cli) ? `PROS${prospectoxCliente.get(c.id_cli)}` : '',
-        codigo_cliente: `CLI${c.id_cli}`,
-        id_cli: c.id_cli,
-        // fecha de la venta del seguimiento (ultima membresia)
-        fecha_registro: c.fecha_venta,
-        nombres: (c.nombre_cli ?? '').trim(),
-        apellidos: [c.apPaterno_cli, c.apMaterno_cli].map(a=>(a ?? '').trim()).filter(Boolean).join(' '),
-        celular: c.tel_cli,
-        name_pgm: c.name_pgm,
-        vendedor: (c.vendedor ?? '').trim(),
-        vencimiento: c.vencimiento,
-        activo: c.activo,
-        // los comentarios del socio van en el cliente (tb_clientes.uid_comentario)
-        uid_comentario: c.uid_comentario,
-      }))
-  }, [dataSociosSinProspecto, dataView])
+  // Solo prospectos: las filas de socios de seguimiento se quitaron porque duplicaban a los clientes que ya tienen prospecto
   const dataFiltrada = useMemo(() => {
     const prospectos = (dataView ?? []).filter(e=>
       (!filtroEstado || e.parametro_estado?.id_param===filtroEstado) &&
@@ -64,13 +38,11 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
       (!filtroFecha || (e.fecha_registro && dayjs(e.fecha_registro).format('YYYY-MM-DD')===filtroFecha))
     // codigos: el buscador de la tabla busca en los datos de la fila, asi se puede buscar por PROS<id> o CLI<id_cli>
     ).map(e=>({...e, codigo_prospecto: `PROS${e.id}`, codigo_cliente: e.id_cli ? `CLI${e.id_cli}` : ''}))
-    // los socios no tienen status/asesor/fecha de prospecto: solo se muestran sin filtros
-    const hayFiltros = filtroEstado || filtroAsesor || filtroFecha
     // tipo en la fila para que el buscador encuentre ACTIVO / INACTIVO / PROSPECTO
-    return (hayFiltros ? prospectos : [...prospectos, ...dataSocios])
+    return prospectos
       .map(e=>({...e, tipo: tipoFila(e)}))
       .filter(e=>!filtroTipo || e.tipo===filtroTipo)
-  }, [dataView, dataSocios, filtroEstado, filtroAsesor, filtroFecha, filtroTipo])
+  }, [dataView, filtroEstado, filtroAsesor, filtroFecha, filtroTipo])
   const columns = [
     {
       id: 0, header: 'CODIGO PROSPECTO', render:(row)=>{

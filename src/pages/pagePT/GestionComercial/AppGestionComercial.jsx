@@ -131,9 +131,9 @@ export const AppGestionComercial = () => {
               isClearable
             />
           </div>
-          <InputButton variant={'link'} label={'Reporte'} onClick={()=>setisOpenModalReporteTareas(true)}/>
-          <InputButton variant={'link'} label={'Gestionar WSP'} onClick={()=>setisOpenModalMensajesWsp(true)}/>
-          <InputButton variant={'link'} label={'Descargar Excel: clientes sin prospecto'} onClick={descargarClientesSinProspecto}/>
+          <InputButton size='lg' className='fs-4' label={'Reporte'} onClick={()=>setisOpenModalReporteTareas(true)}/>
+          <InputButton size='lg' className='fs-4' label={'Gestionar WSP'} onClick={()=>setisOpenModalMensajesWsp(true)}/>
+          {/* <InputButton size='lg' className='fs-3' label={'Descargar Excel: clientes sin prospecto'} onClick={descargarClientesSinProspecto}/> */}
         </div>
         <DataTableGestionComercial onOpenModalComentario={onOpenModalComentario} onOpenModalGestionComercial={onOpenModalGestionComercial} onOpenModalTareas={onOpenModalTareas} onOpenModalMembresias={onOpenModalMembresias} filtroEstado={filtroEstado} filtroAsesor={filtroAsesor} filtroFecha={filtroFecha} filtroTipo={filtroTipo}/>
         <ModalComentario onHide={onCloseModalComentario} show={isOpenModalComentario.isOpen} uid_comentario={isOpenModalComentario.uid} id_cli={isOpenModalComentario.id_cli}/>

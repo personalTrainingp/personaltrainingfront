@@ -4,7 +4,8 @@ import dayjs from 'dayjs'
 import React, { useEffect, useState } from 'react'
 import { Modal } from 'react-bootstrap'
 
-export const ModalComentario = ({show, onHide, uid_comentario='', id_cli=null}) => {
+// encima: se abre sobre otro modal; su overlay oscuro cubre al de abajo
+export const ModalComentario = ({show, onHide, uid_comentario='', id_cli=null, encima=false}) => {
   // Comentarios del cliente (gestion de socios, tb_clientes.uid_comentario) vinculado al prospecto por id_cli: solo se muestran
   const [comentariosCliente, setcomentariosCliente] = useState([])
   useEffect(() => {
@@ -34,7 +35,7 @@ export const ModalComentario = ({show, onHide, uid_comentario='', id_cli=null}) 
     </div>
   )
   return (
-    <Modal show={show} onHide={onHide} size='lg'>
+    <Modal show={show} onHide={onHide} size='lg' className={encima ? 'modal-encima' : ''} backdropClassName={encima ? 'backdrop-encima' : ''}>
         <Modal.Header>
             <Modal.Title>
                 COMENTARIOS

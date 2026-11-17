@@ -1316,3 +1316,11 @@ button{
   flex: 0 !important;
   padding: 0 !important;
 }
+// Modal abierto encima de otro modal (ej. comentarios sobre el reporte de tareas): su fondo oscuro cubre al modal de abajo
+.modal-backdrop.backdrop-encima{
+  z-index: 1060;
+  opacity: .6;
+}
+.modal.modal-encima{
+  z-index: 1065;
+}
