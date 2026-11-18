@@ -4,6 +4,7 @@ import { useGestVentasStore } from './useGestVentasStore'
 import { Button, Col, Row } from 'react-bootstrap'
 import { NumberFormatMoney } from '@/components/CurrencyMask'
 import { ModalViewObservacion } from './ModalViewObservacion'
+import dayjs from 'dayjs'
 
 export const DataTableVentas = ({id_empresa, vistaCliente}) => {
     const { obtenerVentasxEmpresa, dataVentasxEmpresa } = useGestVentasStore()
@@ -132,6 +133,20 @@ export const DataTableVentas = ({id_empresa, vistaCliente}) => {
             }
         }
       ]
+      // columnas del "Descargar Excel": DataTableCR solo exporta estas (sin ellas el boton no hace nada)
+      const numero = (v)=>v === null || v === undefined || v === '' ? '' : Number(v)
+      const columnsExports = [
+        { id: 'id', exportHeader: 'ID', width: 10, exportValue: (row)=>row.id },
+        { id: 'fecha_venta', exportHeader: 'FECHA', width: 22, exportValue: (row)=>row.fecha_venta ?? '' },
+        { id: 'socio', exportHeader: 'SOCIO', width: 35, exportValue: (row)=>vistaCliente ? (row.tb_cliente?.nombres_cliente ?? '') : `CLIENTE DE ID ${row.id_cli}` },
+        { id: 'nombre_empleado', exportHeader: 'ASESOR COMERCIAL', width: 30, exportValue: (row)=>row.nombre_empleado ?? '' },
+        { id: 'comprobante', exportHeader: 'COMPROBANTE', width: 18, exportValue: (row)=>row.comprobante ?? '' },
+        { id: 'n_comprobante', exportHeader: 'N° COMPR.', width: 16, exportValue: (row)=>row.n_comprobante ?? '' },
+        { id: 'observacion', exportHeader: 'OBSERV. / TARJETA', width: 40, exportValue: (row)=>row.observacion ?? '' },
+        { id: 'montoTotal', exportHeader: 'TOTAL (S/.)', width: 14, exportValue: (row)=>numero(row.montoTotal) },
+        { id: 'montoTotal_pago', exportHeader: 'TOTAL PAGO (S/.)', width: 16, exportValue: (row)=>numero(row.montoTotal_pago) },
+        { id: 'is_igual', exportHeader: 'ES IGUAL', width: 10, exportValue: (row)=>row.is_igual ?? '' },
+      ]
       const onCloseViewObservaciones = ()=>{
         setdataVentaxID({isOpen: false, id: 0})
       }
@@ -143,7 +158,9 @@ export const DataTableVentas = ({id_empresa, vistaCliente}) => {
         <DataTableCR 
             data={dataVentasxEmpresa}
             columns={columns}
-            exportable={false}
+            exportable={true}
+            exportExtraColumns={columnsExports}
+            exportFileName={`ventas_${dayjs().format('DDMMYYYY')}`}
         />
         <ModalViewObservacion id={dataVentaxID.id} show={dataVentaxID.isOpen} onHide={onCloseViewObservaciones}/>
     </div>

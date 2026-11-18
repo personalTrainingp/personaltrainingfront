@@ -28,7 +28,7 @@ const registerProvedor = {
 const registerImgAvatar={
     imgAvatar_BASE64: ''
 }
-export const ModalCustomProveedores = ({onShow, show, onHide, id=0, isCopy=false, id_enterprice, tipo, estado, onCloseModalProvPst}) => {
+export const ModalCustomProveedores = ({onShow, show, onHide, id=0, isCopy=false, id_enterprice, tipo, estado, onCloseModalProvPst, onCancelar}) => {
         const [selectedFile, setSelectedFile] = useState(sinAvatar);
         const [selectedAvatar, setselectedAvatar] = useState(null)
         const { obtenerProveedorxID, dataProveedor, postProveedor } = useGestionProveedoresStore()
@@ -66,18 +66,19 @@ export const ModalCustomProveedores = ({onShow, show, onHide, id=0, isCopy=false
                 obtenerProveedorxID(id)
             }
         }, [id])
-        const onSubmit = ()=>{
-            postProveedor(formState, id_enterprice, tipo, estado)
+        const onSubmit = async()=>{
+            await postProveedor(formState, id_enterprice, tipo, estado)
             cancelar()
         }
         const cancelar = ()=>{
             onHide()
-            onCloseModalProvPst()
+            onCloseModalProvPst?.()
             onResetForm()
         }
         
         const onCancelForm = ()=>{
             onHide()
+            onCancelar?.()
             onResetForm()
         }
         const ViewDataImg = (e) => {
@@ -103,7 +104,7 @@ export const ModalCustomProveedores = ({onShow, show, onHide, id=0, isCopy=false
   return (
     <>
         <ModalAgregarTermino show={isOpenModalTerminoOficio.isOpen} onHide={onClickCloseModalCustomOficios} terminoAgregar={'Servicio y/o producto'} entidad={'proveedor'} grupo={'tipo_oficio'} titulo={'Oficio'}/>
-    <Modal show={show} onHide={onHide} size='xl'>
+    <Modal show={show} onHide={onCancelForm} size='xl'>
         <Modal.Header>
             AGREGAR PROVEEDOR
         </Modal.Header>

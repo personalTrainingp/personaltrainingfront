@@ -222,13 +222,26 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
             setdataProveedoresFiltrados(id_oficio===0?dataProveedorxTipoxEmpresa:dataProveedorxTipoxEmpresa.filter(e => e.id_oficio === id_oficio))
         }
     }, [show, id_oficio, id_prov])
-    const onCloseModalCustomProv = (id)=>{
-        setisOpenModalCustomProv({id: 0, isOpen: false})
-        onOpenModalGasto(id, false)
+    // AL AGREGAR UN PROVEEDOR, EL MODAL DE GASTO SOLO SE OCULTA LOCALMENTE (NO SE LLAMA A onHide DEL PADRE),
+    // ASI NO SE PIERDE LO ESCRITO EN EL FORMULARIO DEL GASTO
+    const [ocultarGasto, setocultarGasto] = useState(false)
+    const onOpenModalCustomProv = ()=>{
+        setisOpenModalCustomProv({id: 0, isOpen: true})
+        setocultarGasto(true)
     }
-    const onOpenModalCustomProv =  (id)=>{
-        setisOpenModalCustomProv({id, isOpen: true})
-        onHide()
+    const onHideModalCustomProv = ()=>{
+        setisOpenModalCustomProv({id: 0, isOpen: false})
+    }
+    const onShowModalCustomProv = ()=>{
+        setisOpenModalCustomProv({id: 0, isOpen: true})
+    }
+    const onVolverAlGasto = ()=>{
+        setisOpenModalCustomProv({id: 0, isOpen: false})
+        setocultarGasto(false)
+    }
+    const onProveedorRegistrado = ()=>{
+        onVolverAlGasto()
+        obtenerProveedorxTipoxEmpresa(id_empresa, 1573)
     }
     const ordenFormaPago = [
         {orden: 1, values: 932},
@@ -248,14 +261,15 @@ export const ModalCustomGasto = ({show, onHide, id, isCopy, id_enterprice, onOpe
     <>
     <Loading show={isLoading}/>
         <ModalCustomProveedores 
-            onCloseModalProvPst={()=>setisOpenModalCustomProv({id, isOpen: true})} 
-            onHide={()=>onCloseModalCustomProv(id)} 
-            show={isOpenModalCustomProv.isOpen} 
-            estado={true} 
-            id_enterprice={id_empresa} 
-            onShow={()=>onOpenModalCustomProv(id)} 
+            onCloseModalProvPst={onProveedorRegistrado}
+            onCancelar={onVolverAlGasto}
+            onHide={onHideModalCustomProv}
+            show={isOpenModalCustomProv.isOpen}
+            estado={true}
+            id_enterprice={id_empresa}
+            onShow={onShowModalCustomProv}
             tipo={1573} id={0}  />
-    <Modal show={show} onHide={cancelarGasto} size='xl'>
+    <Modal show={show && !ocultarGasto} onHide={cancelarGasto} size='xl'>
         <Modal.Header>
             <Modal.Title>
                 { id!==0?'EDITAR GASTO':'AGREGAR GASTO' }
