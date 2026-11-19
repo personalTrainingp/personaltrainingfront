@@ -25,6 +25,12 @@ export const useGestionComercialStore = () => {
 	const [isLoadingTareasReporte, setisLoadingTareasReporte] = useState(false);
 	const [dataUltimasMetas, setdataUltimasMetas] = useState([]);
 	const solicitudMetas = useRef(0);
+	// Monto vendido en membresias por asesor (id_empl -> monto) dentro de un rango (la semana del reporte de tareas)
+	const [ventasSemanaxAsesor, setventasSemanaxAsesor] = useState(null);
+	const solicitudVentasSemana = useRef(0);
+	// Comentarios CRM del mes (prospectos y sus socios) en una sola consulta; null mientras se consulta
+	const [comentariosCRM, setcomentariosCRM] = useState(null);
+	const solicitudComentariosCRM = useRef(0);
 	const [isLoadingMembresias, setisLoadingMembresias] = useState(false);
 	const [prospectosHastaAyer, setprospectosHastaAyer] = useState(null);
 	const [dataProspectosMes, setdataProspectosMes] = useState([]);
@@ -328,6 +334,41 @@ export const useGestionComercialStore = () => {
 			if (solicitud === solicitudMetas.current) setdataUltimasMetas([]);
 		}
 	};
+	const obtenerVentasSemanaxAsesor = async (desde, hasta) => {
+		const solicitud = ++solicitudVentasSemana.current;
+		setventasSemanaxAsesor(null);
+		try {
+			const { data } = await PTApi.get('/venta/get-ventas/598', {
+				params: {
+					fechaInicio: dayjs.utc(desde).startOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS[-05:00]'),
+					fechaFin: dayjs.utc(hasta).endOf('day').format('YYYY-MM-DDTHH:mm:ss.SSS[-05:00]'),
+				},
+			});
+			const montos = {};
+			for (const v of data.ventas ?? []) {
+				// El backend puede ignorar el rango: se filtra aqui por el dia de la venta en hora Peru (UTC-5), como el VAS del mes
+				const diaVenta = dayjs.utc(v.fecha_venta).subtract(5, 'hour').format('YYYY-MM-DD');
+				if (diaVenta < desde || diaVenta > hasta) continue;
+				const monto = (v.detalle_ventaMembresia ?? []).reduce((total, m) => total + (Number(m.tarifa_monto) || 0), 0);
+				montos[v.id_empl] = (montos[v.id_empl] ?? 0) + monto;
+			}
+			if (solicitud === solicitudVentasSemana.current) setventasSemanaxAsesor(montos);
+		} catch (error) {
+			console.log(error);
+			if (solicitud === solicitudVentasSemana.current) setventasSemanaxAsesor({});
+		}
+	};
+	const obtenerComentariosCRM = async (mes, anio) => {
+		const solicitud = ++solicitudComentariosCRM.current;
+		setcomentariosCRM(null);
+		try {
+			const { data } = await PTApi.get('/servicios/comentario-crm/reporte', { params: { mes, anio } });
+			if (solicitud === solicitudComentariosCRM.current) setcomentariosCRM(data.comentarios ?? []);
+		} catch (error) {
+			console.log(error);
+			if (solicitud === solicitudComentariosCRM.current) setcomentariosCRM([]);
+		}
+	};
 	const obtenerMembresiasxCliente = async (id_cli) => {
 		try {
 			setisLoadingMembresias(true);
@@ -392,6 +433,10 @@ export const useGestionComercialStore = () => {
 		isLoadingTareasReporte,
 		obtenerUltimasMetasAsesores,
 		dataUltimasMetas,
+		obtenerVentasSemanaxAsesor,
+		ventasSemanaxAsesor,
+		obtenerComentariosCRM,
+		comentariosCRM,
 		dataMembresiasCliente,
 		isLoadingMembresias,
 		postTareaProspecto,

@@ -62,7 +62,7 @@ export const ModalComentarios = ({uid_comentario, show, onHide}) => {
         <Modal.Title>COMENTARIOS</Modal.Title>
     </Modal.Header>
     <Modal.Body>
-        <SectionComentario uid_comentario={uid_comentario}/>
+        <SectionComentario uid_comentario={uid_comentario} model='CRM'/>
     </Modal.Body>
     </Modal>
     )

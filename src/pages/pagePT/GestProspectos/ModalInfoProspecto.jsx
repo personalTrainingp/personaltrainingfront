@@ -204,7 +204,7 @@ export const ModalInfoProspecto = ({show, onHide, data}) => {
                         </form>
                     </TabPanel>
                     <TabPanel header='Comentarios'>
-                        <SectionComentario uid_comentario={data.uid_comentario}/>
+                        <SectionComentario uid_comentario={data.uid_comentario} model='CRM'/>
                         {/* <SectionProspectoComentarios data={data}/> */}
                     </TabPanel>
                 </TabView>

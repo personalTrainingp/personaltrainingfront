@@ -42,7 +42,7 @@ export const ModalComentario = ({show, onHide, uid_comentario='', id_cli=null, e
             </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            <SectionComentario uid_comentario={uid_comentario} antesDeComentarios={bloqueCliente}/>
+            <SectionComentario uid_comentario={uid_comentario} antesDeComentarios={bloqueCliente} model='CRM'/>
         </Modal.Body>
     </Modal>
   )

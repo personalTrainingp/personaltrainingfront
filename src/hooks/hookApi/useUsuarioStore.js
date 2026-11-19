@@ -58,9 +58,10 @@ export const useUsuarioStore = () => {
 			}
 			if (comentario_com.trim().length > 0) {
 				await PTApi.post('/servicios/comentario/post', {
-					uidLocation: dataCliente.cliente.uid_comentario,
+					uid_location: dataCliente.cliente.uid_comentario,
 					uid_usuario: user.uid,
 					comentario_com,
+					model: 'CLIENTE',
 				});
 			}
 			if (dataContactsEmerg.length > 0) {

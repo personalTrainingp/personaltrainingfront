@@ -15,7 +15,8 @@ const registerComentario ={
 }
 
 // antesDeComentarios: contenido opcional que va despues del input y antes de la lista de comentarios
-export const SectionComentario = ({uid_comentario, antesDeComentarios}) => {
+// model: modulo desde donde se comenta (ej. 'CRM'); se guarda en tb_comentarios.model
+export const SectionComentario = ({uid_comentario, antesDeComentarios, model = ''}) => {
 	console.log(uid_comentario);
 	
     const {user} = useSelector(e=>e.auth)
@@ -23,7 +24,7 @@ export const SectionComentario = ({uid_comentario, antesDeComentarios}) => {
 	const { obtenerComentarioxLOCATION, postComentario } = useComentarioStore()
     const submitComment = async(e)=>{
 		e.preventDefault()
-		postComentario( {uid_location: uid_comentario, comentario_com: formState.comentario_com, uid_usuario: user.uid } )
+		postComentario( {uid_location: uid_comentario, comentario_com: formState.comentario_com, uid_usuario: user.uid, model } )
 		onResetForm()
     }
 	useEffect(() => {

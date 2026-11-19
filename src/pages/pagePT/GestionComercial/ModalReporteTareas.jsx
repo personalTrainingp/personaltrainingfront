@@ -35,6 +35,26 @@ const calcularTiming = (meta, hoy = dayjs())=>{
   return { timing: (meta.meta_asesor / diasDelMes) * diasTranscurridos, diasDelMes, diasTranscurridos }
 }
 
+// Semana del mes: empieza el 1, 8, 15, 22 o 29 y termina 7 dias despues contando inicio y fin (1-8, 8-15, 15-22, 22-29, 29-fin). Mes actual: la semana de hoy.
+// Mes cerrado: su ultimo bloque. Mes futuro: el primero
+const semanaDelMes = (mes, anio, hoy = dayjs())=>{
+  const mesCuota = dayjs(new Date(anio, mes - 1, 1))
+  const diasDelMes = mesCuota.daysInMonth()
+  const dia = mesCuota.isSame(hoy, 'month') ? hoy.date() : mesCuota.isBefore(hoy, 'month') ? diasDelMes : 1
+  const numero = Math.floor((dia - 1) / 7)
+  const diaInicio = numero * 7 + 1
+  const diaFin = Math.min(diaInicio + 7, diasDelMes)
+  // Dias contando el inicio y el fin (+1). Quedan: desde hoy (incluido) hasta el fin; mes cerrado 0, mes futuro todos
+  const diasSemana = diaFin - diaInicio + 1
+  const diasQuedan = mesCuota.isSame(hoy, 'month') ? diaFin - dia + 1 : mesCuota.isBefore(hoy, 'month') ? 0 : diasSemana
+  return {
+    numero: numero + 1,
+    desde: mesCuota.date(diaInicio).format('YYYY-MM-DD'),
+    hasta: mesCuota.date(diaFin).format('YYYY-MM-DD'),
+    diaInicio, diaFin, diasDelMes, diasSemana, diasQuedan,
+  }
+}
+
 // Dias que faltan del mes de la cuota, contando hoy. Mes cerrado: 0. Mes futuro: todos sus dias
 const diasFaltanMes = (meta, hoy = dayjs())=>{
   const mesCuota = dayjs(new Date(meta.anio, meta.mes - 1, 1))
@@ -165,8 +185,44 @@ export const SelectorTexto = ({id, valor, opciones, onChange})=>(
   </Dropdown>
 )
 
+// Comentarios CRM del mes (ya filtrados por el backend) de los prospectos del asesor y de sus socios vinculados
+const TablaComentarios = ({prospectos, comentarios})=>{
+  const filas = useMemo(()=>{
+    if (comentarios === null) return null
+    const ids = new Set(prospectos.map(p=>p.id))
+    return comentarios.filter(c=>ids.has(c.id_prospecto))
+  }, [prospectos, comentarios])
+  if (filas === null) return <div className='text-center py-4'><Spinner animation='border'/></div>
+  if (filas.length === 0) return <div className='text-center text-muted py-4'>NO HAY COMENTARIOS EN ESTE MES</div>
+  return (
+    <Table responsive striped hover size='sm' className='mb-0'>
+      <thead>
+        <tr>
+          <th className='bg-change text-white text-nowrap'>FECHA</th>
+          <th className='bg-change text-white text-nowrap'>COMENTARIO</th>
+          <th className='bg-change text-white text-nowrap'>PROSPECTO O SOCIO</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          filas.map(c=>{
+            const nombre = `${c.nombres ?? ''} ${c.apellidos ?? ''}`.trim()
+            return (
+              <tr key={`${c.origen}-${c.id_comentario}-${c.id_prospecto}`}>
+                <td className='text-nowrap'>{dayjs(c.fec_registro).format('dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A')}<div className='text-muted'>{c.nombres_apellidos_user}</div></td>
+                <td><div style={{minWidth: '250px', whiteSpace: 'pre-wrap'}}>{c.comentario_com}</div></td>
+                <td className='text-nowrap'><span className={`fw-bold ${c.origen === 'SOCIO' ? 'text-ISESAC' : 'text-primary'}`}>{c.origen}</span>: {c.origen === 'SOCIO' ? `${nombre} (CLI${c.id_cli})` : nombre}</td>
+              </tr>
+            )
+          })
+        }
+      </tbody>
+    </Table>
+  )
+}
+
 export const ModalReporteTareas = ({show, onHide}) => {
-  const { obtenerTareasReporte, dataTareasReporte, isLoadingTareasReporte, obtenerUltimasMetasAsesores, dataUltimasMetas, obtenerPinesConHuella, pinesConHuella, obtenerClientes, dataClientes, obtenerContratosPorCliente, contratosPorCliente, obtenerClientesConFoto, clientesConFoto } = useGestionComercialStore()
+  const { obtenerTareasReporte, dataTareasReporte, isLoadingTareasReporte, obtenerUltimasMetasAsesores, dataUltimasMetas, obtenerVentasSemanaxAsesor, ventasSemanaxAsesor, obtenerComentariosCRM, comentariosCRM, obtenerPinesConHuella, pinesConHuella, obtenerClientes, dataClientes, obtenerContratosPorCliente, contratosPorCliente, obtenerClientesConFoto, clientesConFoto } = useGestionComercialStore()
   const {dataView} = useSelector(e=>e.COMERCIAL)
   const dniPorCliente = useMemo(()=>mapearDniPorCliente(dataClientes), [dataClientes])
   const huellasListas = pinesConHuella !== null && dataClientes.length > 0
@@ -174,10 +230,12 @@ export const ModalReporteTareas = ({show, onHide}) => {
   const [filtroTarea, setfiltroTarea] = useState(null)
   // Click en un numero de leads (prospectos, convertidos, sin contrato/huella/foto) muestra esos leads en la tabla; otro click lo quita
   const [filtroLeads, setfiltroLeads] = useState(null)
-  const elegirFiltroTarea = (valor)=>{ setfiltroTarea(valor); setfiltroLeads(null) }
-  const elegirFiltroLeads = (key)=>{ setfiltroLeads(filtroLeads === key ? null : key); setfiltroTarea(null) }
+  const elegirFiltroTarea = (valor)=>{ setfiltroTarea(valor); setfiltroLeads(null); setvistaAsesor(0) }
+  const elegirFiltroLeads = (key)=>{ setfiltroLeads(filtroLeads === key ? null : key); setfiltroTarea(null); setvistaAsesor(0) }
   const quitarFiltros = ()=>{ setfiltroTarea(null); setfiltroLeads(null) }
   const [tabActivo, settabActivo] = useState(0)
+  // Dentro de cada asesor: 0 = TAREAS, 1 = COMENTARIOS
+  const [vistaAsesor, setvistaAsesor] = useState(0)
   // Comentarios del prospecto de la fila (y los del cliente vinculado), como en la tabla principal
   const [comentario, setcomentario] = useState({show: false, uid: '', id_cli: null})
   const [ordenColumna, setordenColumna] = useState(null)
@@ -203,6 +261,7 @@ export const ModalReporteTareas = ({show, onHide}) => {
       obtenerClientesConFoto()
       quitarFiltros()
       settabActivo(0)
+      setvistaAsesor(0)
       setordenColumna(null)
       quitarRango()
       setmes(dayjs().month() + 1)
@@ -211,10 +270,20 @@ export const ModalReporteTareas = ({show, onHide}) => {
   }, [show])
   // Cuota, timing y alcance son los del mes elegido
   useEffect(() => {
-    if (show) obtenerUltimasMetasAsesores(mes, anio)
+    if (show) {
+      obtenerUltimasMetasAsesores(mes, anio)
+      // Tab COMENTARIOS: una sola consulta con los comentarios CRM del mes de todos los asesores
+      obtenerComentariosCRM(mes, anio)
+    }
   }, [show, mes, anio])
+  // Avance semanal: membresias vendidas por cada asesor en la semana (bloque de 7 dias) del mes elegido
+  const semana = useMemo(()=>semanaDelMes(mes, anio), [mes, anio, show])
+  useEffect(() => {
+    if (show) obtenerVentasSemanaxAsesor(semana.desde, semana.hasta)
+  }, [show, semana.desde, semana.hasta])
 
-  // Un tab por asesor que tiene prospectos; cada tarea se asigna al asesor de su prospecto
+  // Un tab por asesor que tiene prospectos; cada tarea va al asesor que la registro (id_empl de la tarea).
+  // Tareas antiguas sin id_empl: van al asesor de su prospecto
   const asesores = useMemo(() => {
     const prospectosxId = new Map((dataView ?? []).map(p=>[p.id, p]))
     const grupos = new Map()
@@ -225,8 +294,10 @@ export const ModalReporteTareas = ({show, onHide}) => {
     }
     for (const t of dataTareasReporte) {
       const prospecto = prospectosxId.get(t.id_prospecto)
-      if (!prospecto || !grupos.has(prospecto.id_empl)) continue
-      grupos.get(prospecto.id_empl).tareas.push({...t, prospecto})
+      if (!prospecto) continue
+      const id_empl = t.id_empl ?? prospecto.id_empl
+      if (!grupos.has(id_empl)) continue
+      grupos.get(id_empl).tareas.push({...t, prospecto})
     }
     return [...grupos.values()]
       .map(g=>({...g, tareas: ordenarTareas(g.tareas)}))
@@ -283,6 +354,76 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                         {gruposLeads[grupo].leads?.length ?? '...'}
                                     </span>
                                 )
+                                const contenidoTareas = (
+                                    <>
+                                        {
+                                            (tipoFiltro || grupoLeads) && (
+                                                <div className='mb-2'>
+                                                    {grupoLeads ? 'VIENDO: ' : 'FILTRANDO POR: '}<strong>{grupoLeads ? `${grupoLeads.titulo} (ÚLTIMA TAREA DE CADA UNO)` : tipoFiltro.label.toUpperCase()}</strong>
+                                                    <span className='ms-2 text-primary text-decoration-underline cursor-pointer' onClick={quitarFiltros}>VER TODAS LAS TAREAS</span>
+                                                </div>
+                                            )
+                                        }
+                                        <div className={`d-flex align-items-end gap-2 flex-wrap mb-2 ${grupoLeads ? 'd-none' : ''}`}>
+                                            <Form.Group controlId={`reporteTareasDesde${a.id_empl}`}>
+                                                <Form.Label className='fw-bold mb-1'>DESDE</Form.Label>
+                                                <Form.Control type='date' value={fechaDesde} min={inicioMes} max={fechaHasta || finMes} onChange={(e)=>setfechaDesde(e.target.value)}/>
+                                            </Form.Group>
+                                            <Form.Group controlId={`reporteTareasHasta${a.id_empl}`}>
+                                                <Form.Label className='fw-bold mb-1'>HASTA</Form.Label>
+                                                <Form.Control type='date' value={fechaHasta} min={fechaDesde || inicioMes} max={finMes} onChange={(e)=>setfechaHasta(e.target.value)}/>
+                                            </Form.Group>
+                                            {hayRango && <Button variant='link' onClick={quitarRango}>Toda las tareas</Button>}
+                                        </div>
+                                        {
+                                            tareasFiltradas.length === 0 ? (
+                                                <div className='text-center text-muted py-4'>{grupoLeads ? 'NO HAY LEADS EN ESTE GRUPO' : `NO HAY TAREAS ${tipoFiltro ? 'DE ESTE TIPO ' : ''}${hayRango ? 'EN ESTE RANGO DE FECHAS' : 'EN ESTE MES'}`}</div>
+                                            ) : (
+                                                <Table responsive striped hover size='sm' className='mb-0'>
+                                                    <thead>
+                                                        <tr>
+                                                            {
+                                                                COLUMNAS_TAREAS.map(c=>(
+                                                                    <th
+                                                                        key={c.key}
+                                                                        className='bg-change text-white cursor-pointer text-nowrap user-select-none'
+                                                                        title='Click para ordenar'
+                                                                        aria-sort={ordenColumna?.key === c.key ? (ordenColumna.direccion === 'asc' ? 'ascending' : 'descending') : 'none'}
+                                                                        onClick={()=>setordenColumna(siguienteOrden(ordenColumna, c.key))}
+                                                                    >
+                                                                        {c.titulo} <small>{ordenColumna?.key === c.key ? (ordenColumna.direccion === 'asc' ? '▲' : '▼') : '▲▼'}</small>
+                                                                    </th>
+                                                                ))
+                                                            }
+                                                            <th className='bg-change text-white text-nowrap'>COMENTARIOS</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {
+                                                            tareasFiltradas.map(t=>{
+                                                                const tipo = arrayTareasComercial.find(e=>e.value===t.id_tarea)
+                                                                return (
+                                                                    <tr key={t.id}>
+                                                                        <td className='text-nowrap'>{t.fecha ? dayjs(t.fecha).format('dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A') : ''}</td>
+                                                                        <td className='text-nowrap fw-bold'>{t.fecha ? etiquetaTiempo(t) : ''}</td>
+                                                                        <td>{`${t.prospecto.nombres ?? ''} ${t.prospecto.apellidos ?? ''}`}</td>
+                                                                        <td>{t.prospecto.celular}</td>
+                                                                        <td>{t.prospecto.parametro_estado?.label_param}</td>
+                                                                        <td className='text-nowrap'><div className={tipo?.exito ? 'text-ISESAC' : ''}>{t.id_tarea === null ? <span className='text-muted'>SIN TAREAS</span> : <>{tipo && <i className={`${tipo.icon} me-1`}></i>}{tipo?.label ?? `Tarea ${t.id_tarea}`}</>}</div></td>
+                                                                        <td> <div className='' style={{width: '180px'}}>{t.observacion}</div></td>
+                                                                        <td className='text-center'>
+                                                                            <BotonIcono icon='pi pi-comment' rounded outlined severity='danger' onClick={()=>setcomentario({show: true, uid: t.prospecto.uid_comentario ?? '', id_cli: t.prospecto.id_cli ?? null})}/>
+                                                                        </td>
+                                                                    </tr>
+                                                                )
+                                                            })
+                                                        }
+                                                    </tbody>
+                                                </Table>
+                                            )
+                                        }
+                                    </>
+                                )
                                 return (
                                     <TabPanel key={a.id_empl} header={<span className={indice === tabActivo ? '' : 'text-black'}>{`${a.nombre.trim().split(' ')[0]} (${conversion.porcentaje}%)`}</span>}>
                                         <Row className='g-2 mb-3'>
@@ -294,6 +435,8 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                                             ultimaMeta ? (
                                                                 <>
                                                                     <div className='text-primary fw-bold fs-3'><SymbolSoles classN={'text-ISESAC'} numero={<NumberFormatMoney className='text-ISESAC fs-2' amount={ultimaMeta.meta_asesor}/>}/> </div>
+                                                                    <div className='fs-2 text-black mt-1'>CUOTA SEMANAL</div>
+                                                                    <div className='text-primary fw-bold fs-3'><SymbolSoles classN={'text-ISESAC'} numero={<NumberFormatMoney className='text-ISESAC fs-2' amount={ultimaMeta.meta_asesor / 4}/>}/> </div>
                                                                 </>
                                                             ) : (
                                                                 <div className='text-black py-2'>SIN CUOTA EN ESTE MES</div>
@@ -321,6 +464,40 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                                         </Card>
                                                     </Col>
                                                 )
+                                            }
+                                            {
+                                                ultimaMeta && (()=>{
+                                                    // Misma cuota semanal que se muestra bajo CUOTA MES: cuota del mes / 4 semanas. FALTAN = cuota semanal - vendido en la semana
+                                                    const cuotaSemana = ultimaMeta.meta_asesor / 4
+                                                    const vendidoSemana = ventasSemanaxAsesor?.[a.id_empl] ?? 0
+                                                    return (
+                                                        <Col xs={12} sm={6} lg={4} xl={2}>
+                                                            <Card className='shadow-sm h-100 mb-0'>
+                                                                <Card.Body className='py-2'>
+                                                                    <div className='fs-2 text-black'>AVANCE SEMANAL</div>
+                                                                    <div className='text-black fs-4'>SEMANA {semana.numero}: DEL {dayjs(semana.desde).format('DD')} AL {dayjs(semana.hasta).format('DD')} </div>
+                                                                    {/* <div className='text-black fs-4'>{semana.diasQuedan === 0 ? 'SEMANA CERRADA' : `QUEDAN ${semana.diasQuedan} ${semana.diasQuedan === 1 ? 'DÍA' : 'DÍAS'} (CON HOY)`}</div> */}
+                                                                    {
+                                                                        ventasSemanaxAsesor === null ? (
+                                                                            <div className='py-2'><Spinner animation='border' size='sm'/></div>
+                                                                        ) : (
+                                                                            <>
+                                                                                <div className='text-black fw-bold fs-3'>VAS: <span className='mr-2'><SymbolSoles classN={'text-ISESAC'} numero={<NumberFormatMoney className='text-ISESAC fs-3' amount={vendidoSemana}/>}/></span></div>
+                                                                                {
+                                                                                    vendidoSemana >= cuotaSemana ? (
+                                                                                        <div className='fs-3 text-ISESAC'>¡CUOTA SEMANAL CUMPLIDA!</div>
+                                                                                    ) : (
+                                                                                        <div className='fs-3'>FALTAN: <SymbolSoles classN={'text-change'} numero={<NumberFormatMoney className='text-change fs-3' amount={cuotaSemana - vendidoSemana}/>}/></div>
+                                                                                    )
+                                                                                }
+                                                                            </>
+                                                                        )
+                                                                    }
+                                                                </Card.Body>
+                                                            </Card>
+                                                        </Col>
+                                                    )
+                                                })()
                                             }
                                             {
                                                 ultimaMeta && (()=>{
@@ -409,69 +586,14 @@ export const ModalReporteTareas = ({show, onHide}) => {
                                             }
                                         </Row>
                                         {
-                                            (tipoFiltro || grupoLeads) && (
-                                                <div className='mb-2'>
-                                                    {grupoLeads ? 'VIENDO: ' : 'FILTRANDO POR: '}<strong>{grupoLeads ? `${grupoLeads.titulo} (ÚLTIMA TAREA DE CADA UNO)` : tipoFiltro.label.toUpperCase()}</strong>
-                                                    <span className='ms-2 text-primary text-decoration-underline cursor-pointer' onClick={quitarFiltros}>VER TODAS LAS TAREAS</span>
-                                                </div>
-                                            )
-                                        }
-                                        <div className={`d-flex align-items-end gap-2 flex-wrap mb-2 ${grupoLeads ? 'd-none' : ''}`}>
-                                            <Form.Group controlId={`reporteTareasDesde${a.id_empl}`}>
-                                                <Form.Label className='fw-bold mb-1'>DESDE</Form.Label>
-                                                <Form.Control type='date' value={fechaDesde} min={inicioMes} max={fechaHasta || finMes} onChange={(e)=>setfechaDesde(e.target.value)}/>
-                                            </Form.Group>
-                                            <Form.Group controlId={`reporteTareasHasta${a.id_empl}`}>
-                                                <Form.Label className='fw-bold mb-1'>HASTA</Form.Label>
-                                                <Form.Control type='date' value={fechaHasta} min={fechaDesde || inicioMes} max={finMes} onChange={(e)=>setfechaHasta(e.target.value)}/>
-                                            </Form.Group>
-                                            {hayRango && <Button variant='link' onClick={quitarRango}>Toda las tareas</Button>}
-                                        </div>
-                                        {
-                                            tareasFiltradas.length === 0 ? (
-                                                <div className='text-center text-muted py-4'>{grupoLeads ? 'NO HAY LEADS EN ESTE GRUPO' : `NO HAY TAREAS ${tipoFiltro ? 'DE ESTE TIPO ' : ''}${hayRango ? 'EN ESTE RANGO DE FECHAS' : 'EN ESTE MES'}`}</div>
-                                            ) : (
-                                                <Table responsive striped hover size='sm' className='mb-0'>
-                                                    <thead>
-                                                        <tr>
-                                                            {
-                                                                COLUMNAS_TAREAS.map(c=>(
-                                                                    <th
-                                                                        key={c.key}
-                                                                        className='bg-change text-white cursor-pointer text-nowrap user-select-none'
-                                                                        title='Click para ordenar'
-                                                                        aria-sort={ordenColumna?.key === c.key ? (ordenColumna.direccion === 'asc' ? 'ascending' : 'descending') : 'none'}
-                                                                        onClick={()=>setordenColumna(siguienteOrden(ordenColumna, c.key))}
-                                                                    >
-                                                                        {c.titulo} <small>{ordenColumna?.key === c.key ? (ordenColumna.direccion === 'asc' ? '▲' : '▼') : '▲▼'}</small>
-                                                                    </th>
-                                                                ))
-                                                            }
-                                                            <th className='bg-change text-white text-nowrap'>COMENTARIOS</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {
-                                                            tareasFiltradas.map(t=>{
-                                                                const tipo = arrayTareasComercial.find(e=>e.value===t.id_tarea)
-                                                                return (
-                                                                    <tr key={t.id}>
-                                                                        <td className='text-nowrap'>{t.fecha ? dayjs(t.fecha).format('dddd DD [DE] MMMM [DEL] YYYY [A LAS] hh:mm A') : ''}</td>
-                                                                        <td className='text-nowrap fw-bold'>{t.fecha ? etiquetaTiempo(t) : ''}</td>
-                                                                        <td>{`${t.prospecto.nombres ?? ''} ${t.prospecto.apellidos ?? ''}`}</td>
-                                                                        <td>{t.prospecto.celular}</td>
-                                                                        <td>{t.prospecto.parametro_estado?.label_param}</td>
-                                                                        <td className='text-nowrap'><div className={`${tipo.exito&&'text-ISESAC'}`}>{t.id_tarea === null ? <span className='text-muted'>SIN TAREAS</span> : <>{tipo && <i className={`${tipo.icon} me-1`}></i>}{tipo?.label ?? `Tarea ${t.id_tarea}`}</>}</div></td>
-                                                                        <td> <div className='' style={{width: '180px'}}>{t.observacion}</div></td>
-                                                                        <td className='text-center'>
-                                                                            <BotonIcono icon='pi pi-comment' rounded outlined severity='danger' onClick={()=>setcomentario({show: true, uid: t.prospecto.uid_comentario ?? '', id_cli: t.prospecto.id_cli ?? null})}/>
-                                                                        </td>
-                                                                    </tr>
-                                                                )
-                                                            })
-                                                        }
-                                                    </tbody>
-                                                </Table>
+                                            // Al ver un grupo de leads (click en un numero) se muestra solo la tabla, sin los tabs TAREAS / COMENTARIOS
+                                            grupoLeads ? contenidoTareas : (
+                                                <TabView activeIndex={vistaAsesor} onTabChange={(e)=>setvistaAsesor(e.index)}>
+                                                    <TabPanel header='TAREAS'>{contenidoTareas}</TabPanel>
+                                                    <TabPanel header='COMENTARIOS'>
+                                                        <TablaComentarios prospectos={a.prospectos} comentarios={comentariosCRM}/>
+                                                    </TabPanel>
+                                                </TabView>
                                             )
                                         }
                                     </TabPanel>

@@ -28,6 +28,6 @@ export const SectionComentarios = ({data}) => {
     </div>
   )
   return (
-    <SectionComentario uid_comentario={data.uid_comentario} antesDeComentarios={bloqueProspecto}/>
+    <SectionComentario uid_comentario={data.uid_comentario} antesDeComentarios={bloqueProspecto} model='CLIENTE'/>
   )
 }
