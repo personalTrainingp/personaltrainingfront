@@ -28,6 +28,13 @@ export const DataTableTerminologiaSistema = ({onOpenModalTermSis, grupo, entidad
         </>
       )
     }},
+    {id: 5, header: 'ORDEN', accesor: 'orden_param', render:(row)=>{
+      return (
+        <>
+        {row.orden_param}
+        </>
+      )
+    }},
     {id: 4, header: '', render:(row)=>{
       return (
         <>

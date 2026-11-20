@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 const customTS = {
   label_param: '',
   estado_param: 1,
-  orden: 0
+  orden_param: 0
 }
 export const ModalCustomTermSistema = ({ show, onHide,  id = 0, label = '', id_empresa, entidad, grupo }) => {
   const { obtenerTerminologiaSistemaxID, dataTerminoxID, registrarTerminologiaxEntidadyGrupo, actualizarTerminologia } = useTerminoSistema()
