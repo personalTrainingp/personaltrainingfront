@@ -7,6 +7,16 @@ import { ModalCustom } from './ModalCustom'
 import { useCenterArchive } from './hook/useCenterArchive'
 import { ModalOrdenTerminologia } from './ModalOrdenTerminologia'
 
+// la opcion "Todos" se distingue del resto: negrita, icono, fondo suave y separador abajo
+const estiloTodos = { borderBottomWidth: '2px', letterSpacing: '0.03em' }
+const claseTodos = (activo) => `fw-bold ${activo ? 'input-buton border-none' : 'bg-light'}`
+const ContenidoTodos = () => (
+    <>
+        <i className='pi pi-th-large me-2'></i>
+        TODOS
+    </>
+)
+
 // ordena por el ORDEN de la terminologia (orden_param), asc o desc;
 // sin orden siempre van al final, y a igual orden se ordena alfabetico en la misma direccion
 const sinOrden = (o) => o === null || o === undefined || o === '' || isNaN(Number(o))
@@ -164,14 +174,11 @@ export const App2 = ({idEmpresa, soloLectura = false}) => {
                 <ListGroup.Item
                     action
                     active={tipoElegido && !selectedTipo}
-                    className={
-                                    tipoElegido && !selectedTipo
-                                        ? 'input-buton border-none'
-                                        : ''
-                                }
+                    className={claseTodos(tipoElegido && !selectedTipo)}
+                    style={estiloTodos}
                     onClick={onClickTodosTipos}
                 >
-                    Todos
+                    <ContenidoTodos/>
                 </ListGroup.Item>
                 {tipos.map((tipo) => (
                     <ListGroup.Item
@@ -201,14 +208,11 @@ export const App2 = ({idEmpresa, soloLectura = false}) => {
                         <ListGroup.Item
                             action
                             active={subtipoElegido && !selectedSubtipo}
-                            className={
-                                    subtipoElegido && !selectedSubtipo
-                                        ? 'input-buton border-none'
-                                        : ''
-                                }
+                            className={claseTodos(subtipoElegido && !selectedSubtipo)}
+                            style={estiloTodos}
                             onClick={onClickTodosSubtipos}
                         >
-                            Todos
+                            <ContenidoTodos/>
                         </ListGroup.Item>
                         {subtipos.map((subtipo) => (
                             <ListGroup.Item
