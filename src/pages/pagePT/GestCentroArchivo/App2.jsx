@@ -6,6 +6,16 @@ import { DataTableCentroArchivo } from './DataTableCentroArchivo'
 import { ModalCustom } from './ModalCustom'
 import { useCenterArchive } from './hook/useCenterArchive'
 
+// ordena por el ORDEN de la terminologia (orden_param); sin orden van al final, luego alfabetico
+const ordenarPorTerminologia = (a, b) => {
+    const oa = Number(a.orden)
+    const ob = Number(b.orden)
+    const va = a.orden === null || a.orden === undefined || a.orden === '' || isNaN(oa) ? Infinity : oa
+    const vb = b.orden === null || b.orden === undefined || b.orden === '' || isNaN(ob) ? Infinity : ob
+    if (va !== vb) return va - vb
+    return String(a.label).localeCompare(String(b.label))
+}
+
 // soloLectura: vista para todos los usuarios (sidebar), con los documentos de todas las
 // empresas y sin agregar, editar ni eliminar
 export const App2 = ({idEmpresa, soloLectura = false}) => {
@@ -41,9 +51,9 @@ export const App2 = ({idEmpresa, soloLectura = false}) => {
             const label = row?.tipo?.label_param
             if (!label) return
             const key = row?.tipo?.id_param ?? label
-            if (!map.has(key)) map.set(key, { key, label })
+            if (!map.has(key)) map.set(key, { key, label, orden: row?.tipo?.orden_param })
         })
-        return Array.from(map.values())
+        return Array.from(map.values()).sort(ordenarPorTerminologia)
     }, [dataView])
 
     const subtipos = useMemo(() => {
@@ -55,9 +65,9 @@ export const App2 = ({idEmpresa, soloLectura = false}) => {
                 const label = row?.subtipo?.label_param
                 if (!label) return
                 const key = row?.subtipo?.id_param ?? label
-                if (!map.has(key)) map.set(key, { key, label })
+                if (!map.has(key)) map.set(key, { key, label, orden: row?.subtipo?.orden_param })
             })
-        return Array.from(map.values())
+        return Array.from(map.values()).sort(ordenarPorTerminologia)
     }, [dataView, selectedTipo, tipoElegido])
 
     const filteredData = useMemo(() => {
