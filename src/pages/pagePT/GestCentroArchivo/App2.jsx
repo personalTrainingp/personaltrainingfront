@@ -5,15 +5,18 @@ import { useSelector } from 'react-redux'
 import { DataTableCentroArchivo } from './DataTableCentroArchivo'
 import { ModalCustom } from './ModalCustom'
 import { useCenterArchive } from './hook/useCenterArchive'
+import { ModalOrdenTerminologia } from './ModalOrdenTerminologia'
 
-// ordena por el ORDEN de la terminologia (orden_param); sin orden van al final, luego alfabetico
-const ordenarPorTerminologia = (a, b) => {
-    const oa = Number(a.orden)
-    const ob = Number(b.orden)
-    const va = a.orden === null || a.orden === undefined || a.orden === '' || isNaN(oa) ? Infinity : oa
-    const vb = b.orden === null || b.orden === undefined || b.orden === '' || isNaN(ob) ? Infinity : ob
-    if (va !== vb) return va - vb
-    return String(a.label).localeCompare(String(b.label))
+// ordena por el ORDEN de la terminologia (orden_param), asc o desc;
+// sin orden siempre van al final, y a igual orden se ordena alfabetico en la misma direccion
+const sinOrden = (o) => o === null || o === undefined || o === '' || isNaN(Number(o))
+const ordenarPorTerminologia = (asc) => (a, b) => {
+    const na = sinOrden(a.orden)
+    const nb = sinOrden(b.orden)
+    if (na !== nb) return na ? 1 : -1
+    const dir = asc ? 1 : -1
+    if (!na && Number(a.orden) !== Number(b.orden)) return (Number(a.orden) - Number(b.orden)) * dir
+    return String(a.label).localeCompare(String(b.label)) * dir
 }
 
 // soloLectura: vista para todos los usuarios (sidebar), con los documentos de todas las
@@ -34,6 +37,8 @@ export const App2 = ({idEmpresa, soloLectura = false}) => {
     const [selectedSubtipo, setselectedSubtipo] = useState(null)
     const [tipoElegido, settipoElegido] = useState(false)
     const [subtipoElegido, setsubtipoElegido] = useState(false)
+    const [ordenAsc, setordenAsc] = useState(true)
+    const [isOpenModalOrden, setisOpenModalOrden] = useState(false)
 
     // al cambiar de modulo, sus tipos y subtipos son otros: se limpian los filtros
     useEffect(() => {
@@ -53,8 +58,8 @@ export const App2 = ({idEmpresa, soloLectura = false}) => {
             const key = row?.tipo?.id_param ?? label
             if (!map.has(key)) map.set(key, { key, label, orden: row?.tipo?.orden_param })
         })
-        return Array.from(map.values()).sort(ordenarPorTerminologia)
-    }, [dataView])
+        return Array.from(map.values()).sort(ordenarPorTerminologia(ordenAsc))
+    }, [dataView, ordenAsc])
 
     const subtipos = useMemo(() => {
         if (!tipoElegido) return []
@@ -67,8 +72,8 @@ export const App2 = ({idEmpresa, soloLectura = false}) => {
                 const key = row?.subtipo?.id_param ?? label
                 if (!map.has(key)) map.set(key, { key, label, orden: row?.subtipo?.orden_param })
             })
-        return Array.from(map.values()).sort(ordenarPorTerminologia)
-    }, [dataView, selectedTipo, tipoElegido])
+        return Array.from(map.values()).sort(ordenarPorTerminologia(ordenAsc))
+    }, [dataView, selectedTipo, tipoElegido, ordenAsc])
 
     const filteredData = useMemo(() => {
         let data = dataView || []
@@ -117,7 +122,10 @@ export const App2 = ({idEmpresa, soloLectura = false}) => {
     <>
     {
         !soloLectura && (
+            <>
             <Button className='border-none input-buton' onClick={()=>onClickOpenModalCustomArchivo(0)}>AGREGAR ARCHIVO</Button>
+            <Button className='border-none input-buton ms-2' onClick={()=>setisOpenModalOrden(true)}>REGISTRAR ORDEN</Button>
+            </>
         )
     }
     {
@@ -127,7 +135,18 @@ export const App2 = ({idEmpresa, soloLectura = false}) => {
     }
     <Row className='mt-3'>
         <Col md={3}>
-            <div className='fw-bold mb-2'>Tipos</div>
+            <div className='d-flex align-items-center justify-content-between mb-2'>
+                <span className='fw-bold'>Tipos</span>
+                <Button
+                    variant='link'
+                    className='p-0 text-decoration-none'
+                    title={ordenAsc ? 'Orden ascendente (clic para descendente)' : 'Orden descendente (clic para ascendente)'}
+                    onClick={() => setordenAsc((v) => !v)}
+                >
+                    <i className={`pi ${ordenAsc ? 'pi-sort-amount-up-alt' : 'pi-sort-amount-down'} me-1`}></i>
+                    {ordenAsc ? 'ASC' : 'DESC'}
+                </Button>
+            </div>
             <ListGroup>
                 <ListGroup.Item
                     action
@@ -212,7 +231,10 @@ export const App2 = ({idEmpresa, soloLectura = false}) => {
     </Row>
     {
         !soloLectura && (
+            <>
             <ModalCustom id_enterprice={idEmpresa} id={isOpenModalCustomArchivo.id} onHide={onClickCloseModalCustomArchivo}  show={isOpenModalCustomArchivo.isOpen}/>
+            <ModalOrdenTerminologia show={isOpenModalOrden} onHide={()=>setisOpenModalOrden(false)} onGuardado={()=>obtenerArchivosCenter(idEmpresa)}/>
+            </>
         )
     }
     </>

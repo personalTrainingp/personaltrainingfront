@@ -28,7 +28,11 @@ export const DataTableTerminologiaSistema = ({onOpenModalTermSis, grupo, entidad
         </>
       )
     }},
-    {id: 5, header: 'ORDEN', accesor: 'orden_param', render:(row)=>{
+    // ordenable: clic en el encabezado alterna ASC ▲ / DESC ▼ (sin orden = al final en ASC)
+    {id: 5, header: 'ORDEN', sortable: true, accessor: (row)=>{
+      const o = Number(row.orden_param)
+      return row.orden_param === null || row.orden_param === undefined || row.orden_param === '' || isNaN(o) ? Infinity : o
+    }, render:(row)=>{
       return (
         <>
         {row.orden_param}
@@ -64,6 +68,7 @@ export const DataTableTerminologiaSistema = ({onOpenModalTermSis, grupo, entidad
       <DataTableCR
         data={dataViewTerm}
         columns={columns}
+        initialSort={{id: 5, direction: 'asc'}}
       />
     </div>
   )
