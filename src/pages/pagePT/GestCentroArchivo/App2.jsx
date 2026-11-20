@@ -75,6 +75,19 @@ export const App2 = ({idEmpresa, soloLectura = false}) => {
         return Array.from(map.values()).sort(ordenarPorTerminologia(ordenAsc))
     }, [dataView, selectedTipo, tipoElegido, ordenAsc])
 
+    // ids de tipos y subtipos que tienen archivos en esta empresa (para el modal de orden)
+    const idsUsados = useMemo(() => {
+        const tipos = new Set()
+        const subtipos = new Set()
+        ;(dataView || []).forEach((row) => {
+            const idTipo = row?.tipo?.id_param ?? row?.id_tipo_doc
+            const idSubtipo = row?.subtipo?.id_param ?? row?.id_sub_tipo_doc
+            if (idTipo != null) tipos.add(String(idTipo))
+            if (idSubtipo != null) subtipos.add(String(idSubtipo))
+        })
+        return { 'categoria': tipos, 'sub-tipo-archivo': subtipos }
+    }, [dataView])
+
     const filteredData = useMemo(() => {
         let data = dataView || []
         if (selectedTipo) {
@@ -233,7 +246,7 @@ export const App2 = ({idEmpresa, soloLectura = false}) => {
         !soloLectura && (
             <>
             <ModalCustom id_enterprice={idEmpresa} id={isOpenModalCustomArchivo.id} onHide={onClickCloseModalCustomArchivo}  show={isOpenModalCustomArchivo.isOpen}/>
-            <ModalOrdenTerminologia show={isOpenModalOrden} onHide={()=>setisOpenModalOrden(false)} onGuardado={()=>obtenerArchivosCenter(idEmpresa)}/>
+            <ModalOrdenTerminologia idsUsados={idsUsados} show={isOpenModalOrden} onHide={()=>setisOpenModalOrden(false)} onGuardado={()=>obtenerArchivosCenter(idEmpresa)}/>
             </>
         )
     }

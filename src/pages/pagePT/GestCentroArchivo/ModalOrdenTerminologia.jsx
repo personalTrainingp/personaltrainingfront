@@ -22,7 +22,8 @@ const porOrden = (a, b) => {
 }
 
 // registra el ORDEN (orden_param) de los tipos y subtipos del centro de archivo
-export const ModalOrdenTerminologia = ({ show, onHide, onGuardado }) => {
+// idsUsados: { grupo: Set(id_param) } -> solo se muestran los que tienen archivos en la empresa
+export const ModalOrdenTerminologia = ({ show, onHide, onGuardado, idsUsados }) => {
     const [terminos, setterminos] = useState({}) // { grupo: [rows] }
     const [ordenes, setordenes] = useState({}) // { id_param: valor editado }
     const [cargando, setcargando] = useState(false)
@@ -36,7 +37,10 @@ export const ModalOrdenTerminologia = ({ show, onHide, onGuardado }) => {
             )
             const data = {}
             GRUPOS.forEach(({ grupo }, i) => {
-                data[grupo] = [...(resultados[i].data?.terminologia || [])].sort(porOrden)
+                const usados = idsUsados?.[grupo]
+                data[grupo] = (resultados[i].data?.terminologia || [])
+                    .filter((row) => !usados || usados.has(String(row.id_param)))
+                    .sort(porOrden)
             })
             setterminos(data)
         } catch (error) {
@@ -125,7 +129,7 @@ export const ModalOrdenTerminologia = ({ show, onHide, onGuardado }) => {
                                     ))}
                                     {(terminos[grupo] || []).length === 0 && (
                                         <tr>
-                                            <td colSpan={2} className="text-center text-muted">Sin terminologías</td>
+                                            <td colSpan={2} className="text-center text-muted">Sin archivos con esta terminología</td>
                                         </tr>
                                     )}
                                 </tbody>
