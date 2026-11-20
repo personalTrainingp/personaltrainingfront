@@ -263,8 +263,20 @@ export const useUsuarioStore = () => {
 			return false;
 		}
 	};
+	// Activa o desactiva el usuario. Devuelve {ok, msg} para mostrar el resultado
+	const cambiarEstadoUsuarioAuth = async (id_user, estado_user) => {
+		try {
+			const { data } = await PTApi.put(`/usuario/estado-usuario/${id_user}`, { estado_user });
+			await obtenerUsuariosAuth();
+			return { ok: true, msg: data.msg };
+		} catch (error) {
+			console.log(error);
+			return { ok: false, msg: error.response?.data?.msg ?? 'No se pudo cambiar el estado del usuario' };
+		}
+	};
 	return {
 		startUpdateUsuarioAuth,
+		cambiarEstadoUsuarioAuth,
 		//Cliente
 		startRegisterUsuarioCliente,
 		obtenerUsuariosClientes,

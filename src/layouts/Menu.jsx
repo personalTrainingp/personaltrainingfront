@@ -15,6 +15,7 @@ const MenuItemWithChildren = ({
   subMenuClassNames,
   activeMenuItems,
   toggleMenu,
+  isTopLevel = false,
 }) => {
   const [open, setOpen] = useState(activeMenuItems.includes(item.key));
 
@@ -42,8 +43,8 @@ const MenuItemWithChildren = ({
         aria-expanded={open}
         className={linkClassName}
       >
-        {item.icon && <i className={item.icon}></i>}
-        <span className='fs-4 ml-3'> {item.label} </span>
+        {/* {item.icon && <i className={item.icon}></i>} */}
+        <span className={isTopLevel ? 'fs-4 fw-bold ml-3' : 'ml-3'}> {item.label} </span>
       </Link>
       <Collapse in={open}>
         <div className={collapseClass ? 'collapse' : ''}>
@@ -84,26 +85,26 @@ const MenuItemWithChildren = ({
   );
 };
 
-const MenuItem = ({ item, className, linkClassName }) => {
+const MenuItem = ({ item, className, linkClassName, isTopLevel = false }) => {
   return (
     <li className={className}>
-      <MenuItemLink item={item} className={linkClassName} />
+      <MenuItemLink item={item} className={linkClassName} isTopLevel={isTopLevel} />
     </li>
   );
 
 };
-const MenuItemLink = ({ item, className }) => {
+const MenuItemLink = ({ item, className, isTopLevel = false }) => {
   return (
     <Link
       to={item.url}
       target={item.target}
-      className={`side-nav-link-ref ${className}`}
+      className={`side-nav-link-ref ${className} ${isTopLevel ? 'fs-4 fw-bold' : ''}`}
       style={{ display: 'flex', alignItems: 'center' }}
     >
       {item.icon ? (
         <>
-          <i className={item.icon}></i>
-          <div className='ml-3' style={{ whiteSpace: 'normal' }}>&nbsp; {item.label}</div>
+          {/* <i className={item.icon}></i> */}
+          <div className='ml-2' style={{ whiteSpace: 'normal' }}>&nbsp; {item.label}</div>
         </>
       ) : (
         <>
@@ -185,12 +186,14 @@ const AppMenu = ({ menuItems }) => {
                         subMenuClassNames="side-nav-second-level"
                         activeMenuItems={activeMenuItems}
                         linkClassName="side-nav-link"
+                        isTopLevel
                       />
                     ) : (
                       <MenuItem
                         item={item}
                         linkClassName="side-nav-link"
-                        className={`side-nav-item ${activeMenuItems.includes(item.key) ? 'menuitem-active' : ''}`}
+                        isTopLevel
+                        className={`side-nav-item  ${activeMenuItems.includes(item.key) ? 'menuitem-active' : ''}`}
                       />
                     )}
                   </React.Fragment>

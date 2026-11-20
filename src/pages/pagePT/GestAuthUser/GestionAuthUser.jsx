@@ -12,6 +12,10 @@ export const GestionAuthUser = () => {
     const [showFormUser, setshowFormUser] = useState(false)
     const { obtenerUsuariosAuth } = useUsuarioStore()
     const { DataUsuarios } = useSelector(e=>e.authEmpl)
+    // estado = estado_user: un usuario inactivo no puede iniciar sesion
+    const usuarios = DataUsuarios ?? []
+    const activos = usuarios.filter(u=>u.estado)
+    const inactivos = usuarios.filter(u=>!u.estado)
     const onModalFormUser = (bool)=>{
         setshowFormUser(bool)
     }
@@ -35,16 +39,24 @@ export const GestionAuthUser = () => {
                         </Col>
                     </Row>
                     <Tabs>
-                        <Tab eventKey={'usuarios'} title={'Todo los usuarios'}>
+                        <Tab eventKey={'usuarios'} title={`Todo los usuarios (${usuarios.length})`}>
                             <DataTableCR
                                 columns={columns}
-                                data={DataUsuarios}
+                                data={usuarios}
                             />
                         </Tab>
-                        {/* <Tab eventKey={'usuariosAct'} title={'Usuarios activos'}>
+                        <Tab eventKey={'usuariosAct'} title={`Usuarios activos (${activos.length})`}>
+                            <DataTableCR
+                                columns={columns}
+                                data={activos}
+                            />
                         </Tab>
-                        <Tab eventKey={'usuariosInac'} title={'Usuarios inactivados'}>
-                        </Tab> */}
+                        <Tab eventKey={'usuariosInac'} title={`Usuarios inactivos (${inactivos.length})`}>
+                            <DataTableCR
+                                columns={columns}
+                                data={inactivos}
+                            />
+                        </Tab>
                     </Tabs>
                 </Card.Body>
             </Card>

@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { useState } from 'react';
+import { Form } from 'react-bootstrap';
 import { ModalPerfilAuthUsuario } from './ModalPerfilAuthUsuario';
+import { useUsuarioStore } from '@/hooks/hookApi/useUsuarioStore';
 
 /* product column render */
 const ProductColumn = ({ row }) => {
@@ -49,6 +51,35 @@ const StatusColumn = ({ row }) => {
   );
 };
 
+/* estado: switch para activar / desactivar el usuario (un inactivo no puede iniciar sesion) */
+const EstadoColumn = ({ row }) => {
+  const { cambiarEstadoUsuarioAuth } = useUsuarioStore();
+  const [guardando, setguardando] = useState(false);
+  const [error, seterror] = useState(null);
+  const activo = Boolean(row.estado);
+  const onCambiar = async () => {
+    setguardando(true);
+    seterror(null);
+    const { ok, msg } = await cambiarEstadoUsuarioAuth(row.id, !activo);
+    if (!ok) seterror(msg);
+    setguardando(false);
+  };
+  return (
+    <div className="d-flex align-items-center gap-2">
+      <Form.Check
+        type="switch"
+        id={`estado-usuario-${row.id}`}
+        checked={activo}
+        disabled={guardando}
+        onChange={onCambiar}
+        title={activo ? 'Desactivar usuario' : 'Activar usuario'}
+      />
+      <span className={`badge ${activo ? 'bg-success' : 'bg-danger'}`}>{guardando ? '...' : activo ? 'Activo' : 'Inactivo'}</span>
+      {error && <small className="text-danger">{error}</small>}
+    </div>
+  );
+};
+
 /* action column render */
 const ActionColumn = ({ row }) => {
   const [modalOpenPerfil, setmodalOpenPerfil] = useState(false)
@@ -78,7 +109,7 @@ const columns = [
     header: 'Estado',
     accessor: 'estado',
     sortable: true,
-    render: (row) => (row.estado ? 'Activo' : 'Inactivo'),
+    render: (row) => <EstadoColumn row={row} />,
   },
   {
     id: 'id',

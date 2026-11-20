@@ -134,6 +134,7 @@ const ReporteProveedores = lazy(() => import('../pages/pagePT/ReporteProveedores
 const ReporteCuentasBalance = lazy(() => import('../pages/pagePT/ReporteDetalleCuentasBalance'));
 const StatusInfluencer = lazy(() => import('../pages/pagePT/StatusInfluencer/Index.jsx'));
 const ReporteActas = lazy(() => import('../pages/pagePT/ReporteActas/index.jsx'));
+const StatusContratosHuellasFotos = lazy(() => import('../pages/pagePT/StatusContratosHuellasFotos/index.jsx'));
 // const Dashboard = lazy(() => import('../pages/pagePT/Dashboard/index.jsx'));
 
 export default function ProtectedRoutes() {
@@ -183,6 +184,10 @@ export default function ProtectedRoutes() {
 					<>
 						<Route path="/*" element={<Layout />}>
 							<Route index element={<Navigate to='home' replace />} />
+							{
+								sections.find(e => e.url === '/status-contratos-huellas-fotos') &&
+								<Route path='status-contratos-huellas-fotos' element={<StatusContratosHuellasFotos />} />
+							}
 							{
 								sections.find(e => e.url === '/calendario-marketing') &&
 								<Route path='calendario-marketing' element={<CalendarioMarketing />} />
@@ -539,7 +544,7 @@ export default function ProtectedRoutes() {
 								</>
 							}
 							{
-								sections.find(e => e.url === '/gestion-servicios') &&
+								sections.find(e => e.url === '/gestion-productos') &&
 								<Route path='gestion-productos' element={<GestionProductos />} />
 							}
 							{

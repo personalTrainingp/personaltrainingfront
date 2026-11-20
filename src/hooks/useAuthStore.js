@@ -42,7 +42,14 @@ export const useAuthStore = () => {
 			);
 		} catch (error) {
 			console.log(error);
-			dispatch(onLogout('Credenciales incorrectas'));
+			// 403: usuario desactivado en Gestion de usuarios; se muestra el mensaje del backend
+			dispatch(
+				onLogout(
+					error.response?.status === 403
+						? error.response.data?.msg ?? 'Usuario inactivo'
+						: 'Credenciales incorrectas'
+				)
+			);
 			//Muestra el mensaje de error y despues lo quita
 			setTimeout(() => {
 				dispatch(clearErrorMessage());

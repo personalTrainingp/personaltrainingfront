@@ -6,9 +6,16 @@ import { PageBreadcrumb } from "@/components";
 import { PTApi } from "@/common";
 import PublicacionesRedes from "./PublicacionesRedes";
 
-// GET /prospectos-redes/seguidores?desde=YYYY-MM-DD&hasta=YYYY-MM-DD responde:
-// { desde, hasta, seguidoresRedes: [{ id, id_red, red: "FACEBOOK", seguidores, likes, comentarios, fecha: "YYYY-MM-DD" }] }
-const toRows = (resp) => (Array.isArray(resp?.seguidoresRedes) ? resp.seguidoresRedes : []);
+// GET /prospectos-redes/metricas-semanales?desde=YYYY-MM-DD&hasta=YYYY-MM-DD responde las semanas (bloques de 7 dias
+// desde el primer post de cada red) que se cruzan con el rango:
+// { desde, hasta, metricasSemanales: [{ id, id_red, red: "FACEBOOK", semana_inicio, semana_fin, seguidores,
+//   seguidores_ganados, seguidores_perdidos, posts, likes, comentarios }] }
+// seguidores puede venir null (Instagram solo tiene el ultimo año): esa semana queda sin punto en el grafico.
+// likes y comentarios son de los posts publicados en la semana, con lo que acumularon hasta hoy.
+const toRows = (resp) => (Array.isArray(resp?.metricasSemanales) ? resp.metricasSemanales : []);
+// Inicio del historial guardado (primer post de Facebook: 13/09/2024)
+const INICIO_HISTORIAL = "2024-09-01";
+const formatoDia = (f) => f.split("-").reverse().join("/");
 
 const nombreRed = (r) => r.red ?? `RED ${r.id_red}`;
 
@@ -32,22 +39,20 @@ const REDES = [
 ];
 const COLORES_OTROS = ["#6c757d", "#9aa1a7", "#c4c8cc"];
 
-// Grafico de una sola red: una linea por metrica; eje X = fechas de esa red.
+// Grafico de una sola red: una linea por metrica; eje X = semanas de esa red (por su dia de inicio).
 const buildChart = (rows, red) => {
-  const filasRed = rows.filter((r) => nombreRed(r) === red);
-  // fecha viene como texto YYYY-MM-DD: se ordena como texto, sin pasar por Date
-  const fechas = [...new Set(filasRed.map((r) => r.fecha))].sort();
+  // semana_inicio viene como texto YYYY-MM-DD: se ordena como texto, sin pasar por Date
+  const filasRed = rows.filter((r) => nombreRed(r) === red).sort((a, b) => a.semana_inicio.localeCompare(b.semana_inicio));
   const series = filasRed.length
     ? METRICAS.map((m) => ({
         name: m.label,
-        data: fechas.map((f) => {
-          const fila = filasRed.find((r) => r.fecha === f);
-          return fila ? Number(fila[m.campo] ?? 0) : null;
-        }),
+        data: filasRed.map((fila) => (fila[m.campo] === null || fila[m.campo] === undefined ? null : Number(fila[m.campo]))),
       }))
     : [];
   return {
-    categories: fechas.map((f) => f.split("-").reverse().join("/")),
+    categories: filasRed.map((f) => formatoDia(f.semana_inicio)),
+    // texto del tooltip para cada punto
+    rangos: filasRed.map((f) => `Semana del ${formatoDia(f.semana_inicio)} al ${formatoDia(f.semana_fin)}`),
     series,
     colores: COLORES_RED[red] ?? COLORES_OTROS,
     dashes: METRICAS.map((m) => m.dash),
@@ -82,17 +87,22 @@ const buildYAxis = (series, ejes) => {
 };
 
 const GraficoRed = ({ titulo, red, rows, isLoading, error }) => {
-  const { categories, series, colores, dashes, ejes } = useMemo(() => buildChart(rows, red), [rows, red]);
+  const { categories, rangos, series, colores, dashes, ejes } = useMemo(() => buildChart(rows, red), [rows, red]);
   const options = {
     chart: { id: `seguidores-${red.toLowerCase()}`, toolbar: { show: true }, zoom: { enabled: false } },
     colors: colores,
     stroke: { curve: "smooth", width: 3, dashArray: dashes },
-    markers: { size: 4 },
+    markers: { size: categories.length > 30 ? 0 : 4, hover: { size: 5 } },
     dataLabels: { enabled: false },
-    xaxis: { categories, labels: { rotate: -45 } },
+    xaxis: { categories, labels: { rotate: -45, hideOverlappingLabels: true }, tickAmount: Math.min(categories.length, 24) },
     yaxis: buildYAxis(series, ejes),
     legend: { position: "top" },
-    tooltip: { shared: true, intersect: false, y: { formatter: formatoNumero } },
+    tooltip: {
+      shared: true,
+      intersect: false,
+      x: { formatter: (_, { dataPointIndex }) => rangos[dataPointIndex] ?? "" },
+      y: { formatter: formatoNumero },
+    },
   };
   return (
     <Card>
@@ -111,7 +121,8 @@ const GraficoRed = ({ titulo, red, rows, isLoading, error }) => {
 };
 
 const SeguidoresRedes = () => {
-  const [desde, setDesde] = useState(dayjs().startOf("month").format("YYYY-MM-DD"));
+  // Por defecto todo el historial semanal
+  const [desde, setDesde] = useState(INICIO_HISTORIAL);
   const [hasta, setHasta] = useState(dayjs().format("YYYY-MM-DD"));
   const [rows, setRows] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -121,7 +132,7 @@ const SeguidoresRedes = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const { data } = await PTApi.get("/prospectos-redes/seguidores", { params: { desde, hasta } });
+      const { data } = await PTApi.get("/prospectos-redes/metricas-semanales", { params: { desde, hasta } });
       setRows(toRows(data));
     } catch (err) {
       console.error(err);
