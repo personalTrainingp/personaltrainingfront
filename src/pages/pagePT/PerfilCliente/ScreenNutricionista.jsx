@@ -6,6 +6,7 @@ import { useDropzone } from 'react-dropzone';
 import { ItemClinico } from './HistClinico/ItemClinico';
 import { Button } from 'primereact/button';
 import { SidebarClinico } from './HistClinico/SidebarClinico';
+import { HistorialNutricional } from './HistClinico/HistorialNutricional';
 import { ModalDieta } from './ModalDieta/ModalDieta';
 import { ItemDieta } from './ModalDieta/ItemDieta';
 import { useNutricionCliente } from '@/hooks/hookApi/useNutricionCliente';
@@ -77,18 +78,7 @@ export const ScreenNutricionista = ({id_cli, dataCli}) => {
             </Row>
             </TabPanel>
             <TabPanel header='Historial clinico'>
-                <Row className='mb-2'>
-                    <Col xxl={5}>
-                    <Button label="Agregar" onClick={onOpenSideBarClinico} icon="pi pi-plus" iconPos="right"/>
-                    </Col>
-                </Row>
-                {
-                    dataNutricion_HISTORIAL_CLINICO.map(h=>{
-                        return(
-                            <ItemClinico onUpdateHClinico={()=>onUpdateHClinico(h.id)} url={h?.tb_image?.name_image} fec_created={h.createdAt}/>
-                        )
-                    })
-                }
+                <HistorialNutricional id_cli={id_cli}/>
             </TabPanel>
         </TabView>
         <SidebarClinico onHide={onCloseSideBarClinico} show={showSideBarClinico} dataCli={dataCli}/>

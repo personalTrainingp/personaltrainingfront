@@ -88,6 +88,7 @@ const ResumenEjecutivo = lazy(() => import('../pages/pagePT/reportes/resumenEjec
 const ReporteRedesSociales = lazy(() => import('../pages/pagePT/reportes/reporteRedesSociales/Index.jsx'))
 const ResultadosPorCanal = lazy(() => import('../pages/pagePT/reportes/resultadosPorCanal/Index.jsx'))
 const SeguidoresRedes = lazy(() => import('../pages/pagePT/reportes/seguidoresRedes/Index.jsx'))
+const StatusNutricion = lazy(() => import('../pages/pagePT/reportes/statusNutricion/Index.jsx'))
 const GestionCentroDeArchivos = lazy(() => import('../pages/pagePT/GestCentroArchivo/Index.jsx'))
 const CentroDeArchivosSoloLectura = lazy(() => import('../pages/pagePT/GestCentroArchivo/AppSoloLectura.jsx'))
 const CvColaboradores = lazy(() => import('../pages/pagePT/GestEmpleados/Perfil/cv'))
@@ -397,6 +398,10 @@ export default function ProtectedRoutes() {
 							{
 								(findSectionDeep('/reporte-redes-sociales') ) &&
 								<Route path='reporte-redes-sociales' element={<SeguidoresRedes />} />
+							}
+							{
+								findSectionDeep('/status-nutricion') &&
+								<Route path='status-nutricion' element={<StatusNutricion />} />
 							}
 							{
 								findSectionDeep('/resultados-por-canal') &&
