@@ -84,6 +84,11 @@ export default function ReservaMonkFitPage() {
     setEditing(r);
     setModalOpen(true);
   };
+  // Abre el modal con los datos de la reserva copiados; sin id se guarda como una nueva
+  const openCopy = (r) => {
+    setEditing({ ...r, id: null });
+    setModalOpen(true);
+  };
   const onSaved = async (msg) => {
     setToast(msg);
     await load();
@@ -216,6 +221,14 @@ export default function ReservaMonkFitPage() {
                           onClick={() => openEdit(r)}
                         >
                           Editar
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline-secondary"
+                          className="mx-1"
+                          onClick={() => openCopy(r)}
+                        >
+                          Copiar
                         </Button>
                         <Button
                           size="sm"

@@ -136,6 +136,7 @@ const ReporteCuentasBalance = lazy(() => import('../pages/pagePT/ReporteDetalleC
 const StatusInfluencer = lazy(() => import('../pages/pagePT/StatusInfluencer/Index.jsx'));
 const ReporteActas = lazy(() => import('../pages/pagePT/ReporteActas/index.jsx'));
 const StatusContratosHuellasFotos = lazy(() => import('../pages/pagePT/StatusContratosHuellasFotos/index.jsx'));
+const ResultadosGenerales = lazy(() => import('../pages/pagePT/ResultadosGenerales/index.jsx'));
 // const Dashboard = lazy(() => import('../pages/pagePT/Dashboard/index.jsx'));
 
 export default function ProtectedRoutes() {
@@ -185,6 +186,10 @@ export default function ProtectedRoutes() {
 					<>
 						<Route path="/*" element={<Layout />}>
 							<Route index element={<Navigate to='home' replace />} />
+							{
+								sections.find(e => e.url === '/resultados-generales') &&
+								<Route path='resultados-generales' element={<ResultadosGenerales />} />
+							}
 							{
 								sections.find(e => e.url === '/status-contratos-huellas-fotos') &&
 								<Route path='status-contratos-huellas-fotos' element={<StatusContratosHuellasFotos />} />

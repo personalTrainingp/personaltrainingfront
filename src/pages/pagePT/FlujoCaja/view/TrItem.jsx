@@ -555,7 +555,7 @@ const { anioActual, mesActual } = obtenerAnioMesDiaActualPeru()
 // aporta los meses ya cerrados (mesActual-1), sin contar el mes actual que
 // todavía no tiene el mes completo.
 const MESES_ACUMULADO_ANIO_EN_CURSO = (anioActual - 2024) * 12 + (mesActual - 1)
-const anioCantidad = (anio=2024)=>{
+export const anioCantidad = (anio=2024)=>{
 	switch (anio) {
 		case anioActual:
 			return mesActual;

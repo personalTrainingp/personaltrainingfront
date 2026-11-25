@@ -38,7 +38,7 @@ const ResultadosPorCanal = ({ id_empresa }) => {
             vigentesCount={vigentesTotal} vigentesBreakdown={vigentesBreakdown}
             avataresDeProgramas={avataresDeProgramas} useAvatars={true}
             onChangeTasa={setTasaCambio} tasaCambio={tasaCambio}
-            setYear={setYear}
+            setYear={setYear} showTC={false}
           />
         </Col>
       </Row>

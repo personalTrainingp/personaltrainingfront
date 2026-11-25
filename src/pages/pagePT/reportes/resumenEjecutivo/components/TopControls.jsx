@@ -151,6 +151,7 @@ export function TopControls({
   avataresDeProgramas = [],
   useAvatars = true,
   onChangeTasaCambio,
+  showTC = true,
 }) {
   const {
     MESES,
@@ -310,6 +311,7 @@ export function TopControls({
         {/* Reloj + TC */}
         <RealTimeClock />
 
+        {showTC && (
         <div style={rateBoxStyle} title="Tipo de cambio USD a PEN">
           <div
             style={{
@@ -342,6 +344,7 @@ export function TopControls({
             </span>
           )}
         </div>
+        )}
 
         <button
           onClick={handleClickUseLastDay}

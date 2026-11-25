@@ -73,7 +73,8 @@ export function ModalReservaMonkFit({ show, onHide, initial, onSaved, programas 
     const toLocalInput = (iso) => (iso ? new Date(iso).toISOString().slice(0, 16) : "");
     if (initial) {
       const idInicial = initial.id_cli ?? initial.id_cliente_mf;
-      setClienteSel(idInicial ? { value: Number(idInicial), label: `Cliente ${idInicial}` } : null);
+      const nombreInicial = [initial.cliente?.nombre_cli, initial.cliente?.apPaterno_cli].filter(Boolean).join(" ");
+      setClienteSel(idInicial ? { value: Number(idInicial), label: nombreInicial || `Cliente ${idInicial}` } : null);
       setForm({
         id_pgm: initial.id_pgm ?? "",
         fecha: toLocalInput(initial.fecha),
@@ -142,7 +143,7 @@ export function ModalReservaMonkFit({ show, onHide, initial, onSaved, programas 
       }
       if (initial?.id) await reservasApi.update(initial.id, payload);
       else await reservasApi.create(payload);
-      onSaved(initial ? "Reserva actualizada" : "Reserva creada");
+      onSaved(initial?.id ? "Reserva actualizada" : "Reserva creada");
       onHide();
     } catch (err) {
       console.error("❌ Error al guardar reserva:", err);
@@ -155,7 +156,7 @@ export function ModalReservaMonkFit({ show, onHide, initial, onSaved, programas 
   return (
     <Modal show={show} onHide={onHide} size="lg" centered>
       <Modal.Header closeButton>
-        <strong>{initial ? "Editar reserva" : "Nueva reserva"}</strong>
+        <strong>{initial?.id ? "Editar reserva" : initial ? "Copiar reserva" : "Nueva reserva"}</strong>
       </Modal.Header>
       <Modal.Body>
         <form onSubmit={handleSubmit}>

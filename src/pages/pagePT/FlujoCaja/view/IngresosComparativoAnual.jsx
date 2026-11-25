@@ -9,7 +9,7 @@ const anio2025 = ['2025-01-01 15:45:47.6640000 +00:00', '2025-12-31 15:45:47.664
 const anio2024 = ['2024-01-01 15:45:47.6640000 +00:00', '2024-12-31 15:45:47.6640000 +00:00']
 const anioTotal = ['2024-01-01 15:45:47.6640000 +00:00', '2026-12-31 15:45:47.6640000 +00:00']
 
-const FILAS = [
+export const FILAS = [
     { label: '2026', anio: 2026, arrayFechas: anio2026, className: 'fs-2', classNameTotal: 'text-center border-left-10 border-right-10' },
     { label: '2025', anio: 2025, arrayFechas: anio2025, className: 'fs-2', classNameTotal: 'text-center border-left-10 border-right-10' },
     { label: '2024', anio: 2024, arrayFechas: anio2024, className: 'fs-2', classNameTotal: 'text-center border-left-10 border-right-10' },

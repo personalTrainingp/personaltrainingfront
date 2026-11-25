@@ -6,6 +6,7 @@ import { DataTableCR } from '@/components/DataView/DataTableCR'
 import { Button } from 'primereact/button'
 import { confirmDialog } from 'primereact/confirmdialog'
 import dayjs from 'dayjs'
+import { MiniaturaArchivo } from './MiniaturaArchivo'
 
 const descargarArchivo = async (row) => {
   const nameImage = row.tb_image?.name_image
@@ -41,10 +42,10 @@ export const DataTableCentroArchivo = ({idEmpresa, onClickOpenModalCustomArchivo
     
     const columns = [
         {id: 'id', accessor: 'id', header: 'Id'},
-        {id: 'adjunto', header: 'ADJ.', render: (row)=>{
+        {id: 'adjunto', header: 'VISTA PREVIA', render: (row)=>{
             return (
               <>
-              <i className='pi pi-file-pdf fs-2 cursor-pointer' onClick={()=>descargarArchivo(row)}></i>
+              <MiniaturaArchivo nombre={row.tb_image?.name_image} titulo={row.titulo} onClick={()=>descargarArchivo(row)} />
               </>
             )
         }},
