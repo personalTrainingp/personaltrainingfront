@@ -40,7 +40,7 @@ const SinPdf = () => (
 )
 
 // Vista previa del archivo; clic = descargar. Se carga recien cuando la fila se ve en pantalla.
-export const MiniaturaArchivo = ({ nombre, titulo, onClick }) => {
+export const MiniaturaArchivo = ({ nombre, titulo, onClick, onSinPdf }) => {
   const refCaja = useRef(null)
   const [url, seturl] = useState(null)
   const [error, seterror] = useState(null)
@@ -70,6 +70,7 @@ export const MiniaturaArchivo = ({ nombre, titulo, onClick }) => {
         // 404 o contenido que no es PDF = no hay documento; el resto es falla de carga
         const noExiste = err.response ? err.response.status === 404 : !err.isAxiosError
         seterror(noExiste ? 'sinPdf' : 'carga')
+        if (noExiste) onSinPdf?.(nombre)
       }
     })
     observador.observe(refCaja.current)
@@ -90,7 +91,7 @@ export const MiniaturaArchivo = ({ nombre, titulo, onClick }) => {
           src={`${config.API_IMG.DOC_GENERAL}${encodeURIComponent(nombre)}`}
           alt={titulo ?? nombre}
           loading='lazy'
-          onError={() => seterror('sinPdf')}
+          onError={() => { seterror('sinPdf'); onSinPdf?.(nombre) }}
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         />
       )

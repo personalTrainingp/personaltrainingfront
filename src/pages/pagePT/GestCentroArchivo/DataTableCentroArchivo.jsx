@@ -32,7 +32,7 @@ const descargarArchivo = async (row) => {
   }
 }
 
-export const DataTableCentroArchivo = ({idEmpresa, onClickOpenModalCustomArchivo, data, soloLectura = false}) => {
+export const DataTableCentroArchivo = ({idEmpresa, onClickOpenModalCustomArchivo, data, soloLectura = false, onSinPdf}) => {
     const { obtenerArchivosCenter, onDeleteArchivo } = useCenterArchive()
     const { dataView } = useSelector(e=>e.DATA)
     useEffect(() => {
@@ -45,7 +45,7 @@ export const DataTableCentroArchivo = ({idEmpresa, onClickOpenModalCustomArchivo
         {id: 'adjunto', header: 'VISTA PREVIA', render: (row)=>{
             return (
               <>
-              <MiniaturaArchivo nombre={row.tb_image?.name_image} titulo={row.titulo} onClick={()=>descargarArchivo(row)} />
+              <MiniaturaArchivo nombre={row.tb_image?.name_image} titulo={row.titulo} onSinPdf={onSinPdf} onClick={()=>descargarArchivo(row)} />
               </>
             )
         }},

@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux'
 import { DataTableCentroArchivo } from './DataTableCentroArchivo'
 import { ModalCustom } from './ModalCustom'
 import { useCenterArchive } from './hook/useCenterArchive'
+import { useSinPdf } from './hook/useSinPdf'
 import { ModalOrdenTerminologia } from './ModalOrdenTerminologia'
 
 // la opcion "Todos" se distingue del resto: negrita, icono, fondo suave y separador abajo
@@ -48,6 +49,8 @@ export const App2 = ({idEmpresa, soloLectura = false}) => {
     const [tipoElegido, settipoElegido] = useState(false)
     const [subtipoElegido, setsubtipoElegido] = useState(false)
     const [ordenAsc, setordenAsc] = useState(true)
+    const [soloSinPdf, setsoloSinPdf] = useState(false)
+    const { esSinPdf, marcarSinPdf, verificando } = useSinPdf(dataView, soloSinPdf)
     const [isOpenModalOrden, setisOpenModalOrden] = useState(false)
 
     // al cambiar de modulo, sus tipos y subtipos son otros: se limpian los filtros
@@ -106,8 +109,9 @@ export const App2 = ({idEmpresa, soloLectura = false}) => {
         if (selectedSubtipo) {
             data = data.filter((row) => (row?.subtipo?.id_param ?? row?.subtipo?.label_param) === selectedSubtipo.key)
         }
+        if (soloSinPdf) data = data.filter(esSinPdf)
         return data
-    }, [dataView, selectedTipo, selectedSubtipo])
+    }, [dataView, selectedTipo, selectedSubtipo, soloSinPdf, esSinPdf])
 
     const onClickTipo = (tipo) => {
         setselectedTipo(tipo)
@@ -134,6 +138,7 @@ export const App2 = ({idEmpresa, soloLectura = false}) => {
         setselectedSubtipo(null)
         settipoElegido(false)
         setsubtipoElegido(false)
+        setsoloSinPdf(false)
     }
     const onClickOpenModalCustomArchivo=(id=0)=>{
         setisOpenModalCustomArchivo({isOpen: true, id: id})
@@ -151,8 +156,19 @@ export const App2 = ({idEmpresa, soloLectura = false}) => {
             </>
         )
     }
+    <Button
+        variant={soloSinPdf ? 'danger' : 'outline-danger'}
+        className={soloLectura ? '' : 'ms-2'}
+        aria-pressed={soloSinPdf}
+        title={soloSinPdf ? 'Mostrar todos los archivos' : 'Buscar los archivos que no tienen PDF'}
+        onClick={()=>setsoloSinPdf((v)=>!v)}
+    >
+        <i className='pi pi-search me-2'></i>
+        SIN PDF{soloSinPdf ? ` (${filteredData.length})` : ''}
+    </Button>
+    {soloSinPdf && verificando && <span className='ms-2 text-muted'>Buscando...</span>}
     {
-        (tipoElegido || subtipoElegido) && (
+        (tipoElegido || subtipoElegido || soloSinPdf) && (
             <Button className='p-tabview-title' variant='link'  onClick={onClickLimpiarFiltro}>Limpiar filtro</Button>
         )
     }
@@ -234,9 +250,9 @@ export const App2 = ({idEmpresa, soloLectura = false}) => {
         }
         <Col md={tipoElegido ? 6 : 9}>
             {
-                (tipoElegido && subtipoElegido)
+                (soloSinPdf || (tipoElegido && subtipoElegido))
                     ? (
-                        <DataTableCentroArchivo onClickOpenModalCustomArchivo={onClickOpenModalCustomArchivo} idEmpresa={idEmpresa} data={filteredData} soloLectura={soloLectura}/>
+                        <DataTableCentroArchivo onClickOpenModalCustomArchivo={onClickOpenModalCustomArchivo} idEmpresa={idEmpresa} data={filteredData} soloLectura={soloLectura} onSinPdf={marcarSinPdf}/>
                     )
                     : (
                         <div className='text-center text-muted mt-4'>
