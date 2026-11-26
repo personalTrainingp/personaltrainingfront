@@ -24,7 +24,9 @@ const customComercial = {
   observacion: '',
   id_cli: 0
 }
-// id_cli no esta aqui: "SIN CLIENTE" (0) es una opcion valida para un lead que aun no es cliente
+// Estado comercial NUEVO SOCIO (tb_parametros 1673, comercial / estado): exige socio vinculado (id_cli)
+const ID_ESTADO_NUEVO_SOCIO = 1673
+// id_cli no esta aqui: "SIN CLIENTE" (0) es una opcion valida para un lead que aun no es cliente (salvo en NUEVO SOCIO)
 const camposObligatorios = [
   { name: 'fecha_ingreso', label: 'FECHA DE INGRESO' },
   { name: 'celular', label: 'CELULAR' },
@@ -85,6 +87,15 @@ export const ModalCustomComercial = ({show, onHide, isCopy, id, lead, inicial, f
         icon: 'warning',
         title: 'COMPLETA LOS CAMPOS OBLIGATORIOS',
         html: faltantes.map(f=>f.label).join('<br/>'),
+      })
+      return
+    }
+    // NUEVO SOCIO: el lead ya compro, tiene que quedar vinculado a su socio (cliente)
+    if (Number(id_estado) === ID_ESTADO_NUEVO_SOCIO && !Number(id_cli)) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'VINCULA EL SOCIO',
+        text: 'Para guardar con estado NUEVO SOCIO selecciona el socio en el campo SOCIO.',
       })
       return
     }
@@ -155,7 +166,7 @@ export const ModalCustomComercial = ({show, onHide, isCopy, id, lead, inicial, f
             }
             <Col lg={12}>
               <div className='m-1'>
-                <InputSelect label={'SOCIO'} placeholder={'BUSCAR POR DNI O NOMBRE'} options={dataClientes} nameInput={'id_cli'} onChange={onInputChange} value={id_cli}/>
+                <InputSelect label={'SOCIO'} placeholder={'BUSCAR POR DNI O NOMBRE'} options={dataClientes} nameInput={'id_cli'} onChange={onInputChange} value={id_cli} required={Number(id_estado) === ID_ESTADO_NUEVO_SOCIO}/>
               </div>
             </Col>
             <Col lg={6}>
