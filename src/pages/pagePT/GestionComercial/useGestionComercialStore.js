@@ -99,7 +99,10 @@ export const useGestionComercialStore = () => {
 	const obtenerGestionComercial = async () => {
 		try {
 			const { data } = await PTApi.get('/prospecto/lead/');
-			dispatch(onSetDataViewComercial(data.prospectosLeads));
+			// sin los leads creados solos al registrar una venta (backend: registrarProspectoEnVenta)
+			const esRegistroAutomatico = (lead) =>
+				String(lead.observacion ?? '').trim().toUpperCase().startsWith('REGISTRADO AUTOMATICAMENTE');
+			dispatch(onSetDataViewComercial(data.prospectosLeads.filter((lead) => !esRegistroAutomatico(lead))));
 		} catch (error) {
 			console.log(error);
 		}

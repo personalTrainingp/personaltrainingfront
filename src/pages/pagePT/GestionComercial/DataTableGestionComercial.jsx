@@ -7,19 +7,27 @@ import { arrayEstadoComercial, arrayNivelInteresComercial } from '@/types/type'
 import dayjs from 'dayjs'
 import 'dayjs/locale/es'
 
-// TIPO de fila: socio de seguimiento (activo / inactivo) o lead; el backend da el tipo del lead:
-// sin cliente PROSPECTO; con cliente ACTIVO si tiene membresia vigente hoy, si no INACTIVO
+// TIPO: socio de seguimiento -> por su fecha de vencimiento (ACTIVO si vence hoy o despues, si no INACTIVO).
+// Lead (lo da el backend): sin cliente PROSPECTO; con cliente ACTIVO si tiene membresia vigente hoy, si no INACTIVO
 const tipoFila = (row)=>row.esSocio ? (row.activo ? 'ACTIVO' : 'INACTIVO') : row.tipo ?? 'PROSPECTO'
+// celular comparable: solo digitos, ultimos 9 (ignora +51, espacios, guiones)
+const cel9 = (cel)=>String(cel ?? '').replace(/\D/g, '').slice(-9)
 const colorTipo = { PROSPECTO: '#7b2cbf', ACTIVO: '#198754', INACTIVO: '#dc3545' }
-// Con cliente vinculado se muestran sus datos; si le falta alguno, el del lead.
-// Solo para mostrar: row.nombres / apellidos / celular no se cambian porque el modal EDITAR los guarda en el lead
-const limpio = (valor)=>String(valor ?? '').trim()
-const nombresDe = (row)=>limpio(row.cliente?.nombre_cli) || row.nombres
-const apellidosDe = (row)=>[row.cliente?.apPaterno_cli, row.cliente?.apMaterno_cli].map(limpio).filter(Boolean).join(' ') || row.apellidos
-const celularDe = (row)=>limpio(row.cliente?.tel_cli) || row.celular
+// Solo datos de tb_prospectoLeads (no se reemplazan con los del cliente vinculado)
+const nombresDe = (row)=>row.nombres
+const apellidosDe = (row)=>row.apellidos
+const celularDe = (row)=>row.celular
+const labelPrograma = (id_pgm)=>[{label: 'CHANGE 45', value: 2}, {label: 'FS 45', value: 3}, {label: 'FISIO MUSCLE', value: 4}].find(e=>e.value===id_pgm)?.label
+// filas de socio (seguimiento): asesor = vendedor de su ultima membresia, programa de esa membresia, observacion = vencimiento
+const asesorDe = (row)=>row.esSocio ? row.vendedor : row.empleado?.nombres_apellidos_empl
+const programaDe = (row)=>row.esSocio ? row.name_pgm : labelPrograma(row.id_pgm)
+const statusSocio = (row)=>row.activo ? 'SOCIO ACTIVO' : 'SOCIO INACTIVO'
+const observacionDe = (row)=>row.esSocio
+  ? (row.vencimiento ? `${row.activo ? 'VENCE' : 'VENCIO'}: ${dayjs(row.vencimiento).format('DD/MM/YYYY')}` : '')
+  : row.observacion
 
 export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGestionComercial, onOpenModalTareas, onOpenModalMembresias, filtroEstado, filtroAsesor, filtroFecha, filtroTipo}) => {
-  const { obtenerGestionComercial, validarEdicionLead } = useGestionComercialStore()
+  const { obtenerGestionComercial, validarEdicionLead, obtenerSociosActivosSinProspecto, dataSociosSinProspecto } = useGestionComercialStore()
   const {dataView} = useSelector(e=>e.COMERCIAL)
   const onClickEditar = async(row)=>{
     if (await validarEdicionLead(row.id)) {
@@ -28,8 +36,32 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
   }
   useEffect(() => {
     obtenerGestionComercial()
+    obtenerSociosActivosSinProspecto()
   }, [])
-  // Solo prospectos: las filas de socios de seguimiento se quitaron porque duplicaban a los clientes que ya tienen prospecto
+  // Socios de seguimiento que no estan como prospecto en la tabla (ni por id_cli ni por celular)
+  const sociosSinProspecto = useMemo(() => {
+    const cliEnLead = new Set((dataView ?? []).map(e=>e.id_cli).filter(Boolean))
+    const celEnLead = new Set((dataView ?? []).map(e=>cel9(e.celular)).filter(c=>c.length===9))
+    return (dataSociosSinProspecto ?? [])
+      .filter(s=>!cliEnLead.has(s.id_cli) && !(cel9(s.tel_cli).length===9 && celEnLead.has(cel9(s.tel_cli))))
+      .map(s=>({
+        esSocio: true,
+        id_cli: s.id_cli,
+        uid_comentario: s.uid_comentario,
+        nombres: String(s.nombre_cli ?? '').trim(),
+        apellidos: [s.apPaterno_cli, s.apMaterno_cli].map(a=>String(a ?? '').trim()).filter(Boolean).join(' '),
+        celular: s.tel_cli,
+        vendedor: String(s.vendedor ?? '').trim(),
+        name_pgm: s.name_pgm,
+        fecha_registro: s.fecha_venta,
+        vencimiento: s.vencimiento,
+        activo: s.activo,
+        // para el modal de membresias
+        cliente: { nombres_apellidos_cli: [s.nombre_cli, s.apPaterno_cli, s.apMaterno_cli].map(a=>String(a ?? '').trim()).filter(Boolean).join(' ') },
+        codigo_prospecto: '',
+        codigo_cliente: `CLI${s.id_cli}`,
+      }))
+  }, [dataView, dataSociosSinProspecto])
   const dataFiltrada = useMemo(() => {
     const prospectos = (dataView ?? []).filter(e=>
       (!filtroEstado || e.parametro_estado?.id_param===filtroEstado) &&
@@ -38,11 +70,15 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
       (!filtroFecha || (e.fecha_registro && dayjs(e.fecha_registro).format('YYYY-MM-DD')===filtroFecha))
     // codigos: el buscador de la tabla busca en los datos de la fila, asi se puede buscar por PROS<id> o CLI<id_cli>
     ).map(e=>({...e, codigo_prospecto: `PROS${e.id}`, codigo_cliente: e.id_cli ? `CLI${e.id_cli}` : ''}))
+    // socios: no tienen STATUS ni asesor del lead, se ocultan si se filtra por esos campos
+    const socios = (filtroEstado || filtroAsesor) ? [] : sociosSinProspecto.filter(e=>
+      !filtroFecha || (e.fecha_registro && dayjs(e.fecha_registro).format('YYYY-MM-DD')===filtroFecha)
+    )
     // tipo en la fila para que el buscador encuentre ACTIVO / INACTIVO / PROSPECTO
-    return prospectos
+    return [...prospectos, ...socios]
       .map(e=>({...e, tipo: tipoFila(e)}))
       .filter(e=>!filtroTipo || e.tipo===filtroTipo)
-  }, [dataView, filtroEstado, filtroAsesor, filtroFecha, filtroTipo])
+  }, [dataView, sociosSinProspecto, filtroEstado, filtroAsesor, filtroFecha, filtroTipo])
   const columns = [
     {
       id: 0, header: 'CODIGO PROSPECTO', render:(row)=>{
@@ -83,7 +119,7 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
       id: 2, header: 'ASESOR', render: (row)=>{
         return (
           <>
-          {row.esSocio ? row.vendedor : row.empleado?.nombres_apellidos_empl}
+          {asesorDe(row)}
           </>
         )
       }
@@ -147,14 +183,14 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
       id: 8, header: 'PROGRAMA', render: (row)=>{
         return (
           <>
-          {row.esSocio ? row.name_pgm : [{label: 'CHANGE 45', value: 2}, {label: 'FS 45', value: 3}, {label: 'FISIO MUSCLE', value: 4}].find(e=>e.value===row.id_pgm)?.label}
+          {programaDe(row)}
           </>
         )
       }
     },
     {
       id: 9, header: 'STATUS', render: (row)=>{
-        if (row.esSocio) return <Button className={`${row.activo ? 'bg-success' : 'bg-secondary'} border-none`} label={row.activo ? 'SOCIO ACTIVO' : 'SOCIO INACTIVO'}/>
+        if (row.esSocio) return <Button className={`${row.activo ? 'bg-success' : 'bg-secondary'} border-none`} label={statusSocio(row)}/>
         return (
           <>
           <Button className={`${arrayEstadoComercial.find(e=>e.value===row.parametro_estado?.id_param)?.color} border-none`} label={row.parametro_estado?.label_param}/>
@@ -174,16 +210,16 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
     },
     {
       id: 13, header: 'OBSERVACION', render: (row)=>{
-        if (row.esSocio) return row.vencimiento ? <>{row.activo ? 'VENCE' : 'VENCIO'}: {dayjs(row.vencimiento).format('DD/MM/YYYY')}</> : null
         return (
           <>
-          {row.observacion}
+          {observacionDe(row)}
           </>
         )
       }
     },
     {
       id: 10, header: '', render: (row)=>{
+        // socio: sin EDITAR (no es lead); comentarios del cliente y tareas por id_cli
         if (row.esSocio) return (
           <>
             <Button icon="pi pi-comment" onClick={()=>onOpenComentario(row.uid_comentario)} rounded outlined severity="danger"  className='mr-2' disabled={!row.uid_comentario}/>
@@ -211,16 +247,16 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
     { id: 'codigo_cliente', exportHeader: 'CODIGO SOCIO', width: 18, exportValue: (row)=>row.codigo_cliente },
     { id: 'tipo', exportHeader: 'TIPO', width: 12, exportValue: (row)=>tipoFila(row) },
     { id: 'fecha_registro', exportHeader: 'FECHA DE REGISTRO', width: 14, exportValue: (row)=>row.fecha_registro ? dayjs(row.fecha_registro).format('DD/MM/YYYY') : '' },
-    { id: 'asesor', exportHeader: 'ASESOR', width: 30, exportValue: (row)=>(row.esSocio ? row.vendedor : row.empleado?.nombres_apellidos_empl) ?? '' },
+    { id: 'asesor', exportHeader: 'ASESOR', width: 30, exportValue: (row)=>asesorDe(row) ?? '' },
     { id: 'nombres', exportHeader: 'NOMBRES', exportValue: (row)=>nombresDe(row) ?? '' },
     { id: 'apellidos', exportHeader: 'APELLIDOS', width: 25, exportValue: (row)=>apellidosDe(row) ?? '' },
     { id: 'socio', exportHeader: 'SOCIO', width: 15, exportValue: (row)=>row.id_cli ? 'CON HISTORIAL' : 'SIN HISTORIAL' },
     { id: 'celular', exportHeader: 'CELULAR', width: 14, exportValue: (row)=>celularDe(row) ?? '' },
     { id: 'canal', exportHeader: 'CANAL', exportValue: (row)=>row.parametro_canal?.label_param ?? '' },
-    { id: 'programa', exportHeader: 'PROGRAMA', width: 15, exportValue: (row)=>(row.esSocio ? row.name_pgm : [{label: 'CHANGE 45', value: 2}, {label: 'FS 45', value: 3}, {label: 'FISIO MUSCLE', value: 4}].find(e=>e.value===row.id_pgm)?.label) ?? '' },
-    { id: 'status', exportHeader: 'STATUS', width: 25, exportValue: (row)=>row.esSocio ? (row.activo ? 'SOCIO ACTIVO' : 'SOCIO INACTIVO') : row.parametro_estado?.label_param ?? '' },
+    { id: 'programa', exportHeader: 'PROGRAMA', width: 15, exportValue: (row)=>programaDe(row) ?? '' },
+    { id: 'status', exportHeader: 'STATUS', width: 25, exportValue: (row)=>row.esSocio ? statusSocio(row) : row.parametro_estado?.label_param ?? '' },
     { id: 'interes', exportHeader: 'INTERES', width: 15, exportValue: (row)=>row.parametro_nivel_interes?.label_param ?? '' },
-    { id: 'observacion', exportHeader: 'OBSERVACION', width: 50, exportValue: (row)=>row.esSocio ? (row.vencimiento ? `${row.activo ? 'VENCE' : 'VENCIO'}: ${dayjs(row.vencimiento).format('DD/MM/YYYY')}` : '') : row.observacion ?? '' },
+    { id: 'observacion', exportHeader: 'OBSERVACION', width: 50, exportValue: (row)=>observacionDe(row) ?? '' },
   ]
 
   return (
@@ -229,7 +265,7 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
           data={dataFiltrada}
           columns={columns}
           exportExtraColumns={columnsExports}
-          exportFileName={`prospectos_${dayjs().format('DDMMYYYY')}`}
+          exportFileName={`prospectos_y_socios_${dayjs().format('DDMMYYYY')}`}
         />
     </div>
   )
