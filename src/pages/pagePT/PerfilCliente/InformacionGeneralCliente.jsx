@@ -36,13 +36,15 @@ export const InformacionGeneralCliente = ({data}) => {
         const [selectedFile, setSelectedFile] = useState(avatarActual ? `${config.API_IMG.AVATAR_CLI}${avatarActual}` : sinAvatar);
         const dataFormulario = useMemo(()=>({
             ...data,
-            fecha_nacimiento: data?.fecha_nacimiento ? dayjs.utc(data.fecha_nacimiento).format('YYYY-MM-DD') : ''
+            fecha_nacimiento: data?.fecha_nacimiento ? dayjs.utc(data.fecha_nacimiento).format('YYYY-MM-DD') : '',
+            fecha_registro: data?.createdAt ? dayjs(data.createdAt).format('YYYY-MM-DD') : ''
         }), [data])
     const { formState,
         nombre_cli,     
         apPaterno_cli, 
         apMaterno_cli, 
         fecha_nacimiento,
+        fecha_registro,
         sexo_cli, 
         estCivil_cli, 
         tipoDoc_cli, 
@@ -96,7 +98,15 @@ export const InformacionGeneralCliente = ({data}) => {
                 icon: 'pi pi-question-circle',
                 defaultFocus: 'accept',
                 accept: ()=>{
-                    startUpdateUsuarioCliente(formState, data.uid, formStateAvatar.imgAvatar_BASE64)
+                    const { fecha_registro: fechaReg, ...restForm } = formState
+                    const payload = { ...restForm }
+                    delete payload.createdAt
+                    // Solo se envia createdAt si cambio la fecha de registro (se conserva la hora original)
+                    if (fechaReg && fechaReg !== dataFormulario.fecha_registro) {
+                        const horaOriginal = data?.createdAt ? dayjs(data.createdAt).format('HH:mm:ss') : '00:00:00'
+                        payload.createdAt = dayjs(`${fechaReg}T${horaOriginal}`).toISOString()
+                    }
+                    startUpdateUsuarioCliente(payload, data.uid, formStateAvatar.imgAvatar_BASE64)
                 },
                 reject
             });
@@ -211,6 +221,21 @@ export const InformacionGeneralCliente = ({data}) => {
                                             id="fecha_nacimiento"
                                             placeholder="Fecha de nacimiento"
                                             required
+                                        />
+                                    </div>
+                                </Col>
+                                <Col xl={4}>
+                                    <div className="mb-2">
+                                        <label htmlFor="fecha_registro" className="form-label">
+                                            Fecha de registro
+                                        </label>
+                                        <input
+                                            className="form-control"
+                                            type="date"
+                                            name="fecha_registro"
+                                            value={fecha_registro}
+                                            onChange={onInputChange}
+                                            id="fecha_registro"
                                         />
                                     </div>
                                 </Col>

@@ -4,6 +4,7 @@ import { PageBreadcrumb } from "@/components";
 import { TopControls } from "../resumenEjecutivo/components/TopControls";
 import { ExecutiveTable2 } from "../resumenEjecutivo/components/ExecutibleTable2";
 import { useResumenEjecutivoStore } from "../resumenEjecutivo/useResumenEjecutivoStore";
+import { InversionRedesComparativoAnual } from "./InversionRedesComparativoAnual";
 
 const ReporteRedesSociales = ({ id_empresa }) => {
   const {
@@ -52,6 +53,13 @@ const ReporteRedesSociales = ({ id_empresa }) => {
             reservasMF={reservasMF} originMap={originMap}
             selectedMonth={selectedMonth} tasaCambio={tasaCambio} year={year}
           />
+        </Col>
+      </Row>
+
+      {/* inversion en redes por año y mes (formato del comparativo anual de flujo de caja) */}
+      <Row className="mb-6">
+        <Col lg={12}>
+          <InversionRedesComparativoAnual tasaCambio={tasaCambio} />
         </Col>
       </Row>
     </>

@@ -9,7 +9,9 @@ import 'dayjs/locale/es'
 
 // TIPO: socio de seguimiento -> por su fecha de vencimiento (ACTIVO si vence hoy o despues, si no INACTIVO).
 // Lead (lo da el backend): sin cliente PROSPECTO; con cliente ACTIVO si tiene membresia vigente hoy, si no INACTIVO
-const tipoFila = (row)=>row.esSocio ? (row.activo ? 'ACTIVO' : 'INACTIVO') : row.tipo ?? 'PROSPECTO'
+// Fila con datos de socio: socio sin lead, o lead que tambien esta en seguimiento (superpuesto)
+const conDatosSocio = (row)=>row.esSocio || row.superpuesto
+const tipoFila = (row)=>conDatosSocio(row) ? (row.activo ? 'ACTIVO' : 'INACTIVO') : row.tipo ?? 'PROSPECTO'
 // celular comparable: solo digitos, ultimos 9 (ignora +51, espacios, guiones)
 const cel9 = (cel)=>String(cel ?? '').replace(/\D/g, '').slice(-9)
 const colorTipo = { PROSPECTO: '#7b2cbf', ACTIVO: '#198754', INACTIVO: '#dc3545' }
@@ -18,20 +20,27 @@ const nombresDe = (row)=>row.nombres
 const apellidosDe = (row)=>row.apellidos
 const celularDe = (row)=>row.celular
 const labelPrograma = (id_pgm)=>[{label: 'CHANGE 45', value: 2}, {label: 'FS 45', value: 3}, {label: 'FISIO MUSCLE', value: 4}].find(e=>e.value===id_pgm)?.label
-// filas de socio (seguimiento): asesor = vendedor de su ultima membresia, programa de esa membresia, observacion = vencimiento
-const asesorDe = (row)=>row.esSocio ? row.vendedor : row.empleado?.nombres_apellidos_empl
-const programaDe = (row)=>row.esSocio ? row.name_pgm : labelPrograma(row.id_pgm)
+// filas con datos de socio (seguimiento): asesor = vendedor de su ultima membresia, programa de esa membresia, observacion = vencimiento
+const asesorDe = (row)=>conDatosSocio(row) ? row.vendedor : row.empleado?.nombres_apellidos_empl
+const idAsesorDe = (row)=>row.superpuesto ? row.id_empl_venta : (row.id_empl ?? row.empleado?.id_empl)
+const programaDe = (row)=>conDatosSocio(row) ? row.name_pgm : labelPrograma(row.id_pgm)
 const statusSocio = (row)=>row.activo ? 'SOCIO ACTIVO' : 'SOCIO INACTIVO'
-const observacionDe = (row)=>row.esSocio
-  ? (row.vencimiento ? `${row.activo ? 'VENCE' : 'VENCIO'}: ${dayjs(row.vencimiento).format('DD/MM/YYYY')}` : '')
-  : row.observacion
+const textoVencimiento = (row)=>row.vencimiento ? `${row.activo ? 'VENCE' : 'VENCIO'}: ${dayjs(row.vencimiento).format('DD/MM/YYYY')}` : ''
+const observacionDe = (row)=>{
+  // socio sin prospecto: viene solo de la BD de seguimiento
+  if (row.esSocio) return [textoVencimiento(row), 'BD'].filter(Boolean).join(' | ')
+  // superpuesto: vencimiento del socio + observacion original del lead
+  if (row.superpuesto) return [textoVencimiento(row), row.observacion].filter(Boolean).join(' | ')
+  return row.observacion
+}
 
 export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGestionComercial, onOpenModalTareas, onOpenModalMembresias, filtroEstado, filtroAsesor, filtroFecha, filtroTipo}) => {
   const { obtenerGestionComercial, validarEdicionLead, obtenerSociosActivosSinProspecto, dataSociosSinProspecto } = useGestionComercialStore()
   const {dataView} = useSelector(e=>e.COMERCIAL)
   const onClickEditar = async(row)=>{
     if (await validarEdicionLead(row.id)) {
-      onOpenModalGestionComercial(row.id, false, row)
+      // al editar se usa el lead original (sin los datos del socio superpuestos)
+      onOpenModalGestionComercial(row.id, false, row.lead ?? row)
     }
   }
   useEffect(() => {
@@ -62,14 +71,45 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
         codigo_cliente: `CLI${s.id_cli}`,
       }))
   }, [dataView, dataSociosSinProspecto])
+  // Leads que tambien estan en seguimiento (activos o inactivos): los datos del socio se superponen al lead
+  const leadsConSocio = useMemo(() => {
+    const socioPorCli = new Map()
+    const socioPorCel = new Map()
+    ;(dataSociosSinProspecto ?? []).forEach(s=>{
+      if (s.id_cli && !socioPorCli.has(s.id_cli)) socioPorCli.set(s.id_cli, s)
+      const cel = cel9(s.tel_cli)
+      if (cel.length===9 && !socioPorCel.has(cel)) socioPorCel.set(cel, s)
+    })
+    return (dataView ?? []).map(lead=>{
+      const cel = cel9(lead.celular)
+      const s = (lead.id_cli && socioPorCli.get(lead.id_cli)) || (cel.length===9 && socioPorCel.get(cel))
+      if (!s) return lead
+      return {
+        ...lead,
+        lead,
+        superpuesto: true,
+        id_cli: lead.id_cli || s.id_cli,
+        // fecha de registro = fecha de su ultima venta; la del lead queda en fecha_lead (para el filtro por dia)
+        fecha_lead: lead.fecha_registro,
+        fecha_registro: s.fecha_venta ?? lead.fecha_registro,
+        vendedor: String(s.vendedor ?? '').trim(),
+        id_empl_venta: s.id_empl_venta,
+        name_pgm: s.name_pgm,
+        vencimiento: s.vencimiento,
+        activo: s.activo,
+        cliente: lead.cliente ?? { nombres_apellidos_cli: [s.nombre_cli, s.apPaterno_cli, s.apMaterno_cli].map(a=>String(a ?? '').trim()).filter(Boolean).join(' ') },
+      }
+    })
+  }, [dataView, dataSociosSinProspecto])
   const dataFiltrada = useMemo(() => {
-    const prospectos = (dataView ?? []).filter(e=>
-      (!filtroEstado || e.parametro_estado?.id_param===filtroEstado) &&
-      (!filtroAsesor || (e.id_empl ?? e.empleado?.id_empl)===filtroAsesor) &&
-      // filtroFecha: YYYY-MM-DD, comparado en hora local como la columna FECHA
-      (!filtroFecha || (e.fecha_registro && dayjs(e.fecha_registro).format('YYYY-MM-DD')===filtroFecha))
+    const prospectos = leadsConSocio.filter(e=>{
+      // filtroFecha: dia en que se registro el lead (PROSPECTOS HASTA AYER), en hora local
+      const fechaLead = e.superpuesto ? e.fecha_lead : e.fecha_registro
+      return (!filtroEstado || e.parametro_estado?.id_param===filtroEstado) &&
+        (!filtroAsesor || idAsesorDe(e)===filtroAsesor) &&
+        (!filtroFecha || (fechaLead && dayjs(fechaLead).format('YYYY-MM-DD')===filtroFecha))
     // codigos: el buscador de la tabla busca en los datos de la fila, asi se puede buscar por PROS<id> o CLI<id_cli>
-    ).map(e=>({...e, codigo_prospecto: `PROS${e.id}`, codigo_cliente: e.id_cli ? `CLI${e.id_cli}` : ''}))
+    }).map(e=>({...e, codigo_prospecto: `PROS${e.id}`, codigo_cliente: e.id_cli ? `CLI${e.id_cli}` : ''}))
     // socios: no tienen STATUS ni asesor del lead, se ocultan si se filtra por esos campos
     const socios = (filtroEstado || filtroAsesor) ? [] : sociosSinProspecto.filter(e=>
       !filtroFecha || (e.fecha_registro && dayjs(e.fecha_registro).format('YYYY-MM-DD')===filtroFecha)
@@ -78,7 +118,7 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
     return [...prospectos, ...socios]
       .map(e=>({...e, tipo: tipoFila(e)}))
       .filter(e=>!filtroTipo || e.tipo===filtroTipo)
-  }, [dataView, sociosSinProspecto, filtroEstado, filtroAsesor, filtroFecha, filtroTipo])
+  }, [leadsConSocio, sociosSinProspecto, filtroEstado, filtroAsesor, filtroFecha, filtroTipo])
   const columns = [
     {
       id: 0, header: 'CODIGO PROSPECTO', render:(row)=>{
@@ -190,7 +230,7 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
     },
     {
       id: 9, header: 'STATUS', render: (row)=>{
-        if (row.esSocio) return <Button className={`${row.activo ? 'bg-success' : 'bg-secondary'} border-none`} label={statusSocio(row)}/>
+        if (conDatosSocio(row)) return <Button className={`${row.activo ? 'bg-success' : 'bg-secondary'} border-none`} label={statusSocio(row)}/>
         return (
           <>
           <Button className={`${arrayEstadoComercial.find(e=>e.value===row.parametro_estado?.id_param)?.color} border-none`} label={row.parametro_estado?.label_param}/>
@@ -254,7 +294,7 @@ export const DataTableGestionComercial = ({onOpenModalComentario, onOpenModalGes
     { id: 'celular', exportHeader: 'CELULAR', width: 14, exportValue: (row)=>celularDe(row) ?? '' },
     { id: 'canal', exportHeader: 'CANAL', exportValue: (row)=>row.parametro_canal?.label_param ?? '' },
     { id: 'programa', exportHeader: 'PROGRAMA', width: 15, exportValue: (row)=>programaDe(row) ?? '' },
-    { id: 'status', exportHeader: 'STATUS', width: 25, exportValue: (row)=>row.esSocio ? statusSocio(row) : row.parametro_estado?.label_param ?? '' },
+    { id: 'status', exportHeader: 'STATUS', width: 25, exportValue: (row)=>conDatosSocio(row) ? statusSocio(row) : row.parametro_estado?.label_param ?? '' },
     { id: 'interes', exportHeader: 'INTERES', width: 15, exportValue: (row)=>row.parametro_nivel_interes?.label_param ?? '' },
     { id: 'observacion', exportHeader: 'OBSERVACION', width: 50, exportValue: (row)=>observacionDe(row) ?? '' },
   ]

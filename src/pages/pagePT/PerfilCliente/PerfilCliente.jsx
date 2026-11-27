@@ -17,6 +17,7 @@ import { ScrollPanel } from 'primereact/scrollpanel';
 import { ReportesxCliente } from './ReportesxCliente';
 import { useTerminoStore } from '@/hooks/hookApi/useTerminoStore';
 import Swal from 'sweetalert2';
+import dayjs from 'dayjs';
 import { ScreenNutricionista } from './ScreenNutricionista';
 import { SectionFiles } from './SectionFiles';
 import { Image } from 'primereact/image';
@@ -104,7 +105,12 @@ export const PerfilCliente = () => {
                   <Image indicatorIcon={<i className="pi pi-search"></i>} alt="Image" preview width="170"  src={`${avatarUrl==null?sinAvatar:`${config.API_IMG.AVATAR_CLI}${avatarUrl}`}`} className='rounded-circle'/>
                   <div className='m-2 text-center'>
                     <span className='fs-2 fw-bold'><p className='mb-0 pb-0'>{userCliente.nombre_cli} {userCliente.apPaterno_cli} {userCliente.apMaterno_cli}</p></span>
-                    <span className='text-center'>ACTIVO</span>
+                    {userCliente.createdAt && (
+                      <p className='mb-0 fs-3 fw-bold' style={{color: 'red'}}>
+                        REGISTRO: {dayjs(userCliente.createdAt).format('DD/MM/YYYY')}
+                      </p>
+                    )}
+                    <span className='badge bg-success fs-5 mt-1'>ACTIVO</span>
                   </div>
                   <Button className='m-1' style={{background: '#FF5757'}} label='CREAR REGALOS' onClick={modalOpenRegalos}/>
                   <Button className='m-1' style={{background: '#06B6D4'}} label='CREAR CONGELAMIENTO' onClick={modalOpenCongelamiento}/>
