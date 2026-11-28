@@ -9,6 +9,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { es } from 'date-fns/locale';
 import AddEditEvent from '../Calendar/AddEditEvent';
 import { useCitaStore } from '@/hooks/hookApi/useCitaStore';
+import { getSocket } from '@/common/socket';
 import { FormatoTimeMask } from '@/components/CurrencyMask';
 import { Card } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
@@ -127,6 +128,22 @@ const App = ({  onDateClick,
     });
     useEffect(() => {
       obtenerCitasxSERVICIO( tipo_serv )
+    }, [tipo_serv])
+    // Tiempo real: cuando otro usuario agrega, edita o elimina una cita, se recargan las citas
+    useEffect(() => {
+      const socket = getSocket()
+      const onCambioCita = ({ origen }) => {
+        if (origen && origen === socket.id) return; // el cambio lo hice yo: ya se recargó
+        obtenerCitasxSERVICIO(tipo_serv, { silencioso: true })
+      }
+      // al reconectar se pudieron perder eventos: se recarga por si acaso
+      const onReconectar = () => obtenerCitasxSERVICIO(tipo_serv, { silencioso: true })
+      socket.on('citas:cambio', onCambioCita)
+      socket.io.on('reconnect', onReconectar)
+      return () => {
+        socket.off('citas:cambio', onCambioCita)
+        socket.io.off('reconnect', onReconectar)
+      }
     }, [tipo_serv])
   
     const { defaultDate, formats, views } = useMemo(

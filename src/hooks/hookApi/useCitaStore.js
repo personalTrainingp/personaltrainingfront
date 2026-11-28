@@ -1,4 +1,5 @@
 import { PTApi } from '@/common';
+import { getSocket } from '@/common/socket';
 import { onGetCitas } from '@/store/calendar/calendarSlice';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -13,9 +14,13 @@ export const useCitaStore = () => {
 	const [loading, setloading] = useState(true);
 	const [loadingAction, setloadingAction] = useState(false);
 
-	const obtenerCitasxSERVICIO = async (tipo_serv) => {
+	// Header para que el backend sepa qué socket hizo el cambio y no se lo reenvíe como "remoto"
+	const headersSocket = () => ({ headers: { 'x-socket-id': getSocket().id || '' } });
+
+	// silencioso: recarga sin poner loading (evita que el calendario parpadee con cambios de otros usuarios)
+	const obtenerCitasxSERVICIO = async (tipo_serv, { silencioso = false } = {}) => {
 		try {
-			setloading(true);
+			if (!silencioso) setloading(true);
 			const { data } = await PTApi.get(`/cita/get-citas/${tipo_serv}`);
 			dispatch(onGetCitas(data.citas));
 			setloading(false);
@@ -79,7 +84,7 @@ export const useCitaStore = () => {
 				fecha_final: DateCell.end,
 				id_empl,
 				status_cita: 500,
-			});
+			}, headersSocket());
 			obtenerCitasxSERVICIO(tipo_cita);
 			setloadingAction(true);
 			// setprogramaPT(data)
@@ -93,7 +98,7 @@ export const useCitaStore = () => {
 			setloadingAction(true);
 			const { data } = await PTApi.put(`/cita/put-cita/${id}`, {
 				...formState,
-			});
+			}, headersSocket());
 			obtenerCitasxSERVICIO(tipo_cita);
 			setloadingAction(false);
 		} catch (error) {
@@ -103,7 +108,7 @@ export const useCitaStore = () => {
 	const onDeleteCitaxId = async (id) => {
 		try {
 			setloadingAction(true);
-			const { data } = await PTApi.put(`/cita/delete-cita/${id}`);
+			const { data } = await PTApi.put(`/cita/delete-cita/${id}`, {}, headersSocket());
 			obtenerCitasxSERVICIO('NUTRI');
 			setloadingAction(false);
 		} catch (error) {

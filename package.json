@@ -95,6 +95,7 @@
     "sass": "^1.64.2",
     "simplebar-react": "^3.2.4",
     "snake-game-react": "^1.0.6",
+    "socket.io-client": "^4.8.4",
     "sortablejs": "^1.15.3",
     "styled-components": "^6.1.8",
     "sweetalert2": "^11.10.7",
